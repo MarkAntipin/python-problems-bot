@@ -13,9 +13,6 @@ dotenv.load_dotenv(ENV_FILE)
 
 MOSCOW_TIME_DIFFERENCE = datetime.timedelta(hours=3)
 
-BOT_DATA = Path(BASE_DIR, 'bot_data')
-BOT_DATA.mkdir(exist_ok=True)
-
 
 class PostgresSettings(BaseSettings):
     HOST: str

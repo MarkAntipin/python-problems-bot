@@ -13,7 +13,7 @@ from telegram.ext import (
 from bot.handlers.comands import cansel_handler, start_handler
 from bot.handlers.questions import onboarding_questions_handler, questions_handler
 from bot.handlers.states import States
-from settings import BotSettings, MongoSettings, BOT_DATA, PostgresSettings
+from settings import BotSettings, MongoSettings, PostgresSettings
 from ptbcontrib.postgres_persistence import PostgresPersistence
 
 
