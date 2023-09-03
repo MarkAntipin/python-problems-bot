@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "python-problems-bot"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+packages = [{include = "python_problems_bot"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+python-dotenv = "^1.0.0"
+pydantic = "^2.2.1"
+pydantic-settings = "^2.0.3"
+asyncpg = "^0.28.0"
+python-telegram-bot = {version = "^20.4", extras = ["job-queue"]}
+ptbcontrib = {git = "https://github.com/python-telegram-bot/ptbcontrib.git", rev = "main"}
+sqlalchemy = "^2.0.20"
+pymongo = "^4.5.0"
+psycopg2-binary = "^2.9.7"
+
+
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.0.287"
+
+[tool.aerich]
+tortoise_orm = "settings.TORTOISE_CONFIG"
+location = "./migrations"
+src_folder = "./."
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

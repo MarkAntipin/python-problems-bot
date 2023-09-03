@@ -1,0 +1,11 @@
+.git
+.github
+.ruff_cache
+__pycache__
+.gitignore
+README.md
+.env
+.env_docker
+bot_data/bot_data
+database
+.python-version
