@@ -18,7 +18,7 @@ services:
       MONGO_USER: python-problems-bot
       MONGO_PASSWORD: python-problems-bot
 
-      TOKEN: 6691015922:AAFNzx2yZD6MOp233WGNSBYYyz2VVumV-Dg  # change on production
+      TOKEN: token  # change on production
     depends_on:
       postgres:
         condition: service_started
