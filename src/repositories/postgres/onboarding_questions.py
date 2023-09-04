@@ -94,3 +94,26 @@ class OnboardingQuestionsRepo:
                 user_id
             )
         return rows
+
+    async def send_question(
+            self,
+            user_id: int,
+            question_id: int,
+    ) -> None:
+        async with self.pg_pool.acquire() as conn:
+            row = await conn.fetchrow(
+                """
+                INSERT INTO
+                    users_send_onboarding_questions (
+                        onboarding_question_id,
+                        user_id
+                    )
+                VALUES (
+                    $1,
+                    $2
+                )
+                """,
+                question_id,
+                user_id,
+            )
+        return row

@@ -3,6 +3,7 @@ import pathlib
 from telegram import Bot, InlineKeyboardMarkup, Message, ReplyKeyboardRemove
 from telegram.constants import ParseMode
 
+from src.images import IMAGE_TYPE_TO_IMAGE_PATH, ImageType
 from src.services.onboarding_questions import OnboardingQuestion
 from src.services.questions import Question
 from src.texts import CORRECT_ANSWER_TEXT, INCORRECT_ANSWER_TEXT
@@ -11,7 +12,6 @@ from src.utils.telegram.inline_keyboard import (
     format_inline_keyboard,
     format_inline_keyboard_for_question,
 )
-from src.images import IMAGE_TYPE_TO_IMAGE_PATH, ImageType
 
 
 async def _send_message(

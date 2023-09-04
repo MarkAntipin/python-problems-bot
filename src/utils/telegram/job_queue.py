@@ -4,8 +4,6 @@ from datetime import UTC, datetime, time
 
 from telegram.ext import ContextTypes
 
-from settings import MOSCOW_TIME_DIFFERENCE
-
 
 async def _add_daily_task_to_queue(
     context: ContextTypes.DEFAULT_TYPE,
@@ -14,10 +12,10 @@ async def _add_daily_task_to_queue(
     job_name: str,
     chat_id: int,
     data: tp.Any | None = None
-) -> None:
+) -> bool:
     current_jobs = context.job_queue.get_jobs_by_name(job_name)
     if current_jobs:
-        return
+        return False
 
     context.job_queue.run_daily(
         callback=task,
@@ -27,17 +25,18 @@ async def _add_daily_task_to_queue(
         data=data,
         job_kwargs={'replace_existing': True}
     )
+    return True
 
 
 async def create_send_questions_task(
         context: ContextTypes.DEFAULT_TYPE, task: tp.Callable, chat_id: int, user_id: int
-) -> None:
-    current_moscow_time = datetime.now(UTC) + MOSCOW_TIME_DIFFERENCE
+) -> bool:
+    current_time = datetime.now(UTC)
     random_minute = random.randint(0, 10)
     random_second = random.randint(0, 59)
-    run_at = current_moscow_time.replace(hour=10, minute=random_minute, second=random_second).time()
+    run_at = current_time.replace(hour=7, minute=random_minute, second=random_second).time()
 
-    await _add_daily_task_to_queue(
+    is_added = await _add_daily_task_to_queue(
         context=context,
         task=task,
         job_name=f'daily_question_{chat_id}',
@@ -45,3 +44,4 @@ async def create_send_questions_task(
         run_at=run_at,
         data=user_id
     )
+    return is_added

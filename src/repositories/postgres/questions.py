@@ -7,7 +7,7 @@ class QuestionsRepo:
     def __init__(self, pg_pool: asyncpg.Pool) -> None:
         self.pg_pool = pg_pool
 
-    async def get_today_answered_questions_count(self, user_id: int) -> int:
+    async def get_today_send_questions_count(self, user_id: int) -> int:
         today = datetime.now(UTC)
         async with self.pg_pool.acquire() as conn:
             row = await conn.fetchrow(
@@ -15,7 +15,7 @@ class QuestionsRepo:
                 SELECT
                     COUNT(*)
                 FROM
-                    users_questions
+                    users_send_questions
                 WHERE
                     user_id = $1
                 AND
@@ -104,5 +104,28 @@ class QuestionsRepo:
                 question_id,
                 user_id,
                 is_correct
+            )
+        return row
+
+    async def send_question(
+            self,
+            user_id: int,
+            question_id: int,
+    ) -> None:
+        async with self.pg_pool.acquire() as conn:
+            row = await conn.fetchrow(
+                """
+                INSERT INTO
+                    users_send_questions (
+                        question_id,
+                        user_id
+                    )
+                VALUES (
+                    $1,
+                    $2
+                )
+                """,
+                question_id,
+                user_id,
             )
         return row

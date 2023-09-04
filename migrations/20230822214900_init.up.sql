@@ -27,7 +27,12 @@ CREATE TABLE IF NOT EXISTS users_onboarding_questions (
     is_correct BOOLEAN NOT NULL,
     created_at TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP
 );
-CREATE INDEX IF NOT EXISTS users_onboarding_questions_user_id_question_id_idx ON users_onboarding_questions(user_id, onboarding_question_id);
+
+CREATE TABLE IF NOT EXISTS users_send_onboarding_questions (
+    onboarding_question_id INT NOT NULL REFERENCES onboarding_questions (id) ON DELETE CASCADE,
+    user_id INT NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP
+);
 
 CREATE TABLE IF NOT EXISTS questions (
     id SERIAL NOT NULL PRIMARY KEY,
@@ -35,7 +40,7 @@ CREATE TABLE IF NOT EXISTS questions (
     answer TEXT NOT NULL,
     choices JSON NOT NULL,
     "level" INT NOT NULL,
-    explanation TEXT,
+    explanation TEXT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -48,3 +53,11 @@ CREATE TABLE IF NOT EXISTS users_questions (
 );
 CREATE INDEX IF NOT EXISTS users_questions_user_id_question_id_idx ON users_questions(user_id, question_id);
 CREATE INDEX IF NOT EXISTS users_questions_user_id_created_at_idx ON users_questions(user_id, created_at);
+
+
+CREATE TABLE IF NOT EXISTS users_send_questions (
+    question_id INT NOT NULL REFERENCES questions (id) ON DELETE CASCADE,
+    user_id INT NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS users_send_questions_user_id_question_id_idx ON users_send_questions(user_id, question_id);

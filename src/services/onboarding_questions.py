@@ -29,7 +29,7 @@ class OnboardingQuestionsService:
             choices=json.loads(row['choices']),
         )
 
-    async def _get_by_id(self, question_id: int) -> OnboardingQuestion | None:
+    async def get_by_id(self, question_id: int) -> OnboardingQuestion | None:
         row = await self.repo.get_by_id(question_id=question_id)
         if not row:
             return
@@ -43,20 +43,24 @@ class OnboardingQuestionsService:
     async def answer_question(
         self,
         user_id: int,
-        question_id: int,
+        question: OnboardingQuestion,
         user_answer: str
-    ) -> tuple[OnboardingQuestion | None, bool | None]:
-        onboarding_question: OnboardingQuestion = await self._get_by_id(
-            question_id=question_id
-        )
-        if not onboarding_question:
-            return
-
-        is_correct = is_answer_correct(user_answer=user_answer, correct_answer=onboarding_question.answer)
+    ) -> bool:
+        is_correct = is_answer_correct(user_answer=user_answer, correct_answer=question.answer)
         await self.repo.answer_question(
-            question_id=onboarding_question.id,
+            question_id=question.id,
             user_id=user_id,
             user_answer=user_answer,
             is_correct=is_correct,
         )
-        return onboarding_question, is_correct
+        return is_correct
+
+    async def send_question(
+        self,
+        user_id: int,
+        question_id: int
+    ) -> None:
+        await self.repo.send_question(
+            question_id=question_id,
+            user_id=user_id,
+        )

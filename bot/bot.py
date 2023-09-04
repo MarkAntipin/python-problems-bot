@@ -1,5 +1,4 @@
 import logging
-from pathlib import Path
 
 from ptbcontrib.ptb_jobstores.mongodb import PTBMongoDBJobStore
 from telegram.ext import (
@@ -7,7 +6,6 @@ from telegram.ext import (
     CallbackQueryHandler,
     CommandHandler,
     ConversationHandler,
-    PicklePersistence,
 )
 
 from bot.handlers.comands import cansel_handler, start_handler
@@ -19,9 +17,10 @@ from ptbcontrib.postgres_persistence import PostgresPersistence
 
 def _setup_logging() -> None:
     logging.basicConfig(
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
     )
-    logging.getLogger("httpx").setLevel(logging.WARNING)
+    logging.getLogger('httpx').setLevel(logging.WARNING)
+    logging.getLogger('ptbcontrib').setLevel(logging.WARNING)
 
 
 def create_bot(bot_settings: BotSettings) -> Application:
