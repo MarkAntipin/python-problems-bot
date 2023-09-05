@@ -13,7 +13,7 @@ from telegram.ext import (
 from bot.handlers.comands import cansel_handler, start_handler
 from bot.handlers.questions import questions_handler
 from bot.handlers.states import States
-from settings import BotSettings, PostgresSettings
+from settings import BotSettings, PostgresSettings, MongoSettings
 
 
 def _setup_logging() -> None:
