@@ -15,8 +15,7 @@ class UsersRepo:
                     first_name,
                     last_name,
                     username,
-                    language_code,
-                    level
+                    language_code
                 FROM
                     users
                 WHERE
@@ -36,8 +35,7 @@ class UsersRepo:
                     first_name,
                     last_name,
                     username,
-                    language_code,
-                    level
+                    language_code
                 FROM
                     users
                 WHERE
@@ -54,6 +52,7 @@ class UsersRepo:
         last_name: str | None = None,
         username: str | None = None,
         language_code: str | None = None,
+        came_from: str | None = None
     ) -> asyncpg.Record:
         async with self.pg_pool.acquire() as conn:
             user_id = await conn.fetchrow(
@@ -64,24 +63,26 @@ class UsersRepo:
                         first_name,
                         last_name,
                         username,
-                        language_code
+                        language_code,
+                        came_from
                     )
                 VALUES (
                     $1,
                     $2,
                     $3,
                     $4,
-                    $5
+                    $5,
+                    $6
                 )
                 RETURNING
-                    id,
-                    level
+                    id
                 """,
                 telegram_id,
                 first_name,
                 last_name,
                 username,
-                language_code
+                language_code,
+                came_from
             )
         return user_id
 
@@ -125,18 +126,3 @@ class UsersRepo:
                 language_code
             )
         return user_id
-
-    async def set_level(self, user_id: int, level: int) -> None:
-        async with self.pg_pool.acquire() as conn:
-            await conn.execute(
-                """
-                UPDATE
-                    users
-                SET
-                    level = $1
-                WHERE
-                    id = $2
-                """,
-                level,
-                user_id
-            )

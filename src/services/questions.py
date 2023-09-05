@@ -21,9 +21,7 @@ class QuestionsService:
     def __init__(self, pg_pool: asyncpg.Pool) -> None:
         self.repo = QuestionsRepo(pg_pool=pg_pool)
 
-    async def get_new_random_question_for_user(
-            self, user_id: int, user_level: int
-    ) -> Question | None:
+    async def get_new_random_question_for_user(self, user_id: int) -> Question | None:
         today_send_questions_count = await self.repo.get_today_send_questions_count(
             user_id=user_id
         )
@@ -32,7 +30,6 @@ class QuestionsService:
 
         rows = await self.repo.get_new_questions_for_user(
             user_id=user_id,
-            level=user_level,
             limit=10
         )
         if not rows:
