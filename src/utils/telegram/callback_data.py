@@ -3,12 +3,12 @@ from pydantic import BaseModel
 _CALLBACK_DATA_DELIMITER = '_'
 
 
-class ParsedCallbackData(BaseModel):
+class ParsedCallbackQuestionsData(BaseModel):
     question_id: int
     answer: str
 
 
-def parse_callback_data(callback_data: str | None) -> ParsedCallbackData | None:
+def parse_callback_questions_data(callback_data: str | None) -> ParsedCallbackQuestionsData | None:
     if not callback_data:
         return
 
@@ -16,7 +16,7 @@ def parse_callback_data(callback_data: str | None) -> ParsedCallbackData | None:
     if len(_callback_data) != 2:
         return
 
-    return ParsedCallbackData(
+    return ParsedCallbackQuestionsData(
         answer=_callback_data[0],
         question_id=_callback_data[1]
     )

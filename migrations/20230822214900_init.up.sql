@@ -5,33 +5,9 @@ CREATE TABLE IF NOT EXISTS users (
     last_name TEXT,
     username TEXT,
     language_code TEXT,
-    "level" INT,
+    came_from TEXT,
     created_at TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS onboarding_questions (
-    id SERIAL NOT NULL PRIMARY KEY,
-    "order" INT NOT NULL,
-    text TEXT NOT NULL,
-    answer TEXT NOT NULL,
-    choices JSON NOT NULL,
-    "level" INT NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS users_onboarding_questions (
-    answer TEXT NOT NULL,
-    onboarding_question_id INT NOT NULL REFERENCES onboarding_questions (id) ON DELETE CASCADE,
-    user_id INT NOT NULL REFERENCES users (id) ON DELETE CASCADE,
-    is_correct BOOLEAN NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS users_send_onboarding_questions (
-    onboarding_question_id INT NOT NULL REFERENCES onboarding_questions (id) ON DELETE CASCADE,
-    user_id INT NOT NULL REFERENCES users (id) ON DELETE CASCADE,
-    created_at TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS questions (

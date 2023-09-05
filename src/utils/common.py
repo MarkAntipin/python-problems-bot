@@ -10,7 +10,6 @@ from src.services.questions import QuestionsService
 from src.services.users import User, UsersService
 from src.texts import (
     ENOUGH_QUESTIONS_FOR_TODAY,
-    WE_WILL_SEND_YOU_QUESTIONS_SOON,
 )
 from src.utils.postgres_pool import pg_pool
 from src.utils.telegram.job_queue import create_send_questions_task
@@ -26,7 +25,7 @@ async def _send_daily_questions_task(context: ContextTypes.DEFAULT_TYPE) -> str 
     user_id = context.job.data
     user: User = await users_service.get_by_id(user_id=user_id)
 
-    question = await questions_service.get_new_random_question_for_user(user_id=user.id, user_level=user.level)
+    question = await questions_service.get_new_random_question_for_user(user_id=user.id)
     if question:
         await send_question(bot=context.bot, chat_id=context.job.chat_id, question=question)
 
@@ -38,10 +37,8 @@ async def send_daily_question_or_enough_questions_for_today(
     context: ContextTypes.DEFAULT_TYPE,
     questions_service: QuestionsService,
     user_id: int,
-    user_level: int,
-    is_main_flow: bool = True
 ) -> None:
-    question = await questions_service.get_new_random_question_for_user(user_id=user_id, user_level=user_level)
+    question = await questions_service.get_new_random_question_for_user(user_id=user_id)
     is_added = await create_send_questions_task(
         context=context,
         task=_send_daily_questions_task,
@@ -53,11 +50,6 @@ async def send_daily_question_or_enough_questions_for_today(
 
     if not question:
         await send_message(message=message, text=ENOUGH_QUESTIONS_FOR_TODAY)
-        return
-
-    if is_added is False and is_main_flow is False:
-        logger.error('User %d, trying to get more questions', user_id)
-        await send_message(message=message, text=WE_WILL_SEND_YOU_QUESTIONS_SOON)
         return
 
     # TODO: in transaction

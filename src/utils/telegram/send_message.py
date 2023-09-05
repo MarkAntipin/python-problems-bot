@@ -4,9 +4,7 @@ from telegram import Bot, InlineKeyboardMarkup, Message, ReplyKeyboardRemove
 from telegram.constants import ParseMode
 
 from src.images import IMAGE_TYPE_TO_IMAGE_PATH, ImageType
-from src.services.onboarding_questions import OnboardingQuestion
 from src.services.questions import Question
-from src.texts import CORRECT_ANSWER_TEXT, INCORRECT_ANSWER_TEXT
 from src.utils.telegram.inline_keyboard import (
     format_choices,
     format_inline_keyboard,
@@ -69,7 +67,7 @@ async def send_message(
 
 
 async def send_question(
-    question: Question | OnboardingQuestion,
+    question: Question,
     message: Message | None = None,
     bot: Bot | None = None,
     chat_id: int | None = None
@@ -83,20 +81,4 @@ async def send_question(
         chat_id=chat_id,
         text=text,
         reply_markup=reply_markup,
-    )
-
-
-async def send_answer_explanation(
-    question: Question,
-    is_correct: bool,
-    message: Message | None = None,
-) -> None:
-    if is_correct:
-        answer_text = CORRECT_ANSWER_TEXT
-    else:
-        answer_text = INCORRECT_ANSWER_TEXT
-
-    await _send_message(
-        message=message,
-        text=f'{answer_text}{question.explanation}' if question.explanation else answer_text
     )
