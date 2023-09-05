@@ -2,7 +2,7 @@ import logging
 
 from ptbcontrib.postgres_persistence import PostgresPersistence
 
-# from ptbcontrib.ptb_jobstores.mongodb import PTBMongoDBJobStore
+from ptbcontrib.ptb_jobstores.mongodb import PTBMongoDBJobStore
 from telegram.ext import (
     Application,
     CallbackQueryHandler,
@@ -30,13 +30,13 @@ def create_bot(bot_settings: BotSettings) -> Application:
     pg_settings = PostgresSettings()
     persistence = PostgresPersistence(url=pg_settings.url_for_persistence)
     bot = Application.builder().token(bot_settings.TOKEN).persistence(persistence).build()
-    # mongo_settings = MongoSettings()
-    # bot.job_queue.scheduler.add_jobstore(
-    #     PTBMongoDBJobStore(
-    #         application=bot,
-    #         host=mongo_settings.url
-    #     )
-    # )
+    mongo_settings = MongoSettings()
+    bot.job_queue.scheduler.add_jobstore(
+        PTBMongoDBJobStore(
+            application=bot,
+            host=mongo_settings.url
+        )
+    )
 
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler("start", start_handler)],
