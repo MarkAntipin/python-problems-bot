@@ -27,6 +27,7 @@ async def _send_daily_questions_task(context: ContextTypes.DEFAULT_TYPE) -> str 
 
     question = await questions_service.get_new_random_question_for_user(user_id=user.id)
     if question:
+        await questions_service.send_question(user_id=user_id, question_id=question.id)
         await send_question(bot=context.bot, chat_id=context.job.chat_id, question=question)
 
     return States.daily_question

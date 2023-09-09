@@ -36,7 +36,7 @@ async def _answer_daily_question(
     is_correct = await questions_service.answer_question(
         question=question,
         user_id=user_id,
-        user_answer=callback_questions_data.answer
+        user_answer=user_answer
     )
     if is_correct:
         answer_text = CORRECT_ANSWER_TEXT
@@ -45,9 +45,10 @@ async def _answer_daily_question(
 
     text = (
         f"{question.text}\n\n"
-        f"<b>Твой ответ:</b> {user_answer}) {question.choices[user_answer]}\n"
-        f"<b>Правильный ответ:</b> {question.answer}) {question.choices[question.answer]}\n\n"
-        f"{answer_text}{question.explanation}"
+        f"<b>Ответ:</b> {question.answer}) {question.choices[question.answer]}\n\n"
+        f"{answer_text}"
+        f"<b> Объяснение:</b>\n"
+        f"{question.explanation}"
     )
 
     await query.edit_message_text(
@@ -62,6 +63,7 @@ async def questions_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) 
 
     query = update.callback_query
     await query.answer()
+    await query.edit_message_reply_markup()
 
     tg_user: TGUser = update.effective_user
     user: User = await users_service.get_or_create(tg_user=tg_user)

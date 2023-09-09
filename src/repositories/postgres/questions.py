@@ -26,6 +26,25 @@ class QuestionsRepo:
             )
         return row['count']
 
+    async def get_today_answered_questions_count(self, user_id: int) -> int:
+        today = datetime.now(UTC)
+        async with self.pg_pool.acquire() as conn:
+            row = await conn.fetchrow(
+                """
+                SELECT
+                    COUNT(*)
+                FROM
+                    users_questions
+                WHERE
+                    user_id = $1
+                AND
+                    created_at::date = $2
+                """,
+                user_id,
+                today.date()
+            )
+        return row['count']
+
     async def get_new_questions_for_user(
             self, user_id: int, limit: int = 10
     ) -> list[asyncpg.Record]:

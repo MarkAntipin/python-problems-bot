@@ -21,6 +21,14 @@ class QuestionsService:
     def __init__(self, pg_pool: asyncpg.Pool) -> None:
         self.repo = QuestionsRepo(pg_pool=pg_pool)
 
+    async def is_answered_all_questions_for_today(self, user_id: int) -> bool:
+        today_answered_questions_count = await self.repo.get_today_answered_questions_count(
+            user_id=user_id
+        )
+        if today_answered_questions_count >= bot_settings.MAX_QUESTION_PER_DAY:
+            return True
+        return False
+
     async def get_new_random_question_for_user(self, user_id: int) -> Question | None:
         today_send_questions_count = await self.repo.get_today_send_questions_count(
             user_id=user_id

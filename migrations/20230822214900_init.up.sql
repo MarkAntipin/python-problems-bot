@@ -15,7 +15,6 @@ CREATE TABLE IF NOT EXISTS questions (
     text TEXT NOT NULL,
     answer TEXT NOT NULL,
     choices JSON NOT NULL,
-    "level" INT NOT NULL,
     explanation TEXT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP
 );
