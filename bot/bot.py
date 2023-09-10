@@ -12,6 +12,7 @@ from telegram.ext import (
 
 from bot.handlers.comands import cansel_handler, start_handler
 from bot.handlers.questions import questions_handler
+from bot.handlers.error import error_handler
 from bot.handlers.states import States
 from settings import BotSettings, PostgresSettings, MongoSettings
 
@@ -51,5 +52,6 @@ def create_bot(bot_settings: BotSettings) -> Application:
         fallbacks=[CommandHandler("cancel", cansel_handler)],
     )
     bot.add_handler(conv_handler)
+    bot.add_error_handler(error_handler)
 
     return bot

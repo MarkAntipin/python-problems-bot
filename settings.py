@@ -54,8 +54,6 @@ class MongoSettings(BaseSettings):
 
 class BotSettings(BaseSettings):
     TOKEN: str
-
-
     MAX_QUESTION_PER_DAY: int = 3
 
     class Config:

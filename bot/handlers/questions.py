@@ -63,7 +63,10 @@ async def questions_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) 
 
     query = update.callback_query
     await query.answer()
-    await query.edit_message_reply_markup()
+    try:
+        await query.edit_message_reply_markup()
+    except Exception as e:
+        logger.error(e, exc_info=True)
 
     tg_user: TGUser = update.effective_user
     user: User = await users_service.get_or_create(tg_user=tg_user)
