@@ -1,7 +1,6 @@
 import logging
 
 from ptbcontrib.postgres_persistence import PostgresPersistence
-
 from ptbcontrib.ptb_jobstores.mongodb import PTBMongoDBJobStore
 from telegram.ext import (
     Application,
@@ -11,10 +10,10 @@ from telegram.ext import (
 )
 
 from bot.handlers.comands import cansel_handler, start_handler
-from bot.handlers.questions import questions_handler
 from bot.handlers.error import error_handler
+from bot.handlers.questions import questions_handler
 from bot.handlers.states import States
-from settings import BotSettings, PostgresSettings, MongoSettings
+from settings import BotSettings, MongoSettings, PostgresSettings
 
 
 def _setup_logging() -> None:

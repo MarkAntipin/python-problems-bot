@@ -1,15 +1,19 @@
+import logging
 import pathlib
 
 from telegram import Bot, InlineKeyboardMarkup, Message, ReplyKeyboardRemove
 from telegram.constants import ParseMode
+from telegram.error import Forbidden
 
 from src.images import IMAGE_TYPE_TO_IMAGE_PATH, ImageType
-from src.services.questions import Question
+from src.services.questions import Question, QuestionsService
 from src.utils.telegram.inline_keyboard import (
-    format_choices,
     format_inline_keyboard,
     format_inline_keyboard_for_question,
 )
+from src.utils.formaters import format_question
+
+logger = logging.getLogger(__name__)
 
 
 async def _send_message(
@@ -19,33 +23,47 @@ async def _send_message(
     bot: Bot | None = None,
     chat_id: int | None = None,
     photo_path: pathlib.Path = None
-) -> None:
+) -> bool:
     if not message and not bot:
         raise ValueError('message or bot should be passed to send message')
 
     if not reply_markup:
         reply_markup = ReplyKeyboardRemove()
-    if message:
-        if photo_path:
-            await message.reply_photo(
-                photo=photo_path,
-                caption=text,
-                parse_mode=ParseMode.HTML,
-                reply_markup=reply_markup,
-            )
-        else:
-            await message.reply_text(
-                text=text,
-                parse_mode=ParseMode.HTML,
-                reply_markup=reply_markup,
-            )
-    elif bot:
-        await bot.send_message(
-            chat_id=chat_id,
-            text=text,
-            parse_mode=ParseMode.HTML,
-            reply_markup=reply_markup,
-        )
+    try:
+        if message:
+            if photo_path:
+                await message.reply_photo(
+                    photo=photo_path,
+                    caption=text,
+                    parse_mode=ParseMode.HTML,
+                    reply_markup=reply_markup,
+                )
+            else:
+                await message.reply_text(
+                    text=text,
+                    parse_mode=ParseMode.HTML,
+                    reply_markup=reply_markup,
+                )
+        elif bot:
+            if photo_path:
+                await bot.send_photo(
+                    photo=photo_path,
+                    caption=text,
+                    parse_mode=ParseMode.HTML,
+                    reply_markup=reply_markup,
+                )
+            else:
+                await bot.send_message(
+                    chat_id=chat_id,
+                    text=text,
+                    parse_mode=ParseMode.HTML,
+                    reply_markup=reply_markup,
+                )
+    except Forbidden:
+        logger.error('User has blocked bot')
+        return False
+
+    return True
 
 
 async def send_message(
@@ -68,17 +86,19 @@ async def send_message(
 
 async def send_question(
     question: Question,
+    questions_service: QuestionsService,
+    user_id: int,
     message: Message | None = None,
     bot: Bot | None = None,
     chat_id: int | None = None
 ) -> None:
-    formatted_choices = format_choices(choices=question.choices)
-    text = f'{question.text}\n\n{formatted_choices}'
     reply_markup = format_inline_keyboard_for_question(choices=question.choices, question_id=question.id)
-    await _send_message(
+    is_sent = await _send_message(
         message=message,
         bot=bot,
         chat_id=chat_id,
-        text=text,
+        text=format_question(question=question),
         reply_markup=reply_markup,
     )
+    if is_sent:
+        await questions_service.send_question(user_id=user_id, question_id=question.id)

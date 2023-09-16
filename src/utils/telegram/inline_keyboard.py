@@ -18,7 +18,3 @@ def format_inline_keyboard_for_question(choices: dict, question_id: int) -> Inli
 
 def format_inline_keyboard(choices: list[str]) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup([[InlineKeyboardButton(choice, callback_data=i) for i, choice in enumerate(choices)]])
-
-
-def format_choices(choices: dict) -> str:
-    return "\n".join([f"{key.upper()}) {value}" for key, value in choices.items()])
