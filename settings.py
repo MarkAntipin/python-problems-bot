@@ -60,4 +60,21 @@ class BotSettings(BaseSettings):
         case_sensitive = False
 
 
+class TestSettings(BaseSettings):
+    TELEGRAM_APP_ID: int
+    TELEGRAM_APP_HASH: str
+    TELETHON_SESSION: str
+    BOT_NAME: str
+
+    PG_HOST: str = 'localhost'
+    PG_USER: str = 'python-problems-bot'
+    PG_PASSWORD: str = 'python-problems-bot'
+    PG_DATABASE: str = 'python-problems-bot'
+    PG_PORT: int = 5436
+
+    class Config:
+        case_sensitive = False
+        env_prefix = "TEST_"
+
+
 bot_settings = BotSettings()
