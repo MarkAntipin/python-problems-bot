@@ -1,8 +1,9 @@
-import pytest
-from asyncio import sleep
-import asyncpg
-from telethon.custom import Conversation
 import json
+from asyncio import sleep
+
+import asyncpg
+import pytest
+from telethon.custom import Conversation
 
 
 async def _add_question(
@@ -11,7 +12,7 @@ async def _add_question(
     choices: dict = None,
     text: str = 'text',
     explanation: str = 'explanation'
-):
+) -> None:
     if not choices:
         choices = {'A': 1, 'B': 2, 'C': 3}
     await pg.execute(
@@ -26,7 +27,7 @@ async def _add_question(
         VALUES (
             $1,
             $2,
-            $3, 
+            $3,
             $4
         );
         """,
@@ -41,7 +42,7 @@ async def _add_question(
 async def test_questions__no_question(
         conv: Conversation,
         sleep_for_between_actions: float
-):
+) -> None:
     # act
     await sleep(sleep_for_between_actions)
     await conv.send_message('/start')
@@ -66,7 +67,7 @@ async def test_questions__correct_answer_questions(
         conv: Conversation,
         pg: asyncpg.Connection,
         sleep_for_between_actions: float
-):
+) -> None:
     # arrange
 
     _answer = 'A'

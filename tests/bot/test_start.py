@@ -2,7 +2,6 @@ from asyncio import sleep
 
 import asyncpg
 import pytest
-
 from telethon.custom import Conversation
 
 
@@ -11,7 +10,7 @@ async def test_start(
         conv: Conversation,
         sleep_for_between_actions: float,
         pg: asyncpg.Connection
-):
+) -> None:
     # act
     await sleep(sleep_for_between_actions)
     await conv.send_message('/start')
