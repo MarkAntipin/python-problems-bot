@@ -1,6 +1,6 @@
 import pytest
 
-from src.utils.telegram.callback_data import parse_callback_questions_data, ParsedCallbackQuestionsData
+from src.utils.telegram.callback_data import ParsedCallbackQuestionsData, parse_callback_questions_data
 
 
 @pytest.mark.parametrize(
@@ -12,6 +12,6 @@ from src.utils.telegram.callback_data import parse_callback_questions_data, Pars
         ('B', None),
     ]
 )
-def test_parse_callback_questions_data(callback_data, res):
+def test_parse_callback_questions_data(callback_data: str | None, res: ParsedCallbackQuestionsData | None) -> None:
     parsed_callback_questions_data = parse_callback_questions_data(callback_data=callback_data)
     assert parsed_callback_questions_data == res

@@ -1,8 +1,8 @@
-from src.utils.formaters import format_explanation, format_question
 from src.services.questions import Question
+from src.utils.formaters import format_explanation, format_question
 
 
-def test_format_question():
+def test_format_question() -> None:
     res = format_question(
         question=Question(
             id=1,
@@ -15,7 +15,7 @@ def test_format_question():
     assert res == 'text\n\nA) 1\nB) 2'
 
 
-def test_format_explanation():
+def test_format_explanation() -> None:
     res = format_explanation(
         question=Question(
             id=1,

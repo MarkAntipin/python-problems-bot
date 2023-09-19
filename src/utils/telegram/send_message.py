@@ -7,11 +7,11 @@ from telegram.error import Forbidden
 
 from src.images import IMAGE_TYPE_TO_IMAGE_PATH, ImageType
 from src.services.questions import Question, QuestionsService
+from src.utils.formaters import format_question
 from src.utils.telegram.inline_keyboard import (
     format_inline_keyboard,
     format_inline_keyboard_for_question,
 )
-from src.utils.formaters import format_question
 
 logger = logging.getLogger(__name__)
 

@@ -11,12 +11,12 @@ from telegram.ext import ContextTypes
 from bot.handlers.states import States
 from src.services.questions import QuestionsService
 from src.services.users import User, UsersService
-from src.texts import CORRECT_ANSWER_TEXT, ENOUGH_QUESTIONS_FOR_TODAY, INCORRECT_ANSWER_TEXT
+from src.texts import ENOUGH_QUESTIONS_FOR_TODAY
+from src.utils.formaters import format_explanation
 from src.utils.postgres_pool import pg_pool
 from src.utils.telegram.callback_data import ParsedCallbackQuestionsData, parse_callback_questions_data
 from src.utils.telegram.job_queue import create_send_questions_task
 from src.utils.telegram.send_message import send_message, send_question
-from src.utils.formaters import format_explanation
 
 logger = logging.getLogger(__name__)
 

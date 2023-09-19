@@ -6,12 +6,12 @@ def _format_choices(choices: dict) -> str:
     return "\n".join([f"{key.upper()}) {value}" for key, value in choices.items()])
 
 
-def format_question(question: Question):
+def format_question(question: Question) -> str:
     formatted_choices = _format_choices(choices=question.choices)
     return f'{question.text}\n\n{formatted_choices}'
 
 
-def format_explanation(question: Question, is_correct: bool):
+def format_explanation(question: Question, is_correct: bool) -> str:
     if is_correct:
         answer_text = CORRECT_ANSWER_TEXT
     else:

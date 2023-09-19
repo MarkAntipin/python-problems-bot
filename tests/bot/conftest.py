@@ -1,12 +1,11 @@
-import pytest
-from telethon import TelegramClient
-from telethon.sessions import StringSession
 import asyncpg
+import pytest
 import pytest_asyncio
+from telethon import TelegramClient
 from telethon.custom import Conversation
+from telethon.sessions import StringSession
 
 from settings import TestSettings
-
 
 test_settings = TestSettings()
 
@@ -28,7 +27,7 @@ async def client() -> TelegramClient:
 
 
 @pytest_asyncio.fixture
-async def conv(client) -> Conversation:
+async def conv(client: TelegramClient) -> Conversation:
     async with client.conversation(test_settings.BOT_NAME) as conv:
         yield conv
 
@@ -40,7 +39,7 @@ async def pg() -> asyncpg.Connection:
         f'@{test_settings.PG_HOST}:{test_settings.PG_PORT}/{test_settings.PG_DATABASE}'
     )
 
-    async def teardown():
+    async def teardown() -> None:
         await conn.execute('DELETE FROM users_questions;')
         await conn.execute('DELETE FROM questions;')
         await conn.execute('DELETE FROM users;')

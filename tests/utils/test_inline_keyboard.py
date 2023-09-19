@@ -1,8 +1,9 @@
-from src.utils.telegram.inline_keyboard import format_inline_keyboard, format_inline_keyboard_for_question
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
+from src.utils.telegram.inline_keyboard import format_inline_keyboard, format_inline_keyboard_for_question
 
-def test_format_inline_keyboard():
+
+def test_format_inline_keyboard() -> None:
     res = format_inline_keyboard(
         choices=['A', 'B', 'C']
     )
@@ -15,7 +16,7 @@ def test_format_inline_keyboard():
     )
 
 
-def test_format_inline_keyboard_for_question():
+def test_format_inline_keyboard_for_question() -> None:
     res = format_inline_keyboard_for_question(
         choices={'A': 1, 'B': 2, 'C': 3},
         question_id=1
