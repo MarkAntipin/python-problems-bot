@@ -41,3 +41,20 @@ async def start_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str | N
 
 async def cansel_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     pass
+
+async def leaders_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
+    users_service = UsersService(pg_pool=pg_pool)
+
+    leaders = await users_service.get_top_users(limit=3)
+
+    tg_user = update.message.from_user
+    user_position = await users_service.get_user_position(tg_user=tg_user)
+    user_score = await users_service.get_user_score(tg_user=tg_user)
+
+    message_text = 'Таблица лидеров:\n'
+    for i, leader in enumerate(leaders, start=1):
+        message_text += f"{i}. {leader['first_name']} - {leader['score']} баллов\n"
+
+    message_text += f"\nВаше текущее место: {user_position}. Вы набрали {user_score} баллов."
+
+    await send_message(message=update.message, text=message_text)
