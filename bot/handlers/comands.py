@@ -6,6 +6,7 @@ from telegram.ext import ContextTypes
 
 from bot.handlers.states import States
 from src.images import ImageType
+from src.repositories.postgres.users import UsersRepo
 from src.services.users import UsersService
 from src.texts import GREETING_TEXT, START_BUTTON_TEXT
 from src.utils.postgres_pool import pg_pool
@@ -43,13 +44,13 @@ async def cansel_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     pass
 
 async def leaders_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
-    users_service = UsersService(pg_pool=pg_pool)
+    users_repo = UsersRepo(pg_pool=pg_pool)
 
-    leaders = await users_service.get_top_users(limit=3)
+    leaders = await users_repo.get_top_users(limit=3)
 
     tg_user = update.message.from_user
-    user_position = await users_service.get_user_position(tg_user=tg_user)
-    user_score = await users_service.get_user_score(tg_user=tg_user)
+    user_position = await users_repo.get_user_position(tg_user=tg_user)
+    user_score = await users_repo.get_user_score(tg_user=tg_user)
 
     message_text = 'Таблица лидеров:\n'
     for i, leader in enumerate(leaders, start=1):
