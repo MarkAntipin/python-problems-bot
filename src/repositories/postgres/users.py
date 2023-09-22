@@ -129,6 +129,7 @@ class UsersRepo:
         return user_id
 
     async def get_top_users(self, limit: int = 3) -> asyncpg.Record | None:
+        # TODO: $1
         async with self.pg_pool.acquire() as conn:
             query = f"""
             SELECT

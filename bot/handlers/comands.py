@@ -43,15 +43,27 @@ async def start_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str | N
 async def cansel_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     pass
 
-async def leaders_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
+
+async def leaders_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
+    # TODO: move on service ex LeadersService
     users_repo = UsersRepo(pg_pool=pg_pool)
+
+    # TODO: create user
+    users_service = UsersService(pg_pool=pg_pool)
+    tg_user: TGUser = update.message.from_user
+    user = await users_service.get_or_create(tg_user=tg_user)
 
     leaders = await users_repo.get_top_users(limit=3)
 
     tg_user = update.message.from_user
+    # TODO: join 2 queries
+    # TODO: pass only id
     user_position = await users_repo.get_user_position(tg_user=tg_user)
     user_score = await users_repo.get_user_score(tg_user=tg_user)
 
+    # TODO: add markdown (HTML) <tags></tags>
+    # TODO: move to formatters
+    # TODO: add test on formatter
     message_text = 'Таблица лидеров:\n'
     for i, leader in enumerate(leaders, start=1):
         message_text += f"{i}. {leader['first_name']} - {leader['score']} баллов\n"
@@ -59,3 +71,4 @@ async def leaders_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     message_text += f"\nВаше текущее место: {user_position}. Вы набрали {user_score} баллов."
 
     await send_message(message=update.message, text=message_text)
+    return States.daily_question
