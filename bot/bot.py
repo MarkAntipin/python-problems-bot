@@ -46,7 +46,6 @@ def create_bot(bot_settings: BotSettings) -> Application:
             States.daily_question: [
                 CallbackQueryHandler(questions_handler),
                 CommandHandler("start", start_handler),
-                leaders_handler_command,
             ]
         },
         persistent=True,
@@ -54,6 +53,7 @@ def create_bot(bot_settings: BotSettings) -> Application:
         fallbacks=[CommandHandler("cancel", cansel_handler)],
     )
     bot.add_handler(conv_handler)
+    bot.add_handler(leaders_handler_command)
     bot.add_error_handler(error_handler)
 
     return bot
