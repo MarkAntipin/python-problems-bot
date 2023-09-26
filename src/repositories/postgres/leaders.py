@@ -32,7 +32,7 @@ class LeadersRepo:
 
         return rows
 
-    async def get_user_position_and_score(self, user_id: int) -> int:
+    async def get_user_position_and_score(self, user_id: int) -> asyncpg.Record:
         async with self.pg_pool.acquire() as conn:
             query = """
             select * from (
@@ -51,4 +51,4 @@ class LeadersRepo:
             """
             row = await conn.fetchrow(query, user_id)
 
-        return {'position': row['position'], 'score': row['score']}
+        return row

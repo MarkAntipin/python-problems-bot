@@ -49,14 +49,16 @@ async def leaders_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
     leaders_service = LeadersService(pg_pool=pg_pool)
     users_service = UsersService(pg_pool=pg_pool)
 
-    came_from = _get_deep_link_param(update=update)
     tg_user: TGUser = update.message.from_user
-    await users_service.get_or_create(tg_user=tg_user, came_from=came_from)
+    await users_service.get_or_create(tg_user=tg_user)
 
     leaders = await leaders_service.get_top_users(limit=3)
+    if not leaders:
+        # TODO: add logging
+        return States.daily_question
+
     user_position_and_score = await leaders_service.get_user_position_and_score(user_id=tg_user.id)
 
-    # TODO: add test on formatter
     message_text = format_leaders_message(
         leaders,
         user_position_and_score['position'],

@@ -47,6 +47,6 @@ def test_format_leaders_message() -> None:
         '2. <a href="https://t.me/user2">User2</a> - 20 баллов\n'
         '3. <a href="https://t.me/user3">User3</a> - 15 баллов\n'
         '\n'
-        'Ваше текущее место: 2. Вы набрали 20 баллов.'
+        '<b>Ваше текущее место:</b> 2. Вы набрали 20 баллов.'
     )
     assert formatted_message == expected_message
