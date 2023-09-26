@@ -1,4 +1,6 @@
+from src.repositories.postgres.leaders import LeadersRepo
 from src.services.questions import Question
+from src.services.users import User
 from src.texts import CORRECT_ANSWER_TEXT, INCORRECT_ANSWER_TEXT
 
 
@@ -25,3 +27,14 @@ def format_explanation(question: Question, is_correct: bool) -> str:
         f"<b> Объяснение:</b>\n"
         f"{question.explanation}"
     )
+
+
+def format_leaders_message(leaders: list[User], user_position: int, user_score: int) -> str:
+    message_text = '<b>Таблица лидеров:</b>\n'
+    for i, leader in enumerate(leaders, start=1):
+        user_link = f'<a href="https://t.me/{leader.username}">{leader.first_name}</a>'
+        message_text += f"{i}. {user_link} - {leader.score} баллов\n"
+
+    message_text += f"\nВаше текущее место: {user_position}. Вы набрали {user_score} баллов."
+
+    return message_text
