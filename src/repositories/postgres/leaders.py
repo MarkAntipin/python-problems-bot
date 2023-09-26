@@ -1,5 +1,4 @@
 import asyncpg
-from telegram import User as TGUser
 
 
 class LeadersRepo:
@@ -32,18 +31,18 @@ class LeadersRepo:
 
         return rows
 
-    async def get_user_position_and_score(self, user_id: int) -> asyncpg.Record:
+    async def get_user_position_and_score(self, user_id: int) -> asyncpg.Record | None:
         async with self.pg_pool.acquire() as conn:
             query = """
-            select * from (
+            SELECT * FROM (
                 SELECT
-                    u.telegram_id as user_id,
+                    u.id as user_id,
                     COUNT(uq.is_correct) AS score,
-                    row_number() OVER (ORDER BY COUNT(uq.is_correct) DESC) AS position
+                    ROW_NUMBER() OVER (ORDER BY COUNT(uq.is_correct) DESC) AS position
                 FROM
                     users AS u
                 LEFT JOIN
-                    users_questions uq ON u.id = uq.user_id AND uq.is_correct = true
+                    users_questions uq ON u.id = uq.user_id AND uq.is_correct = TRUE
                 GROUP BY
                     u.id
             ) leadersboard

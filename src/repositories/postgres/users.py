@@ -1,5 +1,4 @@
 import asyncpg
-from telegram import User as TGUser
 
 
 class UsersRepo:

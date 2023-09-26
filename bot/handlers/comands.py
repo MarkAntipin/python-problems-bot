@@ -57,12 +57,11 @@ async def leaders_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
         # TODO: add logging
         return States.daily_question
 
-    user_position_and_score = await leaders_service.get_user_position_and_score(user_id=tg_user.id)
+    user_in_leaders = await leaders_service.get_user_in_leaders(user_id=tg_user.id)
 
     message_text = format_leaders_message(
-        leaders,
-        user_position_and_score['position'],
-        user_position_and_score['score'],
+        leaders=leaders,
+        user_in_leaders=user_in_leaders
     )
 
     await send_message(message=update.message, text=message_text)

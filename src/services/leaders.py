@@ -5,10 +5,14 @@ from src.repositories.postgres.leaders import LeadersRepo
 
 
 class Leader(BaseModel):
-    id: int  # noqa A003
     first_name: str
-    username: str
+    username: str | None
     score: int
+
+
+class UserInLeaders(BaseModel):
+    score: int
+    position: int
 
 
 class LeadersService:
@@ -23,7 +27,6 @@ class LeadersService:
         leaders = []
         for row in top_users:
             leader = Leader(
-                id=row['id'],
                 first_name=row['first_name'],
                 username=row['username'],
                 score=row['score'],
@@ -31,6 +34,12 @@ class LeadersService:
             leaders.append(leader)
         return leaders
 
-    async def get_user_position_and_score(self, user_id: int) -> dict:
-        user_position_and_score = await self.leaders_repo.get_user_position_and_score(user_id)
-        return user_position_and_score
+    async def get_user_in_leaders(self, user_id: int) -> UserInLeaders | None:
+        user_position_and_score = await self.leaders_repo.get_user_position_and_score(user_id=user_id)
+        if not user_position_and_score:
+            return
+
+        return UserInLeaders(
+            score=user_position_and_score['score'],
+            position=user_position_and_score['position']
+        )
