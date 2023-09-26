@@ -7,7 +7,8 @@
 
 - postgres
 - mongo
-- https://github.com/golang-migrate/migrate
+- golang-migrate (https://github.com/golang-migrate/migrate)
+- poetry (https://python-poetry.org)
 
 **Create .env with:**
 ```

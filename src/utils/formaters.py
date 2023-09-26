@@ -1,3 +1,4 @@
+from src.services.leaders import Leader, UserInLeaders
 from src.services.questions import Question
 from src.texts import CORRECT_ANSWER_TEXT, INCORRECT_ANSWER_TEXT
 
@@ -25,3 +26,18 @@ def format_explanation(question: Question, is_correct: bool) -> str:
         f"<b> Объяснение:</b>\n"
         f"{question.explanation}"
     )
+
+
+def format_leaders_message(leaders: list[Leader], user_in_leaders: UserInLeaders | None) -> str:
+    message_text = '<b>Таблица лидеров:</b>\n'
+    for i, leader in enumerate(leaders, start=1):
+        user_link = f'<a href="https://t.me/{leader.username}">{leader.first_name}</a>'
+        message_text += f"{i}. {user_link} - {leader.score} баллов\n"
+
+    if user_in_leaders:
+        message_text += (
+            f"\n<b>Ваше текущее место:</b> {user_in_leaders.position}."
+            f" Вы набрали {user_in_leaders.score} баллов."
+        )
+
+    return message_text

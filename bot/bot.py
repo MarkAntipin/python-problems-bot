@@ -9,7 +9,7 @@ from telegram.ext import (
     ConversationHandler,
 )
 
-from bot.handlers.comands import cansel_handler, start_handler
+from bot.handlers.comands import cansel_handler, leaders_handler, start_handler
 from bot.handlers.error import error_handler
 from bot.handlers.questions import questions_handler
 from bot.handlers.states import States
@@ -38,19 +38,22 @@ def create_bot(bot_settings: BotSettings) -> Application:
         )
     )
 
+    leaders_handler_command = CommandHandler('leaders', leaders_handler)
+
     conv_handler = ConversationHandler(
-        entry_points=[CommandHandler("start", start_handler)],
+        entry_points=[CommandHandler('start', start_handler)],
         states={
             States.daily_question: [
                 CallbackQueryHandler(questions_handler),
-                CommandHandler("start", start_handler)
+                CommandHandler('start', start_handler),
             ]
         },
         persistent=True,
         name='bot',
-        fallbacks=[CommandHandler("cancel", cansel_handler)],
+        fallbacks=[CommandHandler('cancel', cansel_handler)],
     )
     bot.add_handler(conv_handler)
+    bot.add_handler(leaders_handler_command)
     bot.add_error_handler(error_handler)
 
     return bot
