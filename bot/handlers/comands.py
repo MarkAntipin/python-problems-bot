@@ -54,8 +54,6 @@ async def leaders_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
     await users_service.get_or_create(tg_user=tg_user, came_from=came_from)
 
     leaders = await leaders_service.get_top_users(limit=3)
-
-    tg_user = update.message.from_user
     user_position_and_score = await leaders_service.get_user_position_and_score(user_id=tg_user.id)
 
     # TODO: add test on formatter
@@ -63,7 +61,7 @@ async def leaders_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
         leaders,
         user_position_and_score['position'],
         user_position_and_score['score'],
-        )
+    )
 
     await send_message(message=update.message, text=message_text)
     return States.daily_question
