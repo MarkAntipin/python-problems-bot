@@ -1,4 +1,3 @@
-import asyncpg
 import pytest
 import pytest_asyncio
 from telethon import TelegramClient
@@ -30,22 +29,3 @@ async def client() -> TelegramClient:
 async def conv(client: TelegramClient) -> Conversation:
     async with client.conversation(test_settings.BOT_NAME) as conv:
         yield conv
-
-
-@pytest_asyncio.fixture
-async def pg() -> asyncpg.Connection:
-    conn = await asyncpg.connect(
-        f'postgresql://{test_settings.PG_USER}:{test_settings.PG_PASSWORD}'
-        f'@{test_settings.PG_HOST}:{test_settings.PG_PORT}/{test_settings.PG_DATABASE}'
-    )
-
-    async def teardown() -> None:
-        await conn.execute('DELETE FROM users_questions;')
-        await conn.execute('DELETE FROM questions;')
-        await conn.execute('DELETE FROM users;')
-
-    await teardown()
-
-    yield conn
-
-    await teardown()
