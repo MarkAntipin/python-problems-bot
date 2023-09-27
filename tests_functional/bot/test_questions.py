@@ -1,41 +1,10 @@
-import json
 from asyncio import sleep
 
 import asyncpg
 import pytest
 from telethon.custom import Conversation
 
-
-async def _add_question(
-    pg: asyncpg.Connection,
-    answer: str = 'A',
-    choices: dict = None,
-    text: str = 'text',
-    explanation: str = 'explanation'
-) -> None:
-    if not choices:
-        choices = {'A': 1, 'B': 2, 'C': 3}
-    await pg.execute(
-        """
-        INSERT INTO
-            questions (
-                text,
-                answer,
-                choices,
-                explanation
-            )
-        VALUES (
-            $1,
-            $2,
-            $3,
-            $4
-        );
-        """,
-        text,
-        answer,
-        json.dumps(choices),
-        explanation
-    )
+from tests_functional.utils import add_question
 
 
 @pytest.mark.asyncio
@@ -73,7 +42,7 @@ async def test_questions__correct_answer_questions(
     _answer = 'A'
     _text = 'text'
     _explanation = 'explanation'
-    await _add_question(pg=pg, answer=_answer, text=_text, explanation=_explanation)
+    await add_question(pg=pg, answer=_answer, text=_text, explanation=_explanation)
 
     # act
     await sleep(sleep_for_between_actions)
