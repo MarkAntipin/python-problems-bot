@@ -12,6 +12,7 @@ ENV_FILE = Path(BASE_DIR, '.env')
 dotenv.load_dotenv(ENV_FILE)
 
 MOSCOW_TIME_DIFFERENCE = datetime.timedelta(hours=3)
+MAX_QUESTION_PER_DAY: int = 3
 
 
 class PostgresSettings(BaseSettings):
@@ -34,38 +35,14 @@ class PostgresSettings(BaseSettings):
         env_prefix = "PG_"
 
 
-class MongoSettings(BaseSettings):
-    HOST: str
-    USER: str
-    PASSWORD: str
-    DATABASE: str = 'admin'
-    PORT: int = 27017
-
-    @property
-    def url(self) -> str:
-        return (
-            f'mongodb://{self.USER}:{self.PASSWORD}@{self.HOST}:{self.PORT}/{self.DATABASE}?retryWrites=true&w=majority'
-        )
-
-    class Config:
-        case_sensitive = False
-        env_prefix = "MONGO_"
-
-
 class BotSettings(BaseSettings):
     TOKEN: str
-    MAX_QUESTION_PER_DAY: int = 3
 
     class Config:
         case_sensitive = False
 
 
 class TestSettings(BaseSettings):
-    TELEGRAM_APP_ID: int
-    TELEGRAM_APP_HASH: str
-    TELETHON_SESSION: str
-    BOT_NAME: str
-
     PG_HOST: str = 'localhost'
     PG_USER: str = 'python-problems-bot'
     PG_PASSWORD: str = 'python-problems-bot'
@@ -75,6 +52,3 @@ class TestSettings(BaseSettings):
     class Config:
         case_sensitive = False
         env_prefix = "TEST_"
-
-
-bot_settings = BotSettings()

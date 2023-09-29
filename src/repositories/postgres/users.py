@@ -25,6 +25,23 @@ class UsersRepo:
             )
         return row
 
+    async def get_all(self) -> list[asyncpg.Record]:
+        async with self.pg_pool.acquire() as conn:
+            rows = await conn.fetch(
+                """
+                SELECT
+                    id,
+                    telegram_id,
+                    first_name,
+                    last_name,
+                    username,
+                    language_code
+                FROM
+                    users
+                """,
+            )
+        return rows
+
     async def get_by_telegram_id(self, telegram_id: int) -> asyncpg.Record | None:
         async with self.pg_pool.acquire() as conn:
             row = await conn.fetchrow(

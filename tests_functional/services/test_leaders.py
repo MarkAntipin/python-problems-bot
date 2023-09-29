@@ -47,4 +47,3 @@ async def test_get_top_users(
 
     # check users order
     assert [r.username for r in res] == ['user_1', 'user_2']
-

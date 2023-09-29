@@ -15,33 +15,12 @@ from src.texts import ENOUGH_QUESTIONS_FOR_TODAY
 from src.utils.formaters import format_explanation
 from src.utils.postgres_pool import pg_pool
 from src.utils.telegram.callback_data import ParsedCallbackQuestionsData, parse_callback_questions_data
-from src.utils.telegram.job_queue import create_send_questions_task
 from src.utils.telegram.send_message import send_message, send_question
 
 logger = logging.getLogger(__name__)
 
 
-async def _send_daily_questions_task(context: ContextTypes.DEFAULT_TYPE) -> str | None:
-    users_service = UsersService(pg_pool=pg_pool)
-    questions_service = QuestionsService(pg_pool=pg_pool)
-
-    user_id = context.job.data
-    user: User = await users_service.get_by_id(user_id=user_id)
-
-    question = await questions_service.get_new_random_question_for_user(user_id=user.id)
-    if question:
-        await send_question(
-            bot=context.bot,
-            chat_id=context.job.chat_id,
-            question=question,
-            questions_service=questions_service,
-            user_id=user.id
-        )
-
-    return States.daily_question
-
-
-async def questions_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> str | None:
+async def questions_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str | None:
     users_service = UsersService(pg_pool=pg_pool)
     questions_service = QuestionsService(pg_pool=pg_pool)
 
@@ -76,15 +55,6 @@ async def questions_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) 
 
     # send new question
     new_question = await questions_service.get_new_random_question_for_user(user_id=user.id)
-    is_added = await create_send_questions_task(
-        context=context,
-        task=_send_daily_questions_task,
-        chat_id=query.message.chat_id,
-        user_id=user.id
-    )
-    if is_added:
-        logger.info('User %d, added to queue', user.id)
-
     if not new_question:
         await send_message(message=query.message, text=ENOUGH_QUESTIONS_FOR_TODAY)
         return States.daily_question

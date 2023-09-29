@@ -2,8 +2,8 @@ version: "3.9"
 
 services:
   bot:
-    build:
-      context: .
+    image: python-problems-bot
+    command: ["python", "run.py"]
     networks:
       - bot_network
     restart: always
@@ -14,15 +14,30 @@ services:
       PG_PASSWORD: python-problems-bot  # change on production
       PG_DATABASE: python-problems-bot
 
-      MONGO_HOST: mongo
-      MONGO_USER: python-problems-bot
-      MONGO_PASSWORD: python-problems-bot
-
       TOKEN: token  # change on production
     depends_on:
       postgres:
         condition: service_started
-      mongo:
+      migrate:
+        condition: service_completed_successfully
+
+  scheduler:
+    build:
+      context: .
+    command: ["python", "run_scheduler.py"]
+    networks:
+      - bot_network
+    restart: always
+    environment:
+      PG_HOST: postgres
+      PG_PORT: 5432
+      PG_USER: python-problems-bot
+      PG_PASSWORD: python-problems-bot  # change on production
+      PG_DATABASE: python-problems-bot
+
+      TOKEN: token  # change on production
+    depends_on:
+      postgres:
         condition: service_started
       migrate:
         condition: service_completed_successfully
@@ -62,20 +77,8 @@ services:
       timeout: 5s
       retries: 3
 
-  mongo:
-#    image: mvertes/alpine-mongo
-    image: mongo
-    networks:
-      - bot_network
-    volumes:
-      - mongo-data:/data/db
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: python-problems-bot
-      MONGO_INITDB_ROOT_PASSWORD: python-problems-bot
-
 networks:
     bot_network:
 
 volumes:
   postgres-data:
-  mongo-data:
