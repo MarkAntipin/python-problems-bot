@@ -6,7 +6,6 @@
 **Dependencies:**
 
 - postgres
-- mongo
 - golang-migrate (https://github.com/golang-migrate/migrate)
 - poetry (https://python-poetry.org)
 
@@ -17,12 +16,6 @@ PG_PORT=
 PG_USER=
 PG_PASSWORD=
 PG_DATABASE=
-
-MONGO_HOST==
-MONGO_PORT=
-MONGO_USER=
-MONGO_PASSWORD=
-MONGO_DATABASE=
 
 TOKEN=
 ```
@@ -38,41 +31,44 @@ migrate -path ./migrations -database "postgres://{PG_USER}:{PG_PASSWORD}@{PG_HOS
 ```
 
 ### With Docker
+Build image:
+```
+docker build -t python-problems-bot .
+```
 
 Change in docker-compose.yml env vars and:
 ```
-docker-compose up -d --no-deps --build
+docker-compose up -d --no-deps
 ```
 
 
 
 ## Development
 
-**Linter**:
+### Linter:
 ```
 poetry run ruff check . --fix
 ```
 
-**Tests**:
-- **create test bot in @BotFather**
-- **run test bot**
-```
-TOKEN={YOUR_TEST_BOT_TOKEN} docker-compose -f docker-compose.test.yml  up  --build
-```
-- **get API_ID and API_ID throw https://my.telegram.org**
-- **get session string with [get_session_for_tests.py](tools%2Fget_session_for_tests.py) script**
-- **Add in .env:**
-```
-TEST_TELEGRAM_APP_ID=
-TEST_TELEGRAM_APP_HASH=
-TEST_TELETHON_SESSION=
-TEST_BOT_NAME=
-```
-- **run tests**
+### Unit Tests:
 ```
 pytest -v tests
 ```
-- **stop test bot**
+
+### Functional Tests:
+**Run postgres for tests**
 ```
-docker-compose -f docker-compose.test.yml  down 
+docker run --name postgres-ppb -e POSTGRES_USER=python-problems-bot -e POSTGRES_PASSWORD=python-problems-bot -e POSTGRES_DB=python-problems-bot -p 5436:5432 -d postgres
+```
+**Apply migrations**
+```
+migrate -path ./migrations -database "postgres://python-problems-bot:python-problems-bot@localhost:5436/python-problems-bot?sslmode=disable" up
+```
+**Apply migrations**
+```
+pytest -v tests_functional
+```
+**Stop postgres for tests**
+```
+docker stop postgres-ppb
 ```

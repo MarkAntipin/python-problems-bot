@@ -29,6 +29,20 @@ class UsersService:
             language_code=row['language_code']
         )
 
+    async def get_all(self) -> list[User]:
+        rows = await self.users_repo.get_all()
+        return [
+            User(
+                id=row['id'],
+                telegram_id=row['telegram_id'],
+                first_name=row['first_name'],
+                last_name=row['last_name'],
+                username=row['username'],
+                language_code=row['language_code']
+            )
+            for row in rows
+        ]
+
     async def get_or_create(self, tg_user: TGUser, came_from: str | None = None) -> User:
         row = await self.users_repo.get_by_telegram_id(telegram_id=tg_user.id)
         if not row:

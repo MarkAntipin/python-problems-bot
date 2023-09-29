@@ -91,8 +91,11 @@ async def send_question(
     message: Message | None = None,
     bot: Bot | None = None,
     chat_id: int | None = None
-) -> None:
-    reply_markup = format_inline_keyboard_for_question(choices=question.choices, question_id=question.id)
+) -> bool:
+    reply_markup = format_inline_keyboard_for_question(
+        choices=question.choices,
+        question_id=question.id
+    )
     is_sent = await _send_message(
         message=message,
         bot=bot,
@@ -102,3 +105,4 @@ async def send_question(
     )
     if is_sent:
         await questions_service.send_question(user_id=user_id, question_id=question.id)
+    return is_sent

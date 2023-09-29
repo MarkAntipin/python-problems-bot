@@ -4,7 +4,7 @@ import random
 import asyncpg
 from pydantic import BaseModel
 
-from settings import bot_settings
+from settings import MAX_QUESTION_PER_DAY
 from src.repositories.postgres.questions import QuestionsRepo
 from src.utils.is_answer_correct import is_answer_correct
 
@@ -25,7 +25,7 @@ class QuestionsService:
         today_answered_questions_count = await self.repo.get_today_answered_questions_count(
             user_id=user_id
         )
-        if today_answered_questions_count >= bot_settings.MAX_QUESTION_PER_DAY:
+        if today_answered_questions_count >= MAX_QUESTION_PER_DAY:
             return True
         return False
 
@@ -33,7 +33,7 @@ class QuestionsService:
         today_send_questions_count = await self.repo.get_today_send_questions_count(
             user_id=user_id
         )
-        if today_send_questions_count >= bot_settings.MAX_QUESTION_PER_DAY:
+        if today_send_questions_count >= MAX_QUESTION_PER_DAY:
             return
 
         rows = await self.repo.get_new_questions_for_user(
