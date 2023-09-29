@@ -1,12 +1,13 @@
 import asyncpg
+from pytest_mock import MockerFixture
 
-from tests_functional.utils import add_question, add_user
 from tasks.send_questions import send_daily_questions_task
+from tests_functional.utils import add_question, add_user
 
 
 async def test_send_daily_questions_task(
     pg: asyncpg.Pool,
-    mocker
+    mocker: MockerFixture
 ) -> None:
     # arrange
     send_message_mock = mocker.patch('src.utils.telegram.send_message._send_message', return_value=True)

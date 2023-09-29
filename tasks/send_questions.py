@@ -1,8 +1,8 @@
 import asyncio
 import logging
 
-from telegram.ext import Application
 import asyncpg
+from telegram.ext import Application
 
 from settings import BotSettings
 from src.services.questions import QuestionsService

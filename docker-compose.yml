@@ -14,7 +14,7 @@ services:
       PG_PASSWORD: python-problems-bot  # change on production
       PG_DATABASE: python-problems-bot
 
-      TOKEN: 822749054:AAEVq6QEvAgRBzrkopeGEn4E86KJ1suUbTc  # change on production
+      TOKEN: token  # change on production
     depends_on:
       postgres:
         condition: service_started
@@ -35,7 +35,7 @@ services:
       PG_PASSWORD: python-problems-bot  # change on production
       PG_DATABASE: python-problems-bot
 
-      TOKEN: 822749054:AAEVq6QEvAgRBzrkopeGEn4E86KJ1suUbTc  # change on production
+      TOKEN: token  # change on production
     depends_on:
       postgres:
         condition: service_started
