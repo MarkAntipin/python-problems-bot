@@ -13,9 +13,9 @@ jobs:
 
       - name: Set up Python with Poetry
         run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          source $HOME/.poetry/env
+          curl -sSL https://install.python-poetry.org | python3 - --preview
           poetry install
+          poetry --version
         shell: bash
 
       - name: Run Unit Tests
