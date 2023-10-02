@@ -15,7 +15,7 @@ class User(BaseModel):
 
 
 class UsersService:
-    def __init__(self, pg_pool: asyncpg.Pool) -> None:
+    def __init__(self, pg_pool) -> None:
         self.users_repo = UsersRepo(pg_pool=pg_pool)
 
     async def get_by_id(self, user_id: int) -> User:
