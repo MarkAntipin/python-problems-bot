@@ -1,5 +1,4 @@
-from telegram import InlineKeyboardButton
-from telegram import InlineKeyboardMarkup
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 from src.utils.telegram.callback_data import format_callback_data_for_question
 

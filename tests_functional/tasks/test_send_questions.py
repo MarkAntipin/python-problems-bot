@@ -2,8 +2,7 @@ import asyncpg
 from pytest_mock import MockerFixture
 
 from tasks.send_questions import send_daily_questions_task
-from tests_functional.utils import add_question
-from tests_functional.utils import add_user
+from tests_functional.utils import add_question, add_user
 
 
 async def test_send_daily_questions_task(

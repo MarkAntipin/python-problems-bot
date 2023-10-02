@@ -1,9 +1,7 @@
 import asyncpg
 
 from src.services.leaders import LeadersService
-from tests_functional.utils import add_question
-from tests_functional.utils import add_user
-from tests_functional.utils import add_users_questions
+from tests_functional.utils import add_question, add_user, add_users_questions
 
 
 async def test_get_top_users__no_users_in_db(

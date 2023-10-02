@@ -1,8 +1,6 @@
-from src.services.leaders import Leader
-from src.services.leaders import UserInLeaders
+from src.services.leaders import Leader, UserInLeaders
 from src.services.questions import Question
-from src.texts import CORRECT_ANSWER_TEXT
-from src.texts import INCORRECT_ANSWER_TEXT
+from src.texts import CORRECT_ANSWER_TEXT, INCORRECT_ANSWER_TEXT
 
 
 def _format_choices(choices: dict) -> str:

@@ -1,20 +1,14 @@
 import logging
 import pathlib
 
-from telegram import Bot
-from telegram import InlineKeyboardMarkup
-from telegram import Message
-from telegram import ReplyKeyboardRemove
+from telegram import Bot, InlineKeyboardMarkup, Message, ReplyKeyboardRemove
 from telegram.constants import ParseMode
 from telegram.error import Forbidden
 
-from src.images import IMAGE_TYPE_TO_IMAGE_PATH
-from src.images import ImageType
-from src.services.questions import Question
-from src.services.questions import QuestionsService
+from src.images import IMAGE_TYPE_TO_IMAGE_PATH, ImageType
+from src.services.questions import Question, QuestionsService
 from src.utils.formaters import format_question
-from src.utils.telegram.inline_keyboard import format_inline_keyboard
-from src.utils.telegram.inline_keyboard import format_inline_keyboard_for_question
+from src.utils.telegram.inline_keyboard import format_inline_keyboard, format_inline_keyboard_for_question
 
 logger = logging.getLogger(__name__)
 

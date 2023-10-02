@@ -1,9 +1,6 @@
-from src.services.leaders import Leader
-from src.services.leaders import UserInLeaders
+from src.services.leaders import Leader, UserInLeaders
 from src.services.questions import Question
-from src.utils.formaters import format_explanation
-from src.utils.formaters import format_leaders_message
-from src.utils.formaters import format_question
+from src.utils.formaters import format_explanation, format_leaders_message, format_question
 
 
 def test_format_question() -> None:

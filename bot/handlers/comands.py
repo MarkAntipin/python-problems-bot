@@ -8,8 +8,7 @@ from bot.handlers.states import States
 from src.images import ImageType
 from src.services.leaders import LeadersService
 from src.services.users import UsersService
-from src.texts import GREETING_TEXT
-from src.texts import START_BUTTON_TEXT
+from src.texts import GREETING_TEXT, START_BUTTON_TEXT
 from src.utils.formaters import format_leaders_message
 from src.utils.postgres_pool import pg_pool
 from src.utils.telegram.send_message import send_message

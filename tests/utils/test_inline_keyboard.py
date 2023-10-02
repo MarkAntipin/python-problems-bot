@@ -1,8 +1,6 @@
-from telegram import InlineKeyboardButton
-from telegram import InlineKeyboardMarkup
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
-from src.utils.telegram.inline_keyboard import format_inline_keyboard
-from src.utils.telegram.inline_keyboard import format_inline_keyboard_for_question
+from src.utils.telegram.inline_keyboard import format_inline_keyboard, format_inline_keyboard_for_question
 
 
 def test_format_inline_keyboard() -> None:

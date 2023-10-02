@@ -1,19 +1,13 @@
 import logging
 
 from ptbcontrib.postgres_persistence import PostgresPersistence
-from telegram.ext import Application
-from telegram.ext import CallbackQueryHandler
-from telegram.ext import CommandHandler
-from telegram.ext import ConversationHandler
+from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ConversationHandler
 
-from bot.handlers.comands import cansel_handler
-from bot.handlers.comands import leaders_handler
-from bot.handlers.comands import start_handler
+from bot.handlers.comands import cansel_handler, leaders_handler, start_handler
 from bot.handlers.error import error_handler
 from bot.handlers.questions import questions_handler
 from bot.handlers.states import States
-from settings import BotSettings
-from settings import PostgresSettings
+from settings import BotSettings, PostgresSettings
 
 
 def _setup_logging() -> None:

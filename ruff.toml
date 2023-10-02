@@ -40,5 +40,5 @@ inline-quotes = "single"
 multiline-quotes = "double"
 
 [isort]
-force-single-line = true
+force-single-line = false
 force-to-top = ["log"]
