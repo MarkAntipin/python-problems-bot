@@ -1,9 +1,19 @@
-name: CI
+name: Main python-problemes-bot workflow
 on: push
 
 jobs:
-  ruff:
+  tests:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15.0-alpine
+        env:
+          POSTGRES_USER: python-problems-bot
+          POSTGRES_PASSWORD: python-problems-bot
+          POSTGRES_DB: python-problems-bot
+        ports:
+          - 5436:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - uses: actions/checkout@v3
 
@@ -11,14 +21,19 @@ jobs:
         with:
           python-version: 3.11
 
-      - name: Set up Python with Poetry
+      - name: Set up Poetry
         run: |
           curl -sSL https://install.python-poetry.org | python3 - --preview
-          poetry --version
           poetry install
         shell: bash
 
       - name: Run Unit Tests
+        env:
+          POSTGRES_USER: python-problems-bot
+          POSTGRES_PASSWORD: python-problems-bot
+          POSTGRES_DB: python-problems-bot
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5436
         run: |
           poetry run pytest -v tests
         shell: bash
@@ -28,7 +43,6 @@ jobs:
           poetry run ruff check . --fix
         shell: bash
       
-
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
             commit_message: 'style fixes by ruff'
