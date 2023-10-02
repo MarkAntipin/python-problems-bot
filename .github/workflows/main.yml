@@ -25,7 +25,7 @@ jobs:
 
       - name: Run Ruff Check with Poetry
         run: |
-          poetry run ruff check . -- --check .
+          poetry run ruff check . --fix
         shell: bash
       
 
