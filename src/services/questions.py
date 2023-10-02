@@ -72,10 +72,10 @@ class QuestionsService:
     ) -> bool:
         is_correct = is_answer_correct(user_answer=user_answer, correct_answer=question.answer)
         await self.repo.answer_question(
-            # question_id=question.id,
-            # user_id=user_id,
-            # user_answer=user_answer,
-            # is_correct=is_correct,
+            question_id=question.id,
+            user_id=user_id,
+            user_answer=user_answer,
+            is_correct=is_correct,
         )
         return is_correct
 
