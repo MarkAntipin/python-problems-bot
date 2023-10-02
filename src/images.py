@@ -1,4 +1,5 @@
-from enum import StrEnum, auto
+from enum import StrEnum
+from enum import auto
 from pathlib import Path
 
 from settings import IMAGES_DIR

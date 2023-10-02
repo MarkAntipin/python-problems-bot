@@ -6,7 +6,8 @@ from telegram.ext import Application
 
 from settings import BotSettings
 from src.services.questions import QuestionsService
-from src.services.users import User, UsersService
+from src.services.users import User
+from src.services.users import UsersService
 from src.utils.telegram.send_message import send_question
 
 logger = logging.getLogger(__name__)

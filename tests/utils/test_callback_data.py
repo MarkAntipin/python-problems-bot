@@ -1,6 +1,7 @@
 import pytest
 
-from src.utils.telegram.callback_data import ParsedCallbackQuestionsData, parse_callback_questions_data
+from src.utils.telegram.callback_data import ParsedCallbackQuestionsData
+from src.utils.telegram.callback_data import parse_callback_questions_data
 
 
 @pytest.mark.parametrize(

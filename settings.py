@@ -32,7 +32,7 @@ class PostgresSettings(BaseSettings):
 
     class Config:
         case_sensitive = False
-        env_prefix = "PG_"
+        env_prefix = 'PG_'
 
 
 class BotSettings(BaseSettings):
@@ -51,4 +51,4 @@ class TestSettings(BaseSettings):
 
     class Config:
         case_sensitive = False
-        env_prefix = "TEST_"
+        env_prefix = 'TEST_'

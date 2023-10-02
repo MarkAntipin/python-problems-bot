@@ -7,6 +7,8 @@
 # Warning (W)
 # flake8-print (T20)
 # flake8-annotations (ANN)
+# mypy (RUF100)
+# flake8-commas (C)
 select = [
     "F",
     "E",
@@ -17,6 +19,9 @@ select = [
     "W",
     "T20",
     "ANN",
+    "RUF100",
+    "Q",
+    "C"
 ]
 
 ignore = ["ANN101", "B008", "ANN401"]
@@ -26,3 +31,14 @@ line-length = 120
 target-version = "py311"
 
 unfixable = []
+
+[flake8-quotes]
+avoid-escape = false
+
+docstring-quotes = "double"
+inline-quotes = "single"
+multiline-quotes = "double"
+
+[isort]
+force-single-line = true
+force-to-top = ["log"]
