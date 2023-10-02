@@ -14,8 +14,8 @@ jobs:
       - name: Set up Python with Poetry
         run: |
           curl -sSL https://install.python-poetry.org | python3 - --preview
-          poetry install
           poetry --version
+          poetry install
         shell: bash
 
       - name: Run Unit Tests
