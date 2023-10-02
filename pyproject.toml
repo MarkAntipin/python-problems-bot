@@ -4,7 +4,7 @@ version = "0.1.0"
 description = ""
 authors = ["Your Name <you@example.com>"]
 readme = "README.md"
-packages = [{include = "python_problems_bot"}]
+
 
 [tool.poetry.dependencies]
 python = "^3.11"
