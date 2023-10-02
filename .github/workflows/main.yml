@@ -23,11 +23,11 @@ jobs:
           poetry run pytest -v tests
         shell: bash
 
-      - uses: chartboost/ruff-action@v1
-        with:
-            args: --check .
-            fix_args: --fix .
-            config: .ruff.toml
+      - name: Run Ruff Check with Poetry
+        run: |
+          poetry run ruff check . -- --check .
+        shell: bash
+      
 
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
