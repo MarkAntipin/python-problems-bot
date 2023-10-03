@@ -1,4 +1,8 @@
+from datetime import datetime
+
 import asyncpg
+
+from src.services.models.payment_status import PaymentStatus
 
 
 class UsersRepo:
@@ -15,7 +19,10 @@ class UsersRepo:
                     first_name,
                     last_name,
                     username,
-                    language_code
+                    language_code,
+                    payment_status,
+                    start_trial_at,
+                    last_paid_at
                 FROM
                     users
                 WHERE
@@ -35,7 +42,10 @@ class UsersRepo:
                     first_name,
                     last_name,
                     username,
-                    language_code
+                    language_code,
+                    payment_status,
+                    start_trial_at,
+                    last_paid_at
                 FROM
                     users
                 """,
@@ -52,7 +62,10 @@ class UsersRepo:
                     first_name,
                     last_name,
                     username,
-                    language_code
+                    language_code,
+                    payment_status,
+                    start_trial_at,
+                    last_paid_at
                 FROM
                     users
                 WHERE
@@ -81,7 +94,8 @@ class UsersRepo:
                         last_name,
                         username,
                         language_code,
-                        came_from
+                        came_from,
+                        payment_status
                     )
                 VALUES (
                     $1,
@@ -89,7 +103,8 @@ class UsersRepo:
                     $3,
                     $4,
                     $5,
-                    $6
+                    $6,
+                    $7
                 )
                 RETURNING
                     id
@@ -99,7 +114,8 @@ class UsersRepo:
                 last_name,
                 username,
                 language_code,
-                came_from
+                came_from,
+                PaymentStatus.onboarding.value
             )
         return user_id
 
@@ -141,5 +157,41 @@ class UsersRepo:
                 last_name,
                 username,
                 language_code
+            )
+        return user_id
+
+    async def update(
+            self,
+            user_id: int,
+            payment_status: PaymentStatus | None = None,
+            start_trial_at: datetime | None = None,
+            last_paid_at: datetime | None = None,
+    ) -> None:
+        _kwargs = {
+            'payment_status': payment_status,
+            'start_trial_at': start_trial_at,
+            'last_paid_at': last_paid_at,
+        }
+
+        update_query = ''
+        values = []
+        for field, value in _kwargs.items():
+            if value is not None:
+                update_query += f'{field} = ${len(values) + 2}, '
+                values.append(value)
+        update_query = update_query.strip(', ')
+
+        async with self.pg_pool.acquire() as conn:
+            user_id = await conn.fetchrow(
+                f"""
+                UPDATE
+                    users
+                SET
+                   {update_query}
+                WHERE
+                    id = $1
+                """,
+                user_id,
+                *values
             )
         return user_id

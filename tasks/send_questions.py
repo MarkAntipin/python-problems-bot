@@ -4,9 +4,10 @@ import logging
 import asyncpg
 from telegram.ext import Application
 
-from settings import BotSettings
+from settings import IS_ENABLE_PAYMENT, BotSettings
 from src.services.questions import QuestionsService
 from src.services.users import User, UsersService
+from src.utils.paywall import is_passed_paywall
 from src.utils.telegram.send_message import send_question
 
 logger = logging.getLogger(__name__)
@@ -21,6 +22,9 @@ async def send_daily_questions_task(pg_pool: asyncpg.Pool) -> None:
 
     users: list[User] = await users_service.get_all()
     for user in users:
+        if IS_ENABLE_PAYMENT:
+            if not is_passed_paywall(user=user):
+                continue
         question = await questions_service.get_new_random_question_for_user(user_id=user.id)
 
         if question:

@@ -9,13 +9,16 @@ from telegram.error import BadRequest
 from telegram.ext import ContextTypes
 
 from bot.handlers.states import States
+from settings import IS_ENABLE_PAYMENT
+from src.services.models.payment_status import PaymentStatus
 from src.services.questions import QuestionsService
 from src.services.users import User, UsersService
 from src.texts import ENOUGH_QUESTIONS_FOR_TODAY
 from src.utils.formaters import format_explanation
+from src.utils.paywall import is_passed_paywall
 from src.utils.postgres_pool import pg_pool
 from src.utils.telegram.callback_data import ParsedCallbackQuestionsData, parse_callback_questions_data
-from src.utils.telegram.send_message import send_message, send_question
+from src.utils.telegram.send_message import send_message, send_payment, send_question
 
 logger = logging.getLogger(__name__)
 
@@ -34,6 +37,17 @@ async def questions_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str
 
     tg_user: TGUser = update.effective_user
     user: User = await users_service.get_or_create(tg_user=tg_user)
+
+    if user.payment_status == PaymentStatus.onboarding:
+        await users_service.set_trial_status(user_id=user.id)
+
+    if IS_ENABLE_PAYMENT:
+        if not is_passed_paywall(user=user):
+            await send_payment(
+                message=query.message,
+                telegram_user_id=tg_user.id
+            )
+            return States.daily_question
 
     callback_questions_data: ParsedCallbackQuestionsData = parse_callback_questions_data(callback_data=query.data)
     if callback_questions_data:

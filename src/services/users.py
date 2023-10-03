@@ -1,17 +1,23 @@
+from datetime import UTC, datetime
+
 import asyncpg
 from pydantic import BaseModel
 from telegram import User as TGUser
 
 from src.repositories.postgres.users import UsersRepo
+from src.services.models.payment_status import PaymentStatus
 
 
 class User(BaseModel):
     id: int  # noqa A003
     telegram_id: int
-    first_name: str | None
-    last_name: str | None
-    username: str | None
-    language_code: str | None
+    payment_status: PaymentStatus
+    first_name: str | None = None
+    last_name: str | None = None
+    username: str | None = None
+    language_code: str | None = None
+    start_trial_at: datetime | None = None
+    last_paid_at: datetime | None = None
 
 
 class UsersService:
@@ -23,10 +29,13 @@ class UsersService:
         return User(
             id=row['id'],
             telegram_id=row['telegram_id'],
+            payment_status=row['payment_status'],
             first_name=row['first_name'],
             last_name=row['last_name'],
             username=row['username'],
-            language_code=row['language_code']
+            language_code=row['language_code'],
+            start_trial_at=row['start_trial_at'],
+            last_paid_at=row['last_paid_at']
         )
 
     async def get_all(self) -> list[User]:
@@ -35,10 +44,13 @@ class UsersService:
             User(
                 id=row['id'],
                 telegram_id=row['telegram_id'],
+                payment_status=row['payment_status'],
                 first_name=row['first_name'],
                 last_name=row['last_name'],
                 username=row['username'],
-                language_code=row['language_code']
+                language_code=row['language_code'],
+                start_trial_at=row['start_trial_at'],
+                last_paid_at=row['last_paid_at']
             )
             for row in rows
         ]
@@ -56,11 +68,14 @@ class UsersService:
             )
         return User(
             id=row['id'],
-            telegram_id=tg_user.id,
-            first_name=tg_user.first_name,
-            last_name=tg_user.last_name,
-            username=tg_user.username,
-            language_code=tg_user.language_code,
+            telegram_id=row['telegram_id'],
+            payment_status=row['payment_status'],
+            first_name=row['first_name'],
+            last_name=row['last_name'],
+            username=row['username'],
+            language_code=row['language_code'],
+            start_trial_at=row['start_trial_at'],
+            last_paid_at=row['last_paid_at']
         )
 
     async def update_or_create(self, user: TGUser) -> int:
@@ -72,3 +87,19 @@ class UsersService:
             language_code=user.language_code,
         )
         return user_id
+
+    async def set_paid_status(self, user_id: int) -> None:
+        now = datetime.now(UTC)
+        await self.users_repo.update(
+            user_id=user_id,
+            payment_status=PaymentStatus.paid,
+            last_paid_at=now
+        )
+
+    async def set_trial_status(self, user_id: int) -> None:
+        now = datetime.now(UTC)
+        await self.users_repo.update(
+            user_id=user_id,
+            payment_status=PaymentStatus.trial,
+            start_trial_at=now
+        )

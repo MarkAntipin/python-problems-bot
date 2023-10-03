@@ -6,7 +6,6 @@ from settings import TestSettings
 test_settings = TestSettings()
 
 
-# @pytest_asyncio.fixture
 @pytest.fixture(name='pg')
 async def pg_fixture() -> asyncpg.Connection:
     conn = await asyncpg.create_pool(

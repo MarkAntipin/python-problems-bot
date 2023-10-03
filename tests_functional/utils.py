@@ -1,4 +1,5 @@
 import json
+from datetime import UTC, datetime
 from random import randint
 
 import asyncpg
@@ -18,20 +19,26 @@ async def add_user(
                 telegram_id,
                 first_name,
                 last_name,
-                username
+                username,
+                start_trial_at,
+                payment_status
             )
         VALUES (
             $1,
             $2,
             $3,
-            $4
+            $4,
+            $5,
+            $6
         )
         RETURNING id;
         """,
         telegram_id,
         first_name,
         last_name,
-        username
+        username,
+        datetime.now(UTC),
+        'trial'
     )
     return row['id']
 

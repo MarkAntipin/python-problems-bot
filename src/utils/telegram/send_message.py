@@ -1,10 +1,11 @@
 import logging
 import pathlib
 
-from telegram import Bot, InlineKeyboardMarkup, Message, ReplyKeyboardRemove
+from telegram import Bot, InlineKeyboardMarkup, LabeledPrice, Message, ReplyKeyboardRemove
 from telegram.constants import ParseMode
 from telegram.error import Forbidden
 
+from settings import SUBSCRIPTION_PRICE, BotSettings
 from src.images import IMAGE_TYPE_TO_IMAGE_PATH, ImageType
 from src.services.questions import Question, QuestionsService
 from src.utils.formaters import format_question
@@ -106,3 +107,19 @@ async def send_question(
     if is_sent:
         await questions_service.send_question(user_id=user_id, question_id=question.id)
     return is_sent
+
+
+async def send_payment(message: Message, telegram_user_id: int) -> None:
+    bot_settings = BotSettings()
+
+    title = 'Оплата (Python каждый день)'
+    description = 'Оплата 1 месяца тренажера для подготовки к собеседованиям на Python разработчика'
+    prices = [LabeledPrice('Python каждый день', SUBSCRIPTION_PRICE * 100)]
+    await message.reply_invoice(
+        title=title,
+        description=description,
+        payload=str(telegram_user_id),
+        provider_token=bot_settings.PAYMENT_PROVIDER_TOKEN,
+        currency='RUB',
+        prices=prices
+    )

@@ -45,6 +45,12 @@ docker-compose up -d --no-deps
 
 ## Development
 
+### Create migrations
+```
+migrate create -ext sql -dir migrations {migration-name} 
+```
+
+
 ### Linter:
 ```
 poetry run ruff check . --fix
