@@ -17,4 +17,6 @@ def format_inline_keyboard_for_question(choices: dict, question_id: int) -> Inli
 
 
 def format_inline_keyboard(choices: list[str]) -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup([[InlineKeyboardButton(choice, callback_data=i) for i, choice in enumerate(choices)]])
+    return InlineKeyboardMarkup([[InlineKeyboardButton(choice, callback_data=i) for i, choice in enumerate(
+        choices, start=1
+    )]])

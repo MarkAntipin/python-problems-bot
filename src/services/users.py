@@ -71,13 +71,14 @@ class UsersService:
             last_paid_at=now
         )
 
-    async def set_trial_status(self, user_id: int) -> None:
+    async def set_trial_status(self, user_id: int) -> User:
         now = datetime.now(UTC)
-        await self.users_repo.update(
+        row = await self.users_repo.update(
             user_id=user_id,
             payment_status=PaymentStatus.trial,
             start_trial_at=now
         )
+        return User.from_row(row=row)
 
     async def set_send_payment_at(self, user_id: int) -> None:
         now = datetime.now(UTC)
