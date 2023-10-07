@@ -10,8 +10,18 @@ async def add_user(
     first_name: str = 'first_name',
     last_name: str = 'last_name',
     username: str = 'username',
+    payment_status: str = 'trial',
+    level: int = 2,
+    telegram_id: int | None = None,
+    start_trial_at: datetime | None = None,
+    send_payment_at: datetime | None = None,
 ) -> int:
-    telegram_id = randint(0, 100000)
+    if not start_trial_at:
+        start_trial_at = datetime.now(UTC)
+
+    if not telegram_id:
+        telegram_id = randint(0, 100000)
+
     row = await pg.fetchrow(
         """
         INSERT INTO
@@ -21,7 +31,8 @@ async def add_user(
                 last_name,
                 username,
                 start_trial_at,
-                payment_status
+                payment_status,
+                send_payment_at
             )
         VALUES (
             $1,
@@ -29,7 +40,8 @@ async def add_user(
             $3,
             $4,
             $5,
-            $6
+            $6,
+            $7
         )
         RETURNING id;
         """,
@@ -37,8 +49,9 @@ async def add_user(
         first_name,
         last_name,
         username,
-        datetime.now(UTC),
-        'trial'
+        start_trial_at,
+        payment_status,
+        send_payment_at
     )
     return row['id']
 

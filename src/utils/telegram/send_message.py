@@ -8,6 +8,7 @@ from telegram.error import Forbidden
 from settings import SUBSCRIPTION_PRICE, BotSettings
 from src.images import IMAGE_TYPE_TO_IMAGE_PATH, ImageType
 from src.services.questions import Question, QuestionsService
+from src.texts import PREPAYMENT_TEXT
 from src.utils.formaters import format_question
 from src.utils.telegram.inline_keyboard import (
     format_inline_keyboard,
@@ -109,17 +110,49 @@ async def send_question(
     return is_sent
 
 
-async def send_payment(message: Message, telegram_user_id: int) -> None:
+async def send_payment(
+    telegram_user_id: int,
+    message: Message | None = None,
+    bot: Bot | None = None,
+    chat_id: int | None = None
+) -> None:
     bot_settings = BotSettings()
+    await _send_message(
+        message=message,
+        text=PREPAYMENT_TEXT
+    )
 
     title = 'Оплата (Python каждый день)'
     description = 'Оплата 1 месяца тренажера для подготовки к собеседованиям на Python разработчика'
     prices = [LabeledPrice('Python каждый день', SUBSCRIPTION_PRICE * 100)]
-    await message.reply_invoice(
-        title=title,
-        description=description,
-        payload=str(telegram_user_id),
-        provider_token=bot_settings.PAYMENT_PROVIDER_TOKEN,
-        currency='RUB',
-        prices=prices
-    )
+    currency = 'RUB'
+    payload = str(telegram_user_id)
+
+    kwargs = {
+        'title': title,
+        'description': description,
+        'provider_token': bot_settings.PAYMENT_PROVIDER_TOKEN,
+        'currency': currency,
+        'payload': payload,
+        'prices': prices,
+        'need_email': True,
+        'send_email_to_provider': True,
+        'provider_data': {
+            'receipt': {
+                'items': [{
+                    'description': description,
+                    'amount': {
+                        'value': f'{SUBSCRIPTION_PRICE}.00',
+                        'currency': currency,
+                    },
+                    'vat_code': 1,
+                    'quantity': '1.00'
+                }]
+            }
+        }
+    }
+
+    if message:
+        await message.reply_invoice(**kwargs)
+    elif bot:
+        await bot.send_invoice(chat_id=chat_id, **kwargs)

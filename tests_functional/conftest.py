@@ -23,3 +23,9 @@ async def pg_fixture() -> asyncpg.Connection:
     yield conn
 
     await teardown()
+
+
+@pytest.fixture(autouse=True)
+async def env(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv('TOKEN', '')
+    monkeypatch.setenv('PAYMENT_PROVIDER_TOKEN', '')

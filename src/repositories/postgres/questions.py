@@ -46,7 +46,7 @@ class QuestionsRepo:
         return row['count']
 
     async def get_new_questions_for_user(
-            self, user_id: int, limit: int = 10
+            self, user_id: int, level: int, limit: int = 10
     ) -> list[asyncpg.Record]:
         async with self.pg_pool.acquire() as conn:
             rows = await conn.fetch(
@@ -65,10 +65,13 @@ class QuestionsRepo:
                     uq.user_id = $1
                 WHERE
                     uq.answer IS NULL
+                AND
+                    q.level = $2
                 LIMIT
-                    $2
+                    $3
                 """,
                 user_id,
+                level,
                 limit
             )
         return rows

@@ -289,6 +289,16 @@ files = [
 ]
 
 [[package]]
+name = "mocker"
+version = "1.1.1"
+description = "Graceful platform for test doubles in Python (mocks, stubs, fakes, and dummies)."
+optional = false
+python-versions = "*"
+files = [
+    {file = "mocker-1.1.1.tar.bz2", hash = "sha256:2009911707c74b28bdc9959b5224717e45fcb93475b4b7bb4efad3285fcf2919"},
+]
+
+[[package]]
 name = "packaging"
 version = "23.1"
 description = "Core utilities for Python packages"
@@ -891,4 +901,4 @@ devenv = ["black", "check-manifest", "flake8", "pyroma", "pytest (>=4.3)", "pyte
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "6ac97bae05a67863da594542b84a9dd0d449956fc0d78d7dc84ba306154ad98b"
+content-hash = "5460384306feadc2604ade62fcb49a81b08af8cd0b1e4b4bb8d76b6cd66c7547"
