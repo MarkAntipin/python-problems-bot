@@ -1,4 +1,8 @@
+from datetime import datetime
+
 import asyncpg
+
+from src.services.models.payment_status import PaymentStatus
 
 
 class UsersRepo:
@@ -15,7 +19,12 @@ class UsersRepo:
                     first_name,
                     last_name,
                     username,
-                    language_code
+                    language_code,
+                    payment_status,
+                    start_trial_at,
+                    last_paid_at,
+                    send_payment_at,
+                    level
                 FROM
                     users
                 WHERE
@@ -35,7 +44,12 @@ class UsersRepo:
                     first_name,
                     last_name,
                     username,
-                    language_code
+                    language_code,
+                    payment_status,
+                    start_trial_at,
+                    last_paid_at,
+                    send_payment_at,
+                    level
                 FROM
                     users
                 """,
@@ -52,7 +66,12 @@ class UsersRepo:
                     first_name,
                     last_name,
                     username,
-                    language_code
+                    language_code,
+                    payment_status,
+                    start_trial_at,
+                    last_paid_at,
+                    send_payment_at,
+                    level
                 FROM
                     users
                 WHERE
@@ -81,7 +100,8 @@ class UsersRepo:
                         last_name,
                         username,
                         language_code,
-                        came_from
+                        came_from,
+                        payment_status
                     )
                 VALUES (
                     $1,
@@ -89,57 +109,71 @@ class UsersRepo:
                     $3,
                     $4,
                     $5,
-                    $6
+                    $6,
+                    $7
                 )
                 RETURNING
-                    id
+                    id,
+                    telegram_id,
+                    first_name,
+                    last_name,
+                    username,
+                    language_code,
+                    payment_status,
+                    start_trial_at,
+                    last_paid_at,
+                    send_payment_at,
+                    level
                 """,
                 telegram_id,
                 first_name,
                 last_name,
                 username,
                 language_code,
-                came_from
+                came_from,
+                PaymentStatus.onboarding.value,
+
             )
         return user_id
 
-    async def update_or_create(
+    async def update(
         self,
-        telegram_id: int,
-        first_name: str | None = None,
-        last_name: str | None = None,
-        username: str | None = None,
-        language_code: str | None = None,
-    ) -> int:
+        user_id: int,
+        level: int | None = None,
+        email: str | None = None,
+        payment_status: PaymentStatus | None = None,
+        start_trial_at: datetime | None = None,
+        last_paid_at: datetime | None = None,
+        send_payment_at: datetime | None = None,
+    ) -> None:
+        _kwargs = {
+            'payment_status': payment_status,
+            'start_trial_at': start_trial_at,
+            'last_paid_at': last_paid_at,
+            'send_payment_at': send_payment_at,
+            'level': level,
+            'email': email,
+        }
+
+        update_query = ''
+        values = []
+        for field, value in _kwargs.items():
+            if value is not None:
+                update_query += f'{field} = ${len(values) + 2}, '
+                values.append(value)
+        update_query = update_query.strip(', ')
+
         async with self.pg_pool.acquire() as conn:
             user_id = await conn.fetchrow(
-                """
-                INSERT INTO
-                    users (
-                        telegram_id,
-                        first_name,
-                        last_name,
-                        username,
-                        language_code
-                    )
-                VALUES (
-                    $1,
-                    $2,
-                    $3,
-                    $4,
-                    $5
-                ) ON CONFLICT (telegram_id) DO UPDATE
+                f"""
+                UPDATE
+                    users
                 SET
-                    first_name = EXCLUDED.first_name,
-                    last_name = EXCLUDED.last_name,
-                    username = EXCLUDED.username,
-                    language_code = EXCLUDED.language_code
-                RETURNING id
+                   {update_query}
+                WHERE
+                    id = $1
                 """,
-                telegram_id,
-                first_name,
-                last_name,
-                username,
-                language_code
+                user_id,
+                *values
             )
         return user_id

@@ -1,4 +1,5 @@
 import json
+from datetime import UTC, datetime
 from random import randint
 
 import asyncpg
@@ -9,8 +10,18 @@ async def add_user(
     first_name: str = 'first_name',
     last_name: str = 'last_name',
     username: str = 'username',
+    payment_status: str = 'trial',
+    level: int = 2,
+    telegram_id: int | None = None,
+    start_trial_at: datetime | None = None,
+    send_payment_at: datetime | None = None,
 ) -> int:
-    telegram_id = randint(0, 100000)
+    if not start_trial_at:
+        start_trial_at = datetime.now(UTC)
+
+    if not telegram_id:
+        telegram_id = randint(0, 100000)
+
     row = await pg.fetchrow(
         """
         INSERT INTO
@@ -18,20 +29,29 @@ async def add_user(
                 telegram_id,
                 first_name,
                 last_name,
-                username
+                username,
+                start_trial_at,
+                payment_status,
+                send_payment_at
             )
         VALUES (
             $1,
             $2,
             $3,
-            $4
+            $4,
+            $5,
+            $6,
+            $7
         )
         RETURNING id;
         """,
         telegram_id,
         first_name,
         last_name,
-        username
+        username,
+        start_trial_at,
+        payment_status,
+        send_payment_at
     )
     return row['id']
 

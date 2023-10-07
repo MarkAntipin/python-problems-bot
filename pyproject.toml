@@ -26,6 +26,7 @@ pytest = "^7.4.2"
 pytest-asyncio = "^0.21.1"
 telethon = "^1.30.2"
 pytest-mock = "^3.11.1"
+mocker = "^1.1.1"
 
 [tool.aerich]
 tortoise_orm = "settings.TORTOISE_CONFIG"

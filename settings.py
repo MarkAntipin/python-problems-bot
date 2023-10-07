@@ -12,6 +12,9 @@ ENV_FILE = Path(BASE_DIR, '.env')
 dotenv.load_dotenv(ENV_FILE)
 
 MOSCOW_TIME_DIFFERENCE = datetime.timedelta(hours=3)
+THREE_DAYS = datetime.timedelta(days=3)
+THIRTY_DAYS = datetime.timedelta(days=30)
+SUBSCRIPTION_PRICE = 799
 MAX_QUESTION_PER_DAY: int = 3
 
 
@@ -37,6 +40,7 @@ class PostgresSettings(BaseSettings):
 
 class BotSettings(BaseSettings):
     TOKEN: str
+    PAYMENT_PROVIDER_TOKEN: str
 
     class Config:
         case_sensitive = False

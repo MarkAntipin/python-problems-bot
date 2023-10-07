@@ -28,7 +28,7 @@ def _get_deep_link_param(update: Update) -> str | None:
         return parts[1]
 
 
-async def start_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str | None:
+async def start_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
     users_service = UsersService(pg_pool=pg_pool)
 
     came_from = _get_deep_link_param(update=update)
@@ -38,7 +38,7 @@ async def start_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str | N
     await send_message(
         message=update.message, text=GREETING_TEXT, choices=[START_BUTTON_TEXT], image=ImageType.greeting
     )
-    return States.daily_question
+    return States.onboarding
 
 
 async def cansel_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -50,14 +50,14 @@ async def leaders_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
     users_service = UsersService(pg_pool=pg_pool)
 
     tg_user: TGUser = update.message.from_user
-    await users_service.get_or_create(tg_user=tg_user)
+    user = await users_service.get_or_create(tg_user=tg_user)
 
     leaders = await leaders_service.get_top_users(limit=3)
     if not leaders:
         # TODO: add logging
         return States.daily_question
 
-    user_in_leaders = await leaders_service.get_user_in_leaders(user_id=tg_user.id)
+    user_in_leaders = await leaders_service.get_user_in_leaders(user_id=user.id)
 
     message_text = format_leaders_message(
         leaders=leaders,
@@ -65,4 +65,42 @@ async def leaders_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
     )
 
     await send_message(message=update.message, text=message_text)
+    return States.daily_question
+
+
+async def set_difficult_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
+    # TODO: rewrite texts
+
+    users_service = UsersService(pg_pool=pg_pool)
+
+    tg_user: TGUser = update.message.from_user
+    user = await users_service.get_or_create(tg_user=tg_user)
+
+    if user.level == 2:
+        await send_message(
+            message=update.message, text='Вам уже и так приходят сложные вопросы'
+        )
+        return States.daily_question
+
+    await users_service.set_level(user_id=user.id, level=2)
+    await send_message(message=update.message, text='Теперь вопросы станут сложнее')
+    return States.onboarding
+
+
+async def set_easy_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
+    # TODO: rewrite texts
+
+    users_service = UsersService(pg_pool=pg_pool)
+
+    tg_user: TGUser = update.message.from_user
+    user = await users_service.get_or_create(tg_user=tg_user)
+
+    if user.level == 1:
+        await send_message(
+            message=update.message, text='Вам уже и так приходят простые вопросы'
+        )
+        return States.daily_question
+
+    await users_service.set_level(user_id=user.id, level=1)
+    await send_message(message=update.message, text='Теперь вопросы станут легче')
     return States.daily_question
