@@ -38,8 +38,12 @@ async def questions_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str
     tg_user: TGUser = update.effective_user
     user: User = await users_service.get_or_create(tg_user=tg_user)
 
+    if query.data and query.data.isdigit():
+        level = int(query.data)
+        await users_service.set_level(user_id=user.id, level=level)
+
     if user.payment_status == PaymentStatus.onboarding:
-        await users_service.set_trial_status(user_id=user.id)
+        user = await users_service.set_trial_status(user_id=user.id)
 
     if not is_passed_paywall(user=user):
         await send_payment(message=query.message, telegram_user_id=user.telegram_id)

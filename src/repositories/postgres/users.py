@@ -91,7 +91,7 @@ class UsersRepo:
         came_from: str | None = None
     ) -> asyncpg.Record:
         async with self.pg_pool.acquire() as conn:
-            user_id = await conn.fetchrow(
+            row = await conn.fetchrow(
                 """
                 INSERT INTO
                     users (
@@ -134,7 +134,7 @@ class UsersRepo:
                 PaymentStatus.onboarding.value,
 
             )
-        return user_id
+        return row
 
     async def update(
         self,
@@ -145,7 +145,7 @@ class UsersRepo:
         start_trial_at: datetime | None = None,
         last_paid_at: datetime | None = None,
         send_payment_at: datetime | None = None,
-    ) -> None:
+    ) -> asyncpg.Record:
         _kwargs = {
             'payment_status': payment_status,
             'start_trial_at': start_trial_at,
@@ -164,7 +164,7 @@ class UsersRepo:
         update_query = update_query.strip(', ')
 
         async with self.pg_pool.acquire() as conn:
-            user_id = await conn.fetchrow(
+            row = await conn.fetchrow(
                 f"""
                 UPDATE
                     users
@@ -172,8 +172,20 @@ class UsersRepo:
                    {update_query}
                 WHERE
                     id = $1
+                RETURNING
+                    id,
+                    telegram_id,
+                    first_name,
+                    last_name,
+                    username,
+                    language_code,
+                    payment_status,
+                    start_trial_at,
+                    last_paid_at,
+                    send_payment_at,
+                    level
                 """,
                 user_id,
                 *values
             )
-        return user_id
+        return row
