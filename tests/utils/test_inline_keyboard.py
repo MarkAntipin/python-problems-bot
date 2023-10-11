@@ -9,9 +9,9 @@ def test_format_inline_keyboard() -> None:
     )
     assert res == InlineKeyboardMarkup(
         inline_keyboard=((
-            InlineKeyboardButton(callback_data=0, text='A'),
-            InlineKeyboardButton(callback_data=1, text='B'),
-            InlineKeyboardButton(callback_data=2, text='C')),
+            InlineKeyboardButton(callback_data=1, text='A'),
+            InlineKeyboardButton(callback_data=2, text='B'),
+            InlineKeyboardButton(callback_data=3, text='C')),
         )
     )
 

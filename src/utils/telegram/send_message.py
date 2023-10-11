@@ -115,12 +115,16 @@ async def send_payment(
     message: Message | None = None,
     bot: Bot | None = None,
     chat_id: int | None = None
-) -> None:
+) -> bool:
     bot_settings = BotSettings()
-    await _send_message(
+    is_sent = await _send_message(
         message=message,
+        bot=bot,
+        chat_id=chat_id,
         text=PREPAYMENT_TEXT
     )
+    if not is_sent:
+        return False
 
     title = 'Оплата (Python каждый день)'
     description = 'Оплата 1 месяца тренажера для подготовки к собеседованиям на Python разработчика'
@@ -156,3 +160,4 @@ async def send_payment(
         await message.reply_invoice(**kwargs)
     elif bot:
         await bot.send_invoice(chat_id=chat_id, **kwargs)
+    return True
