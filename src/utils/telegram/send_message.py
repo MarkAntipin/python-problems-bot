@@ -107,6 +107,7 @@ async def send_question(
     )
     if is_sent:
         await questions_service.send_question(user_id=user_id, question_id=question.id)
+        logger.info('Send question to user %d', user_id)
     return is_sent
 
 

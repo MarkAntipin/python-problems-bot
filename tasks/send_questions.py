@@ -10,7 +10,6 @@ from src.services.users import User, UsersService
 from src.utils.paywall import is_need_to_send_payment, is_passed_paywall
 from src.utils.telegram.send_message import send_payment, send_question
 
-
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
 )
@@ -54,4 +53,3 @@ async def send_daily_questions_task(pg_pool: asyncpg.Pool) -> None:
             )
             if is_sent:
                 await asyncio.sleep(0.1)
-                logger.info(f'Send daily questions to user: {user.id}')

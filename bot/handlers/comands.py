@@ -33,7 +33,8 @@ async def start_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
 
     came_from = _get_deep_link_param(update=update)
     tg_user: TGUser = update.message.from_user
-    await users_service.get_or_create(tg_user=tg_user, came_from=came_from)
+    user = await users_service.get_or_create(tg_user=tg_user, came_from=came_from)
+    logger.info('User %d run start handler', user.id)
 
     await send_message(
         message=update.message, text=GREETING_TEXT, choices=[START_BUTTON_TEXT], image=ImageType.greeting
@@ -51,6 +52,7 @@ async def leaders_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
 
     tg_user: TGUser = update.message.from_user
     user = await users_service.get_or_create(tg_user=tg_user)
+    logger.info('User %d run leaders handler', user.id)
 
     leaders = await leaders_service.get_top_users(limit=3)
     if not leaders:
@@ -75,6 +77,7 @@ async def set_difficult_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) ->
 
     tg_user: TGUser = update.message.from_user
     user = await users_service.get_or_create(tg_user=tg_user)
+    logger.info('User %d run difficult handler', user.id)
 
     if user.level == 2:
         await send_message(
@@ -94,6 +97,7 @@ async def set_easy_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
 
     tg_user: TGUser = update.message.from_user
     user = await users_service.get_or_create(tg_user=tg_user)
+    logger.info('User %d run easy handler', user.id)
 
     if user.level == 1:
         await send_message(
