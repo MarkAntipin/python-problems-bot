@@ -32,7 +32,8 @@ async def add_user(
                 username,
                 start_trial_at,
                 payment_status,
-                send_payment_at
+                send_payment_at,
+                level
             )
         VALUES (
             $1,
@@ -41,7 +42,8 @@ async def add_user(
             $4,
             $5,
             $6,
-            $7
+            $7,
+            $8
         )
         RETURNING id;
         """,
@@ -51,7 +53,8 @@ async def add_user(
         username,
         start_trial_at,
         payment_status,
-        send_payment_at
+        send_payment_at,
+        level
     )
     return row['id']
 
@@ -61,7 +64,8 @@ async def add_question(
     answer: str = 'A',
     choices: dict = None,
     text: str = 'text',
-    explanation: str = 'explanation'
+    explanation: str = 'explanation',
+    level: int = 2
 ) -> int:
     if not choices:
         choices = {'A': 1, 'B': 2, 'C': 3}
@@ -72,20 +76,23 @@ async def add_question(
                 text,
                 answer,
                 choices,
-                explanation
+                explanation,
+                level
             )
         VALUES (
             $1,
             $2,
             $3,
-            $4
+            $4,
+            $5
         )
         RETURNING id;
         """,
         text,
         answer,
         json.dumps(choices),
-        explanation
+        explanation,
+        level
     )
     return row['id']
 
