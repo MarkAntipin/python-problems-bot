@@ -13,7 +13,7 @@ from telegram.ext import (
 
 from bot.handlers.comands import cansel_handler, leaders_handler, set_difficult_handler, set_easy_handler, start_handler
 from bot.handlers.error import error_handler
-from bot.handlers.onboarding import choose_level_handler
+from bot.handlers.onboarding import choose_level_handler, finish_onboarding_handler
 from bot.handlers.payment import pre_checkout_handler, successful_payment_handler
 from bot.handlers.questions import questions_handler
 from bot.handlers.states import States
@@ -41,6 +41,9 @@ def create_bot() -> Application:
         states={
             States.onboarding: [
                 CallbackQueryHandler(choose_level_handler)
+            ],
+            States.finish_onboarding: [
+                CallbackQueryHandler(finish_onboarding_handler)
             ],
             States.daily_question: [
                 CallbackQueryHandler(questions_handler),
