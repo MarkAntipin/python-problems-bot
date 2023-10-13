@@ -33,7 +33,7 @@ migrate -path ./migrations -database "postgres://{PG_USER}:{PG_PASSWORD}@{PG_HOS
 ### With Docker
 Build image:
 ```
-docker build -t python-problems-bot .
+docker build --no-cache -t python-problems-bot .
 ```
 
 Change in docker-compose.yml env vars and:
