@@ -5,16 +5,18 @@ from telegram import Bot, InlineKeyboardMarkup, LabeledPrice, Message, ReplyKeyb
 from telegram.constants import ParseMode
 from telegram.error import Forbidden
 
-from settings import SUBSCRIPTION_PRICE, BotSettings
+from settings import IS_DEBUG, SUBSCRIPTION_PRICE, BotSettings
 from src.images import IMAGE_TYPE_TO_IMAGE_PATH, ImageType
 from src.services.questions import Question, QuestionsService
 from src.texts import PREPAYMENT_TEXT
 from src.utils.formaters import format_question
+from src.utils.logging.init_logger import init_logger
 from src.utils.telegram.inline_keyboard import (
     format_inline_keyboard,
     format_inline_keyboard_for_question,
 )
 
+init_logger(is_debug=IS_DEBUG)
 logger = logging.getLogger(__name__)
 
 

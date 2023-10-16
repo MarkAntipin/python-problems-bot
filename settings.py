@@ -8,6 +8,8 @@ BASE_DIR = Path(__file__).resolve().parent
 
 IMAGES_DIR = Path(BASE_DIR, 'images')
 
+IS_DEBUG = False
+
 ENV_FILE = Path(BASE_DIR, '.env')
 dotenv.load_dotenv(ENV_FILE)
 

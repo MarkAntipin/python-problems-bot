@@ -5,8 +5,11 @@ from telegram.error import BadRequest
 from telegram.ext import ContextTypes
 
 from bot.handlers.states import States
+from settings import IS_DEBUG
+from src.utils.logging.init_logger import init_logger
 from src.utils.telegram.send_message import send_message
 
+init_logger(is_debug=IS_DEBUG)
 logger = logging.getLogger(__name__)
 
 

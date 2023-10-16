@@ -10,16 +10,19 @@ from telegram.error import BadRequest
 from telegram.ext import ContextTypes
 
 from bot.handlers.states import States
+from settings import IS_DEBUG
 from src.services.models.payment_status import PaymentStatus
 from src.services.questions import QuestionsService
 from src.services.users import User, UsersService
 from src.texts import ENOUGH_QUESTIONS_FOR_TODAY_TEXTS
 from src.utils.formaters import format_explanation
+from src.utils.logging.init_logger import init_logger
 from src.utils.paywall import is_passed_paywall
 from src.utils.postgres_pool import pg_pool
 from src.utils.telegram.callback_data import ParsedCallbackQuestionsData, parse_callback_questions_data
 from src.utils.telegram.send_message import send_message, send_payment, send_question
 
+init_logger(is_debug=IS_DEBUG)
 logger = logging.getLogger(__name__)
 
 

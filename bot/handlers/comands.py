@@ -5,16 +5,18 @@ from telegram import User as TGUser
 from telegram.ext import ContextTypes
 
 from bot.handlers.states import States
+from settings import IS_DEBUG
 from src.images import ImageType
 from src.services.leaders import LeadersService
 from src.services.users import UsersService
 from src.texts import GREETING_TEXT, START_BUTTON_TEXT
 from src.utils.formaters import format_leaders_message
+from src.utils.logging.init_logger import init_logger
 from src.utils.postgres_pool import pg_pool
 from src.utils.telegram.send_message import send_message
 
+init_logger(is_debug=IS_DEBUG)
 logger = logging.getLogger(__name__)
-
 
 def _get_deep_link_param(update: Update) -> str | None:
     if not update.message:

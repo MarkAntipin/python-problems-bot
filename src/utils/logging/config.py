@@ -1,12 +1,17 @@
-import logging
+from typing import Dict
 
 
-def get_logging_config() -> dict:
+def get_logging_config(
+        name: str = '',
+        is_debug: bool = False
+) -> Dict[str, any]:
+    level = 'DEBUG' if is_debug else 'INFO'
     logging_config = {
         'version': 1,
+        'disable_existing_loggers': False,
         'formatters': {
             'json_formatter': {
-                '()': 'src.utils.logging.formatter.JsonFormatter'
+                '()': 'src.utils.logging.formatter.JSONFormatter'
             }
         },
         'handlers': {
@@ -19,7 +24,7 @@ def get_logging_config() -> dict:
         'loggers': {
             '': {
                 'handlers': ['stdout_handler'],
-                'level': 'INFO',
+                'level': level,
             }
         }
     }

@@ -7,13 +7,16 @@ from telegram.ext import (
 )
 
 from bot.handlers.states import States
+from settings import IS_DEBUG
 from src.images import ImageType
 from src.services.questions import QuestionsService
 from src.services.users import User, UsersService
 from src.texts import THANK_YOU_FOR_PAYMENT_TEXT
+from src.utils.logging.init_logger import init_logger
 from src.utils.postgres_pool import pg_pool
 from src.utils.telegram.send_message import send_message, send_question
 
+init_logger(is_debug=IS_DEBUG)
 logger = logging.getLogger(__name__)
 
 

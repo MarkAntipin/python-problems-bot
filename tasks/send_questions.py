@@ -4,19 +4,17 @@ import logging
 import asyncpg
 from telegram.ext import Application
 
-from settings import BotSettings
+from settings import IS_DEBUG, BotSettings
 from src.services.questions import QuestionsService
 from src.services.users import User, UsersService
+from src.utils.logging.init_logger import init_logger
 from src.utils.paywall import is_need_to_send_payment, is_passed_paywall
 from src.utils.telegram.send_message import send_payment, send_question
 
-logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
-)
 logging.getLogger('httpx').setLevel(logging.WARNING)
 logging.getLogger('ptbcontrib').setLevel(logging.WARNING)
 
-
+init_logger(is_debug=IS_DEBUG)
 logger = logging.getLogger(__name__)
 
 
