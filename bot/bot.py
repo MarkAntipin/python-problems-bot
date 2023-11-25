@@ -6,15 +6,11 @@ from telegram.ext import (
     CallbackQueryHandler,
     CommandHandler,
     ConversationHandler,
-    MessageHandler,
-    PreCheckoutQueryHandler,
-    filters,
 )
 
 from bot.handlers.comands import cansel_handler, leaders_handler, set_difficult_handler, set_easy_handler, start_handler
 from bot.handlers.error import error_handler
 from bot.handlers.onboarding import choose_level_handler, finish_onboarding_handler
-from bot.handlers.payment import pre_checkout_handler, successful_payment_handler
 from bot.handlers.questions import questions_handler
 from bot.handlers.states import States
 from settings import BotSettings, PostgresSettings
@@ -63,9 +59,5 @@ def create_bot() -> Application:
     bot.add_handler(CommandHandler('leaders', leaders_handler))
     bot.add_handler(CommandHandler('easy', set_easy_handler))
     bot.add_handler(CommandHandler('difficult', set_difficult_handler))
-
-    # payment
-    bot.add_handler(PreCheckoutQueryHandler(pre_checkout_handler))
-    bot.add_handler(MessageHandler(filters.SUCCESSFUL_PAYMENT, successful_payment_handler))
 
     return bot

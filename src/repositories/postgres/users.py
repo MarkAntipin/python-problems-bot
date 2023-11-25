@@ -24,7 +24,8 @@ class UsersRepo:
                     start_trial_at,
                     last_paid_at,
                     send_payment_at,
-                    level
+                    level,
+                    status
                 FROM
                     users
                 WHERE
@@ -49,7 +50,8 @@ class UsersRepo:
                     start_trial_at,
                     last_paid_at,
                     send_payment_at,
-                    level
+                    level,
+                    status
                 FROM
                     users
                 """,
@@ -71,7 +73,8 @@ class UsersRepo:
                     start_trial_at,
                     last_paid_at,
                     send_payment_at,
-                    level
+                    level,
+                    status
                 FROM
                     users
                 WHERE
@@ -123,7 +126,8 @@ class UsersRepo:
                     start_trial_at,
                     last_paid_at,
                     send_payment_at,
-                    level
+                    level,
+                    status
                 """,
                 telegram_id,
                 first_name,
@@ -145,6 +149,7 @@ class UsersRepo:
         start_trial_at: datetime | None = None,
         last_paid_at: datetime | None = None,
         send_payment_at: datetime | None = None,
+        status: str = None,
     ) -> asyncpg.Record:
         _kwargs = {
             'payment_status': payment_status,
@@ -153,6 +158,7 @@ class UsersRepo:
             'send_payment_at': send_payment_at,
             'level': level,
             'email': email,
+            'status': status,
         }
 
         update_query = ''
@@ -183,7 +189,8 @@ class UsersRepo:
                     start_trial_at,
                     last_paid_at,
                     send_payment_at,
-                    level
+                    level,
+                    status
                 """,
                 user_id,
                 *values
