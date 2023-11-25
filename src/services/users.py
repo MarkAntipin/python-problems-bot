@@ -13,6 +13,7 @@ class User(BaseModel):
     telegram_id: int
     payment_status: PaymentStatus
     level: int
+    status: str
     first_name: str | None = None
     last_name: str | None = None
     username: str | None = None
@@ -28,6 +29,7 @@ class User(BaseModel):
             telegram_id=row['telegram_id'],
             payment_status=row['payment_status'],
             level=row['level'],
+            status=row['status'],
             first_name=row['first_name'],
             last_name=row['last_name'],
             username=row['username'],
@@ -97,4 +99,10 @@ class UsersService:
         await self.users_repo.update(
             user_id=user_id,
             email=email
+        )
+
+    async def set_status(self, user_id: int, status: str) -> None:
+        await self.users_repo.update(
+            user_id=user_id,
+            status=status
         )

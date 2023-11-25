@@ -1,14 +1,12 @@
 import logging
 import pathlib
 
-from telegram import Bot, InlineKeyboardMarkup, LabeledPrice, Message, ReplyKeyboardRemove
+from telegram import Bot, InlineKeyboardMarkup, Message, ReplyKeyboardRemove
 from telegram.constants import ParseMode
 from telegram.error import Forbidden
 
-from settings import SUBSCRIPTION_PRICE, BotSettings
 from src.images import IMAGE_TYPE_TO_IMAGE_PATH, ImageType
 from src.services.questions import Question, QuestionsService
-from src.texts import PREPAYMENT_TEXT
 from src.utils.formaters import format_question
 from src.utils.telegram.inline_keyboard import (
     format_inline_keyboard,
@@ -49,6 +47,7 @@ async def _send_message(
         elif bot:
             if photo_path:
                 await bot.send_photo(
+                    chat_id=chat_id,
                     photo=photo_path,
                     caption=text,
                     parse_mode=ParseMode.HTML,
@@ -75,8 +74,8 @@ async def send_message(
     bot: Bot | None = None,
     chat_id: int | None = None,
     image: ImageType | None = None
-) -> None:
-    await _send_message(
+) -> bool:
+    return await _send_message(
         message=message,
         bot=bot,
         chat_id=chat_id,
@@ -109,56 +108,3 @@ async def send_question(
         await questions_service.send_question(user_id=user_id, question_id=question.id)
         logger.info('Send question to user %d', user_id)
     return is_sent
-
-
-async def send_payment(
-    telegram_user_id: int,
-    message: Message | None = None,
-    bot: Bot | None = None,
-    chat_id: int | None = None
-) -> bool:
-    bot_settings = BotSettings()
-    is_sent = await _send_message(
-        message=message,
-        bot=bot,
-        chat_id=chat_id,
-        text=PREPAYMENT_TEXT
-    )
-    if not is_sent:
-        return False
-
-    title = 'Оплата (Python каждый день)'
-    description = 'Оплата 1 месяца тренажера для подготовки к собеседованиям на Python разработчика'
-    prices = [LabeledPrice('Python каждый день', SUBSCRIPTION_PRICE * 100)]
-    currency = 'RUB'
-    payload = str(telegram_user_id)
-
-    kwargs = {
-        'title': title,
-        'description': description,
-        'provider_token': bot_settings.PAYMENT_PROVIDER_TOKEN,
-        'currency': currency,
-        'payload': payload,
-        'prices': prices,
-        'need_email': True,
-        'send_email_to_provider': True,
-        'provider_data': {
-            'receipt': {
-                'items': [{
-                    'description': description,
-                    'amount': {
-                        'value': f'{SUBSCRIPTION_PRICE}.00',
-                        'currency': currency,
-                    },
-                    'vat_code': 1,
-                    'quantity': '1.00'
-                }]
-            }
-        }
-    }
-
-    if message:
-        await message.reply_invoice(**kwargs)
-    elif bot:
-        await bot.send_invoice(chat_id=chat_id, **kwargs)
-    return True

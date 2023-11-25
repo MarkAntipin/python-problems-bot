@@ -34,6 +34,7 @@ async def start_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
     came_from = _get_deep_link_param(update=update)
     tg_user: TGUser = update.message.from_user
     user = await users_service.get_or_create(tg_user=tg_user, came_from=came_from)
+    await users_service.set_status(user_id=user.id, status='active')
     logger.info('User %d run start handler', user.id)
 
     await send_message(

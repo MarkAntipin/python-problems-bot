@@ -5,17 +5,9 @@ import asyncpg
 from telegram.ext import Application
 
 from settings import BotSettings
-from src.services.questions import QuestionsService
+from src.services.questions import GetNewRandomQuestionForUserStatus, QuestionsService
 from src.services.users import User, UsersService
-from src.utils.paywall import is_need_to_send_payment, is_passed_paywall
-from src.utils.telegram.send_message import send_payment, send_question
-
-logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
-)
-logging.getLogger('httpx').setLevel(logging.WARNING)
-logging.getLogger('ptbcontrib').setLevel(logging.WARNING)
-
+from src.utils.telegram.send_message import send_question
 
 logger = logging.getLogger(__name__)
 
@@ -29,27 +21,25 @@ async def send_daily_questions_task(pg_pool: asyncpg.Pool) -> None:
 
     users: list[User] = await users_service.get_all()
     for user in users:
-        if not is_passed_paywall(user=user):
-            if not is_need_to_send_payment(user=user):
-                continue
-
-            is_payment_sent = await send_payment(bot=bot, chat_id=user.telegram_id, telegram_user_id=user.telegram_id)
-            if is_payment_sent:
-                await users_service.set_send_payment_at(user_id=user.id)
-                logger.info(f'Send payment to user: {user.id}')
-            else:
-                logger.info(f'Can not send payment to user: {user.id}')
+        if user.status != 'active':
             continue
 
-        question = await questions_service.get_new_random_question_for_user(user_id=user.id, user_level=user.level)
+        new_question_resp = await questions_service.get_new_random_question_for_user(
+            user_id=user.id, user_level=user.level
+        )
+        if not new_question_resp.status == GetNewRandomQuestionForUserStatus.ok:
+            continue
 
-        if question:
-            is_sent = await send_question(
-                bot=bot,
-                chat_id=user.telegram_id,
-                question=question,
-                questions_service=questions_service,
-                user_id=user.id
-            )
-            if is_sent:
-                await asyncio.sleep(0.1)
+        is_sent = await send_question(
+            bot=bot,
+            chat_id=user.telegram_id,
+            question=new_question_resp.question,
+            questions_service=questions_service,
+            user_id=user.id
+        )
+        if is_sent:
+            logger.info('Question sent to user %d', user.id)
+        else:
+            await users_service.set_status(user_id=user.id, status='block_bot')
+            logger.info('User %d blocked bot', user.id)
+        await asyncio.sleep(0.1)

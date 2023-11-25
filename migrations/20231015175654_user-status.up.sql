@@ -1,0 +1,3 @@
+ALTER TABLE users
+ADD COLUMN status TEXT NOT NULL DEFAULT 'active',
+ADD COLUMN last_ad_send_at TIMESTAMPTZ;

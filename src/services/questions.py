@@ -1,5 +1,6 @@
 import json
 import random
+from enum import StrEnum, auto
 
 import asyncpg
 from pydantic import BaseModel
@@ -17,6 +18,17 @@ class Question(BaseModel):
     explanation: str | None
 
 
+class GetNewRandomQuestionForUserStatus(StrEnum):
+    no_questions_for_today = auto()
+    no_more_questions = auto()
+    ok = auto()
+
+
+class GetNewRandomQuestionForUserResp(BaseModel):
+    status: GetNewRandomQuestionForUserStatus = GetNewRandomQuestionForUserStatus.ok
+    question: Question | None = None
+
+
 class QuestionsService:
     def __init__(self, pg_pool: asyncpg.Pool) -> None:
         self.repo = QuestionsRepo(pg_pool=pg_pool)
@@ -29,12 +41,12 @@ class QuestionsService:
             return True
         return False
 
-    async def get_new_random_question_for_user(self, user_id: int, user_level: int) -> Question | None:
+    async def get_new_random_question_for_user(self, user_id: int, user_level: int) -> GetNewRandomQuestionForUserResp:
         today_send_questions_count = await self.repo.get_today_send_questions_count(
             user_id=user_id
         )
         if today_send_questions_count >= MAX_QUESTION_PER_DAY:
-            return
+            return GetNewRandomQuestionForUserResp(status=GetNewRandomQuestionForUserStatus.no_questions_for_today)
 
         rows = await self.repo.get_new_questions_for_user(
             user_id=user_id,
@@ -42,15 +54,18 @@ class QuestionsService:
             limit=10
         )
         if not rows:
-            return
+            return GetNewRandomQuestionForUserResp(status=GetNewRandomQuestionForUserStatus.no_more_questions)
 
         row = random.choice(rows)
-        return Question(
-            id=row['id'],
-            text=row['text'],
-            answer=row['answer'],
-            explanation=row['explanation'],
-            choices=json.loads(row['choices']),
+        return GetNewRandomQuestionForUserResp(
+            question=Question(
+                id=row['id'],
+                text=row['text'],
+                answer=row['answer'],
+                explanation=row['explanation'],
+                choices=json.loads(row['choices']),
+            ),
+            status=GetNewRandomQuestionForUserStatus.ok
         )
 
     async def get_by_id(self, question_id: int) -> Question | None:
