@@ -21,8 +21,8 @@ def main() -> None:
         args=(pg_pool,),
         trigger='cron',
         day_of_week='*',
-        hour=18,
-        minute=8
+        hour=7,
+        minute=0
     )
     scheduler.start()
 
