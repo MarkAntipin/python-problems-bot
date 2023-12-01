@@ -8,33 +8,12 @@ class AdvicesRepo:
     def __init__(self, pg_pool: asyncpg.Pool) -> None:
         self.pg_pool = pg_pool
 
-    async def get_month_sent_advices_count(self, user_id: int) -> int:
-        month = datetime.utcnow().month
-
+    async def get_weak_theme(self, user_id: int, user_level: int) -> asyncpg.Record | None:
         async with self.pg_pool.acquire() as conn:
             row = await conn.fetchrow(
                 """
                 SELECT
-                  COUNT(*)
-                FROM
-                  users_send_advices
-                WHERE
-                  user_id = $1
-                AND
-                  created_at::date_month = $2
-                """,
-                user_id,
-                month
-            )
-
-        return row['count']
-
-    async def get_weak_theme(self, user_id: int, user_level: int) -> str:
-        async with self.pg_pool.acquire() as conn:
-            row = await conn.fetchrow(
-                """
-                SELECT
-                  count(is_correct) AS false_answers,
+                  count(*) AS false_answers,
                   theme
                 FROM
                   users_questions t1   
@@ -61,7 +40,7 @@ class AdvicesRepo:
                 user_level,
             )
 
-        return row['theme']
+        return row
 
     async def get_advice_by_theme_and_level(self, theme: str, level: int) -> asyncpg.Record | None:
         async with self.pg_pool.acquire() as conn:
@@ -101,31 +80,8 @@ class AdvicesRepo:
                 """,
                 advice_id
             )
-        return row
 
-    async def user_feedback(self, user_id: int, advice_id: int, user_feedback: int | None, is_useful: bool) -> None:
-        async with self.pg_pool.acquire() as conn:
-            row = await conn.fetchrow(
-                """
-                INSERT INTO
-                  users_advices (
-                    user_id,
-                    advice_id,
-                    user_feedback,
-                    is_useful
-                  )
-                VALUES (
-                  $1,
-                  $2,
-                  $3,
-                  $4
-                )
-                """,
-                user_id,
-                advice_id,
-                user_feedback,
-                is_useful
-            )
+        return row
 
     async def send_advice(self, user_id: int, advice_id: int) -> None:
         async with self.pg_pool.acquire() as conn:

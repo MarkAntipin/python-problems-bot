@@ -1,6 +1,6 @@
 import asyncio
 import logging
-import pytz
+from datetime import timezone
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
@@ -17,7 +17,7 @@ logging.getLogger('ptbcontrib').setLevel(logging.WARNING)
 
 
 def main() -> None:
-    scheduler = AsyncIOScheduler(timezone=pytz.utc)
+    scheduler = AsyncIOScheduler(timezone=timezone.utc)
     scheduler.add_job(
         send_daily_questions_task,
         args=(pg_pool,),

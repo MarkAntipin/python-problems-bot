@@ -11,7 +11,7 @@ from src.services.advices import Advice, AdvicesService
 from src.utils.formaters import format_question, format_advice
 from src.utils.telegram.inline_keyboard import (
     format_inline_keyboard,
-    format_inline_keyboard_for_question,
+    format_inline_keyboard_for_question
 )
 
 logger = logging.getLogger(__name__)
@@ -123,10 +123,10 @@ async def send_advice(
         message=message,
         bot=bot,
         chat_id=chat_id,
-        text=format_advice(advice=advice),
+        text=format_advice(advice=advice)
     )
     if is_sent:
         await advices_service.send_advice(user_id=user_id, advice_id=advice.id)
-        logger.info('Send question to user %d', user_id)
+        logger.info('Send advice to user %d', user_id)
 
     return is_sent

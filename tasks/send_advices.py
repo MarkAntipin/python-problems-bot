@@ -21,13 +21,16 @@ async def send_advices_task(pg_pool: asyncpg.Pool) -> None:
 
     users: list[User] = await users_service.get_all()
     for user in users:
-        # if user.status != 'active':
-        #     continue
+        if user.status != 'active':
+            continue
 
         new_advice_resp = await advices_service.get_new_advice_for_user(
             user_id=user.id,
             user_level=user.level
         )
+
+        if not new_advice_resp:
+            return
 
         is_sent = await send_advice(
             bot=bot,
@@ -36,6 +39,7 @@ async def send_advices_task(pg_pool: asyncpg.Pool) -> None:
             advices_service=advices_service,
             user_id=user.id
         )
+
         if is_sent:
             logger.info('Advice sent to user %d', user.id)
         else:

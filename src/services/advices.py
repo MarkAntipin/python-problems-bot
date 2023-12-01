@@ -2,7 +2,6 @@ import asyncpg
 from pydantic import BaseModel
 
 from src.repositories.postgres.advices import AdvicesRepo
-from src.utils.is_advice_useful import is_advice_useful
 
 
 class Advice(BaseModel):
@@ -20,22 +19,26 @@ class AdvicesService:
     def __init__(self, pg_pool: asyncpg.Pool) -> None:
         self.repo = AdvicesRepo(pg_pool=pg_pool)
 
-    async def get_new_advice_for_user(self, user_id: int, user_level: int) -> GetNewAdviceForUserResp:
+    async def get_new_advice_for_user(self, user_id: int, user_level: int) -> GetNewAdviceForUserResp | None:
         weak_theme = await self.repo.get_weak_theme(
             user_id=user_id,
             user_level=user_level
         )
-        row = await self.repo.get_advice_by_theme_and_level(weak_theme, user_level)
-        #  берем тему, по которой у пользователя больше всего неправильных ответов
-        #  делаю нерандомно как в вопросах, потому что если пользователь долгое время не отвечает правильно на эту тему,
-        #  то мы должны отправлять советы именно по этой теме, а не по случайной
+
+        if not weak_theme:
+            return
+
+        advice = await self.repo.get_advice_by_theme_and_level(weak_theme['theme'], user_level)
+
+        if not advice:
+            return
 
         return GetNewAdviceForUserResp(
             advice=Advice(
-                id=row['id'],
-                theme=row['theme'],
-                level=row['level'],
-                link=row['link']
+                id=advice['id'],
+                theme=advice['theme'],
+                level=advice['level'],
+                link=advice['link']
             )
         )
 
@@ -49,21 +52,6 @@ class AdvicesService:
                 level=row['level'],
                 link=row['link']
             )
-
-    async def useful_advice(
-        self,
-        user_id: int,
-        advice: Advice,
-        user_feedback: int | None  # 0 or 1, no or yes; mb str
-    ) -> bool:
-        is_useful = is_advice_useful(user_feedback=user_feedback)
-        await self.repo.user_feedback(
-            advice_id=advice.id,
-            user_id=user_id,
-            user_feedback=user_feedback,
-            is_useful=is_useful,
-        )
-        return is_useful
 
     async def send_advice(
         self,
