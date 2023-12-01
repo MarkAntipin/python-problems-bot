@@ -1,4 +1,4 @@
-from datetime import UTC, datetime
+from datetime import datetime
 
 import asyncpg
 
@@ -8,7 +8,7 @@ class QuestionsRepo:
         self.pg_pool = pg_pool
 
     async def get_today_send_questions_count(self, user_id: int) -> int:
-        today = datetime.now(UTC)
+        today = datetime.utcnow()
         async with self.pg_pool.acquire() as conn:
             row = await conn.fetchrow(
                 """
@@ -27,7 +27,7 @@ class QuestionsRepo:
         return row['count']
 
     async def get_today_answered_questions_count(self, user_id: int) -> int:
-        today = datetime.now(UTC)
+        today = datetime.utcnow()
         async with self.pg_pool.acquire() as conn:
             row = await conn.fetchrow(
                 """

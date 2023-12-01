@@ -65,7 +65,8 @@ async def add_question(
     choices: dict = None,
     text: str = 'text',
     explanation: str = 'explanation',
-    level: int = 2
+    level: int = 2,
+    theme: str = 'lists'
 ) -> int:
     if not choices:
         choices = {'A': 1, 'B': 2, 'C': 3}
@@ -77,14 +78,16 @@ async def add_question(
                 answer,
                 choices,
                 explanation,
-                level
+                level,
+                theme
             )
         VALUES (
             $1,
             $2,
             $3,
             $4,
-            $5
+            $5,
+            $6
         )
         RETURNING id;
         """,
@@ -92,7 +95,8 @@ async def add_question(
         answer,
         json.dumps(choices),
         explanation,
-        level
+        level,
+        theme
     )
     return row['id']
 
@@ -125,3 +129,31 @@ async def add_users_questions(
         user_id,
         is_correct
     )
+
+
+async def add_advice(
+    pg: asyncpg.Pool,
+    theme: str = 'lists',
+    level: int = 2,
+    link: str = 'https://python.com/useful_link_to_handle_with_lists',
+) -> int:
+    row = await pg.fetchrow(
+        """
+        INSERT INTO
+            advices (
+                theme,
+                level,
+                link
+            )
+        VALUES (
+            $1,
+            $2,
+            $3
+        )
+        RETURNING id;
+        """,
+        theme,
+        level,
+        link
+    )
+    return row['id']

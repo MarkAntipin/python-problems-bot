@@ -1,5 +1,6 @@
 from src.services.leaders import Leader, UserInLeaders
 from src.services.questions import Question
+from src.services.advices import Advice
 from src.texts import CORRECT_ANSWER_TEXT, INCORRECT_ANSWER_TEXT
 
 
@@ -26,6 +27,21 @@ def format_explanation(question: Question, is_correct: bool) -> str:
         f'<b> Объяснение:</b>\n'
         f'{question.explanation}'
     )
+
+
+def format_advice(advice: Advice) -> str:
+    themes = {
+        'lists': 'Списки',
+        'strings': 'Строки',
+        'functions': 'Функции'
+    }
+
+    formatted_advice = f'Я понял, что тебе стоит подтянуть тему "{themes[advice.theme]}".\n' \
+                       f'Вот ссылка: {advice.link}\n' \
+                       f'Прочти, чтобы стать еще круче!\n\n' \
+                       f'Не забудь оставить фидбэк 👇'
+
+    return formatted_advice
 
 
 def format_word_declensions(n: int, declensions: dict[str, str]) -> str:
