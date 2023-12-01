@@ -9,7 +9,7 @@ async def test_send_daily_questions_task(
     pg: asyncpg.Pool,
     mocker: MockerFixture
 ) -> None:
-    # arrange какие-то условия
+    # arrange
     mocker.patch('tasks.send_questions.Application', mocker.MagicMock())
     send_message_mock = mocker.patch('src.utils.telegram.send_message._send_message', return_value=True)
 
@@ -18,10 +18,10 @@ async def test_send_daily_questions_task(
     user_id_1 = await add_user(pg=pg, username='user_1')
     user_id_2 = await add_user(pg=pg, username='user_2')
 
-    # act запуск
+    # act
     await send_daily_questions_task(pg_pool=pg)
 
-    # assert проверка
+    # assert
     # check send questions
     assert (
         await pg.fetchrow("""SELECT * FROM users_send_questions WHERE user_id = $1""", user_id_1)

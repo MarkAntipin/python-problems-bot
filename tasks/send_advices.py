@@ -30,7 +30,7 @@ async def send_advices_task(pg_pool: asyncpg.Pool) -> None:
         )
 
         if not new_advice_resp:
-            return
+            continue
 
         is_sent = await send_advice(
             bot=bot,

@@ -17,7 +17,6 @@ async def pg_fixture() -> asyncpg.Connection:
         await conn.execute('DELETE FROM users_questions;')
         await conn.execute('DELETE FROM users_send_questions;')
         await conn.execute('DELETE FROM questions;')
-        await conn.execute('DELETE FROM users_advices;')
         await conn.execute('DELETE FROM users_send_advices;')
         await conn.execute('DELETE FROM advices;')
         await conn.execute('DELETE FROM users;')
