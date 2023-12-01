@@ -29,19 +29,10 @@ def format_explanation(question: Question, is_correct: bool) -> str:
     )
 
 
-def format_advice(advice: Advice) -> str | None:
-    themes = {
-        'lists': 'Списки',
-        'strings': 'Строки',
-        'functions': 'Функции'
-    }
-
-    try:
-        formatted_advice = f'Я понял, что тебе стоит подтянуть тему "{themes[advice.theme]}".\n' \
-                           f'Вот ссылка: {advice.link}\n' \
-                           f'Прочти, чтобы стать еще круче!'
-    except KeyError as e:
-        return
+def format_advice(advice: Advice) -> str:
+    formatted_advice = f'Я понял, что тебе стоит подтянуть тему "{advice.theme}".\n' \
+                       f'Вот ссылка: {advice.link}\n' \
+                       f'Прочти, чтобы стать еще круче!'
 
     return formatted_advice
 
