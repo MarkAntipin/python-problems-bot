@@ -1,4 +1,3 @@
-
 import asyncpg
 from pytest_mock import MockerFixture
 

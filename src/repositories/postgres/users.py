@@ -135,8 +135,7 @@ class UsersRepo:
                 username,
                 language_code,
                 came_from,
-                PaymentStatus.onboarding.value,
-
+                PaymentStatus.onboarding.value
             )
         return row
 

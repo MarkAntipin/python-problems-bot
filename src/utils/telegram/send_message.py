@@ -7,10 +7,11 @@ from telegram.error import Forbidden
 
 from src.images import IMAGE_TYPE_TO_IMAGE_PATH, ImageType
 from src.services.questions import Question, QuestionsService
-from src.utils.formaters import format_question
+from src.services.advices import Advice, AdvicesService
+from src.utils.formaters import format_question, format_advice
 from src.utils.telegram.inline_keyboard import (
     format_inline_keyboard,
-    format_inline_keyboard_for_question,
+    format_inline_keyboard_for_question
 )
 
 logger = logging.getLogger(__name__)
@@ -107,4 +108,25 @@ async def send_question(
     if is_sent:
         await questions_service.send_question(user_id=user_id, question_id=question.id)
         logger.info('Send question to user %d', user_id)
+    return is_sent
+
+
+async def send_advice(
+    advice: Advice,
+    advices_service: AdvicesService,
+    user_id: int,
+    message: Message | None = None,
+    bot: Bot | None = None,
+    chat_id: int | None = None
+) -> bool:
+    is_sent = await _send_message(
+        message=message,
+        bot=bot,
+        chat_id=chat_id,
+        text=format_advice(advice=advice)
+    )
+    if is_sent:
+        await advices_service.send_advice(user_id=user_id, advice_id=advice.id)
+        logger.info('Send advice to user %d', user_id)
+
     return is_sent
