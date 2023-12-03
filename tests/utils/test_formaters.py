@@ -42,7 +42,7 @@ def test_format_advice() -> None:
     )
 
     assert res == f'Я понял, что тебе стоит подтянуть тему "lists".\n' \
-                  f'Вот ссылка: https://python.com/useful_link_to_handle_with_lists\n' \
+                  f'Вот <a href="https://python.com/useful_link_to_handle_with_lists">ссылка</a>\n' \
                   f'Прочти, чтобы стать еще круче!'
 
 

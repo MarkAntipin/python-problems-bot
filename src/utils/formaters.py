@@ -31,7 +31,7 @@ def format_explanation(question: Question, is_correct: bool) -> str:
 
 def format_advice(advice: Advice) -> str:
     formatted_advice = f'Я понял, что тебе стоит подтянуть тему "{advice.theme}".\n' \
-                       f'Вот ссылка: {advice.link}\n' \
+                       f'Вот <a href="{advice.link}">ссылка</a>\n' \
                        f'Прочти, чтобы стать еще круче!'
 
     return formatted_advice
