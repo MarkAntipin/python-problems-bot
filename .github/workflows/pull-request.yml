@@ -25,4 +25,4 @@ jobs:
         run: poetry run ruff check . --fix
 
       - name: Run unit tests
-        run: pytest -v tests
+        run: poetry pytest -v tests
