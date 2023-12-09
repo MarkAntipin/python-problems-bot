@@ -126,7 +126,7 @@ async def send_advice(
         text=format_advice(advice=advice)
     )
     if is_sent:
-        await advices_service.send_advice(user_id=user_id, advice_id=advice.id)
+        await advices_service.send_advice(user_id=user_id, advice_id=advice.advice_id)
         logger.info('Send advice to user %d', user_id)
 
     return is_sent
