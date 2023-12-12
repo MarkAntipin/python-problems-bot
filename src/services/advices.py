@@ -5,7 +5,7 @@ from src.repositories.postgres.advices import AdvicesRepo
 
 
 class Advice(BaseModel):
-    id: int
+    advice_id: int
     theme: str
     level: int
     link: str
@@ -35,7 +35,7 @@ class AdvicesService:
 
         return GetNewAdviceForUserResp(
             advice=Advice(
-                id=advice['id'],
+                advice_id=advice['id'],
                 theme=advice['theme'],
                 level=advice['level'],
                 link=advice['link']
@@ -47,7 +47,7 @@ class AdvicesService:
         if not row:
             return
         return Advice(
-                id=row['id'],
+                advice_id=row['id'],
                 theme=row['theme'],
                 level=row['level'],
                 link=row['link']

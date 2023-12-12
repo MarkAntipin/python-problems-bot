@@ -34,7 +34,7 @@ def test_format_explanation() -> None:
 def test_format_advice() -> None:
     res = format_advice(
         advice=Advice(
-            id=1,
+            advice_id=1,
             theme='lists',
             level=1,
             link='https://python.com/useful_link_to_handle_with_lists'
