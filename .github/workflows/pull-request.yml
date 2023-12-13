@@ -49,7 +49,7 @@ jobs:
       - name: Run migrations
         run: |
           ls;
-          make migrateup
+          migrate -path ./migrations -database "postgres://python-problems-bot:python-problems-bot@localhost:5436/python-problems-bot?sslmode=disable" up
 
       - name: Run linter
         run: poetry run ruff check . --fix
