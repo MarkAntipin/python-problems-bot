@@ -11,10 +11,9 @@ jobs:
       postgres:
         image: postgres
         env:
-          POSTGRES_HOST: 'localhost'
           POSTGRES_USER: 'python-problems-bot'
           POSTGRES_PASSWORD: 'python-problems-bot'
-          POSTGRES_DATABASE: 'python-problems-bot'
+          POSTGRES_DB: 'python-problems-bot'
         ports:
           - 5436:5436
         options: >-
