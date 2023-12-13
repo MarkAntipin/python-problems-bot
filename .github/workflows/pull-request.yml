@@ -43,7 +43,7 @@ jobs:
           sudo mv migrate /usr/bin/migrate
 
       - name: Run migrations
-        run: migrate -path ./migrations -database "postgres://python-problems-bot:python-problems-bot@localhost:5436/python-problems-bot?sslmode=disable" --verbose up
+        run: migrate -path ./migrations -database "postgresql://python-problems-bot:python-problems-bot@localhost:5436/python-problems-bot?sslmode=disable" --verbose up
 
       - name: Run linter
         run: poetry run ruff check . --fix
