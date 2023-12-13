@@ -40,12 +40,10 @@ jobs:
       - name: Install golang-migrate
         run: |
           curl -L https://github.com/golang-migrate/migrate/releases/download/v4.16.2/migrate.linux-amd64.tar.gz | tar xvz;
-          sudo apt-get install migrate
-
+          sudo mv migrate /usr/bin/migrate
 
       - name: Run migrations
-        run: |
-          migrate -path ./migrations -database "postgresql://python-problems-bot:python-problems-bot@localhost:5436/python-problems-bot?sslmode=disable" --verbose up;
+        run: make migrateup
 
       - name: Run linter
         run: poetry run ruff check . --fix
