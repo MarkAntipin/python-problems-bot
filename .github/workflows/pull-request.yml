@@ -11,10 +11,10 @@ jobs:
       postgres:
         image: postgres
         env:
-          PG_HOST: 'localhost'
-          PG_USER: 'python-problems-bot'
-          PG_PASSWORD: 'python-problems-bot'
-          PG_DATABASE: 'python-problems-bot'
+          POSTGRES_HOST: 'localhost'
+          POSTGRES_USER: 'python-problems-bot'
+          POSTGRES_PASSWORD: 'python-problems-bot'
+          POSTGRES_DATABASE: 'python-problems-bot'
         ports:
           - 5436:5436
         options: >-
