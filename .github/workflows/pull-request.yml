@@ -16,7 +16,6 @@
           env:
             POSTGRES_USER: python-problems-bot
             POSTGRES_PASSWORD: python-problems-bot
-            POSTGRES_HOST: postgres
             POSTGRES_DB: python-problems-bot
           ports:
             - 5436:5436
@@ -48,11 +47,10 @@
             which migrate
 
         - name: Run migrations
-          run: migrate -path ./migrations -database "postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST:$POSTGRES_PORT/$POSTGRES_DB?sslmode=disable" up
+          run: migrate -path ./migrations -database "postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@localhost:$POSTGRES_PORT/$POSTGRES_DB?sslmode=disable" up
           env:
             POSTGRES_USER: python-problems-bot
             POSTGRES_PASSWORD: python-problems-bot
-            POSTGRES_HOST: postgres
             POSTGRES_PORT: 5436
             POSTGRES_DB: python-problems-bot
 

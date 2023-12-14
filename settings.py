@@ -14,10 +14,10 @@ MAX_QUESTION_PER_DAY: int = 3
 
 
 class PostgresSettings(BaseSettings):
-    HOST: str
-    USER: str
-    PASSWORD: str
-    DATABASE: str
+    HOST: str = 'localhost'
+    USER: str = 'python-problems-bot'
+    PASSWORD: str = 'python-problems-bot'
+    DATABASE: str = 'python-problems-bot'
     PORT: int = 5432
 
     @property
