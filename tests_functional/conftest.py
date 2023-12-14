@@ -31,3 +31,8 @@ async def pg_fixture() -> asyncpg.Connection:
 @pytest.fixture(autouse=True)
 async def env(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv('TOKEN', '')
+    monkeypatch.setenv('HOST', '')
+    monkeypatch.setenv('USER', '')
+    monkeypatch.setenv('PASSWORD', '')
+    monkeypatch.setenv('DATABASE', '')
+    monkeypatch.setenv('PORT', '')
