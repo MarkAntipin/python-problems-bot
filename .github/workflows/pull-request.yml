@@ -48,7 +48,7 @@
             which migrate
 
         - name: Run migrations
-          run: migrate -path /migrations -database "postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST:$POSTGRES_PORT/$POSTGRES_DB?sslmode=disable" up
+          run: migrate -path ./migrations -database "postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST:$POSTGRES_PORT/$POSTGRES_DB?sslmode=disable" up
           env:
             POSTGRES_USER: python-problems-bot
             POSTGRES_PASSWORD: python-problems-bot
