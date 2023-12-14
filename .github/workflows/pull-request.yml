@@ -49,7 +49,7 @@
           env:
             POSTGRES_USER: python-problems-bot
             POSTGRES_PASSWORD: python-problems-bot
-            POSTGRES_PORT: 5432:5432
+            POSTGRES_PORT: 5432
             POSTGRES_DB: python-problems-bot
 
         - name: Run linter
