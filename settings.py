@@ -14,11 +14,11 @@ MAX_QUESTION_PER_DAY: int = 3
 
 
 class PostgresSettings(BaseSettings):
-    HOST: str = 'localhost'
-    USER: str = 'python-problems-bot'
-    PASSWORD: str = 'python-problems-bot'
-    DATABASE: str = 'python-problems-bot'
-    PORT: int = 5432
+    HOST: str
+    USER: str
+    PASSWORD: str
+    DATABASE: str
+    PORT: int
 
     @property
     def url(self) -> str:
@@ -45,7 +45,7 @@ class TestSettings(BaseSettings):
     PG_USER: str = 'python-problems-bot'
     PG_PASSWORD: str = 'python-problems-bot'
     PG_DATABASE: str = 'python-problems-bot'
-    PG_PORT: int = 5436
+    PG_PORT: int = 5432
 
     class Config:
         case_sensitive = False
