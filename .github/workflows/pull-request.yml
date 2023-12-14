@@ -16,9 +16,10 @@
           env:
             POSTGRES_USER: python-problems-bot
             POSTGRES_PASSWORD: python-problems-bot
+            POSTGRES_HOST: postgres
             POSTGRES_DB: python-problems-bot
           ports:
-            - 5432:5432
+            - 5436:5436
           options: >-
             --health-cmd pg_isready
             --health-interval 10s
@@ -47,9 +48,13 @@
             which migrate
 
         - name: Run migrations
-          run: |
-            ls;
-            migrate -path ./migrations -database "postgres://python-problems-bot:python-problems-bot@localhost:5432/python-problems-bot?sslmode=disable" up
+          run: migrate -path /migrations -database "postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST:$POSTGRES_PORT/$POSTGRES_DB?sslmode=disable" up
+          env:
+            POSTGRES_USER: python-problems-bot
+            POSTGRES_PASSWORD: python-problems-bot
+            POSTGRES_HOST: postgres
+            POSTGRES_PORT: 5436
+            POSTGRES_DB: python-problems-bot
 
         - name: Run linter
           run: poetry run ruff check . --fix

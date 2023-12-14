@@ -8,7 +8,7 @@ from telegram.ext import (
     ConversationHandler,
 )
 
-from bot.handlers.comands import cansel_handler, leaders_handler, set_difficult_handler, set_easy_handler, start_handler
+from bot.handlers.commands import cancel_handler, leaders_handler, set_difficult_handler, set_easy_handler, start_handler
 from bot.handlers.error import error_handler
 from bot.handlers.onboarding import choose_level_handler, finish_onboarding_handler
 from bot.handlers.questions import questions_handler

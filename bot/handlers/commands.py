@@ -43,7 +43,7 @@ async def start_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
     return States.onboarding
 
 
-async def cansel_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def cancel_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     pass
 
 
