@@ -47,7 +47,7 @@ def create_bot() -> Application:
         },
         persistent=True,
         name='bot',
-        fallbacks=[CommandHandler('cancel', cansel_handler)],
+        fallbacks=[CommandHandler('cancel', cancel_handler)],
     )
     bot.add_handler(conv_handler)
 
