@@ -26,13 +26,14 @@ async def pg_fixture() -> asyncpg.Connection:
     await teardown()
 
 
+# doesn't work
 @pytest.fixture(autouse=True)
 async def env(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv('PG_HOST', 'localhost')
     monkeypatch.setenv('PG_USER', 'python-problems-bot')
     monkeypatch.setenv('PG_PASSWORD', 'python-problems-bot')
     monkeypatch.setenv('PG_DATABASE', 'python-problems-bot')
-    monkeypatch.setenv('PG_PORT', '5436')
+    monkeypatch.setenv('PG_PORT', '5432')
     monkeypatch.setenv('TOKEN', '')
 
 
