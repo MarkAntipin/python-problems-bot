@@ -3,8 +3,6 @@ import pytest
 
 from .test_settings import TestSettings
 
-test_settings = TestSettings()
-
 
 @pytest.fixture(name='pg')
 async def pg_fixture() -> asyncpg.Connection:
@@ -36,3 +34,6 @@ async def env(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv('TEST_PG_DATABASE', 'python-problems-bot')
     monkeypatch.setenv('TEST_PG_PORT', '5432')
     monkeypatch.setenv('TOKEN', '')
+
+
+test_settings = TestSettings()
