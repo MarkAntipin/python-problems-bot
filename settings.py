@@ -18,7 +18,7 @@ class PostgresSettings(BaseSettings):
     USER: str = 'python-problems-bot'
     PASSWORD: str = 'python-problems-bot'
     DATABASE: str = 'python-problems-bot'
-    PORT: int = 5432
+    PORT: int = 5436
 
     @property
     def url(self) -> str:
