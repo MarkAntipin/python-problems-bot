@@ -34,9 +34,6 @@ class PostgresSettings(BaseSettings):
 class BotSettings(BaseSettings):
     TOKEN: str
 
-    class Config:
-        case_sensitive = False
-
     model_config = SettingsConfigDict(env_file=ENV_FILE, case_sensitive=False)
 
 
