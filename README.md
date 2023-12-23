@@ -64,7 +64,7 @@ pytest -v tests
 ### Functional Tests:
 **Run postgres for tests**
 ```
-docker run --name postgres-ppb -e POSTGRES_USER=python-problems-bot -e POSTGRES_PASSWORD=python-problems-bot -e POSTGRES_DB=python-problems-bot -p 5432:5432 -d postgres
+docker run --name postgres-ppb -e POSTGRES_USER=python-problems-bot -e POSTGRES_PASSWORD=python-problems-bot -e POSTGRES_DB=python-problems-bot -p 5432 -d postgres
 ```
 **Apply migrations**
 ```
