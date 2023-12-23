@@ -8,4 +8,4 @@ class TestSettings(BaseSettings):
     TEST_PG_DATABASE: str
     TEST_PG_PORT: int
 
-    model_config = SettingsConfigDict(env_file='.env', env_file_encoding='utf-8', extra='ignore')
+    model_config = SettingsConfigDict(env_file='test_functional/.env', env_file_encoding='utf-8', extra='ignore')
