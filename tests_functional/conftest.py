@@ -1,7 +1,7 @@
 import asyncpg
 import pytest
 
-from settings import TestSettings
+from test_settings import TestSettings
 
 test_settings = TestSettings()
 
