@@ -1,11 +1,13 @@
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings
 
 
 class TestSettings(BaseSettings):
-    TEST_PG_HOST: str
-    TEST_PG_USER: str
-    TEST_PG_PASSWORD: str
-    TEST_PG_DATABASE: str
-    TEST_PG_PORT: int
+    PG_HOST: str
+    PG_USER: str
+    PG_PASSWORD: str
+    PG_DATABASE: str
+    PG_PORT: int
 
-    model_config = SettingsConfigDict(env_file='tests_functional/.env', env_file_encoding='utf-8', extra='ignore')
+    class Config:
+        case_sensitive = False
+        env_prefix = "TEST_"
