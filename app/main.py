@@ -24,7 +24,7 @@ templates = Jinja2Templates(directory='templates')
 
 
 @app.get('/question/{question_id:int}')
-async def get_question_page(request: Request, question_id: int):
+async def get_question_page(request: Request, question_id: int): # noqa ANN201
     return templates.TemplateResponse(
         "main.html",
         {
