@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{ question_id }}</h1>
+<textarea id="code-editor"></textarea>
+<script>
+    const editor = CodeMirror.fromTextArea(document.getElementById("code-editor"), {
+        mode: "python",
+        theme: "material",
+        lineNumbers: true,
+        autofocus: true,
+    });
+</script>
+<iframe>
+
+</iframe>
+{% endblock %}
