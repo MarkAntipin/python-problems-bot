@@ -2,16 +2,20 @@
 
 {% block content %}
 <div class="container">
-    <textarea class="input" id="codeArea"></textarea>
-    <button id="submitButton" onclick="execute()">Submit</button>
+    <textarea id="codeArea"></textarea>
+    <button id="submitButton" onclick="getExecutionResult()">Submit</button>
     <button id="clearButton" onclick="clearArea()">Clear</button>
-    <textarea class="output" readonly>{{ }}</textarea>
 </div>
-<script type="text/javascript">
-    async function execute() {
-        let pyodide = await loadPyodide();
+<script>
+    async function getExecutionResult() {
+        const url = 'http://localhost:8000/question/execute';
         const code = document.getElementById('codeArea').value;
-        console.log(pyodide.runPython(code));
+        const response = fetch(url, {
+            method: 'POST',
+            body: JSON.stringify(code)
+        });
+        console.log(response);
+        return response;
     }
 
     function clearArea() {
