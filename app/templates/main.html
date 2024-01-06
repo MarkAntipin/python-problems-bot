@@ -58,26 +58,21 @@
 
         editor.setValue(``);
 
-        async function main() {
-            let pyodide = await loadPyodide({ indexURL: "https://cdn.jsdelivr.net/pyodide/v0.18.1/full/" });
-            return pyodide;
-        };
-
-        let pyodideReadyPromise = main();
-
         function addToOutput(s) {
             output.value = s;
         }
 
         async function executeCode() {
-            let pyodide = await pyodideReadyPromise;
-            try {
-                let output = pyodide.runPython(editor.getValue());
-                console.log(output);
-                addToOutput(output);
-            } catch (err) {
-                addToOutput(err);
-            }
+        	const url = "http://localhost:8000/question/{{question_id}}/result";
+        	const code = editor.getValue();
+        	console.log(code);
+        	const response = await fetch(url, {
+				method: "POST",
+				body: JSON.stringify(code)
+        	});
+        	const result = await response.json();
+        	addToOutput(result['data']);
+			return result;
         }
 
 		function clearCode() {
