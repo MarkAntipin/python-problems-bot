@@ -43,22 +43,34 @@ async def execute_code(code: str = Body()):
     for i in func_body:
         code += f'\n{i}'
 
+    # if 'while True:' in code:
+    #     return {
+    #         "status": "error",
+    #         "data": "ForeverLoopError: function cannot contain while True"
+    #     }
+
     executable_code = compile(code, '<string>', 'exec')
     globals_dict, locals_dict = {}, {}
     exec(executable_code, globals_dict, locals_dict)
 
     try:
         result = locals_dict['func'](10, 5)
+        print(2)
     except KeyError as e:  # если неправильное имя функции
         result = f'FunctionNameError: function name must be {e}'
+        status = 'error'
     except TypeError:  # если нет аргументов в определении функции
         args_num = 2
         result = f'FunctionArgsError: function must take {args_num} positional arguments'
+        status = 'error'
     except NameError as e:  # если используется переменная, которая не объявлена
         result = f'NameError: {e}'
+        status = 'error'
+    else:
+        status = 'success'
 
     return {
-        "status": "success",
+        "status": status,
         "data": result
     }
 
