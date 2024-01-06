@@ -34,5 +34,34 @@ async def get_question_page(request: Request, question_id: int): # noqa ANN201
     )
 
 
+@app.post('/question/{question_id:int}/result')
+async def execute_code(code: str = Body()):
+    code = code.replace('\"', '').split('\\n')
+    func_def, func_body = code[0], code[1:]
+    code = f'''{func_def}'''
+
+    for i in func_body:
+        code += f'\n{i}'
+
+    executable_code = compile(code, '<string>', 'exec')
+    globals_dict, locals_dict = {}, {}
+    exec(executable_code, globals_dict, locals_dict)
+
+    try:
+        result = locals_dict['func'](10, 5)
+    except KeyError as e:  # если неправильное имя функции
+        result = f'FunctionNameError: function name must be {e}'
+    except TypeError:  # если нет аргументов в определении функции
+        args_num = 2
+        result = f'FunctionArgsError: function must take {args_num} positional arguments'
+    except NameError as e:  # если используется переменная, которая не объявлена
+        result = f'NameError: {e}'
+
+    return {
+        "status": "success",
+        "data": result
+    }
+
+
 if __name__ == '__main__':
     uvicorn.run(app)
