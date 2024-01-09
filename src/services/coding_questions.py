@@ -14,7 +14,7 @@ class CodingQuestion(BaseModel):
     id: int  # noqa A003
     title: str
     text: str
-    def_inti: str
+    def_init: str
     difficulty: dict
 
 
@@ -24,7 +24,7 @@ class GetNewRandomCodingQuestionForUserStatus(StrEnum):
     ok = auto()
 
 
-class GetNewRandomQuestionForUserResp(BaseModel):
+class GetNewRandomCodingQuestionForUserResp(BaseModel):
     status: GetNewRandomCodingQuestionForUserStatus = GetNewRandomCodingQuestionForUserStatus.ok
     coding_question: CodingQuestion | None = None
 
@@ -41,12 +41,14 @@ class CodingQuestionsService:
             return True
         return False
 
-    async def get_new_random_question_for_user(self, user_id: int, user_level: int) -> GetNewRandomQuestionForUserResp:
+    async def get_new_random_question_for_user(self, user_id: int, user_level: int) -> GetNewRandomCodingQuestionForUserResp:
         today_send_questions_count = await self.repo.get_today_send_coding_questions_count(
             user_id=user_id
         )
         if today_send_questions_count >= MAX_CODING_QUESTION_PER_DAY:
-            return GetNewRandomQuestionForUserResp(status=GetNewRandomQuestionForUserStatus.no_questions_for_today)
+            return GetNewRandomCodingQuestionForUserResp(
+                status=GetNewRandomCodingQuestionForUserStatus.no_coding_questions_for_today
+            )
 
         rows = await self.repo.get_new_questions_for_user(
             user_id=user_id,
@@ -54,25 +56,27 @@ class CodingQuestionsService:
             limit=10
         )
         if not rows:
-            return GetNewRandomQuestionForUserResp(status=GetNewRandomQuestionForUserStatus.no_more_questions)
+            return GetNewRandomCodingQuestionForUserResp(
+                status=GetNewRandomCodingQuestionForUserStatus.no_more_coding_questions
+            )
 
         row = random.choice(rows)
-        return GetNewRandomQuestionForUserResp(
-            question=Question(
+        return GetNewRandomCodingQuestionForUserResp(
+            question=CodingQuestion(
                 id=row['id'],
                 text=row['text'],
                 answer=row['answer'],
                 explanation=row['explanation'],
                 choices=json.loads(row['choices']),
             ),
-            status=GetNewRandomQuestionForUserStatus.ok
+            status=GetNewRandomCodingQuestionForUserStatus.ok
         )
 
-    async def get_by_id(self, question_id: int) -> Question | None:
-        row = await self.repo.get_by_id(question_id=question_id)
+    async def get_by_id(self, coding_question_id: int) -> CodingQuestion | None:
+        row = await self.repo.get_by_id(coding_question_id=coding_question_id)
         if not row:
             return
-        return Question(
+        return CodingQuestion(
             id=row['id'],
             text=row['text'],
             answer=row['answer'],
@@ -80,27 +84,18 @@ class CodingQuestionsService:
             choices=json.loads(row['choices']),
         )
 
-    async def answer_question(
-        self,
-        user_id: int,
-        question: CodingQuestion,
-        user_answer: str
-    ) -> bool:
-        is_correct = is_answer_correct(user_answer=user_answer, correct_answer=question.answer)
+    async def answer_question(self, user_id: int, coding_question: CodingQuestion, user_answer: str) -> bool:
+        is_correct = is_answer_correct(user_answer=user_answer, correct_answer=coding_question.answer)
         await self.repo.answer_question(
-            question_id=question.id,
-            user_id=user_id,
-            user_answer=user_answer,
-            is_correct=is_correct,
+            id=coding_question.id,
+            title=title,
+            text=text,
+            def_inti=def_inti,
         )
         return is_correct
 
-    async def send_question(
-        self,
-        user_id: int,
-        question_id: int
-    ) -> None:
-        await self.repo.send_question(
-            question_id=question_id,
+    async def send_question(self, user_id: int, coding_question_id: int) -> None:
+        await self.repo.send_coding_question(
+            coding_question_id=coding_question_id,
             user_id=user_id,
         )

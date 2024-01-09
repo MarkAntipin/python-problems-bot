@@ -24,9 +24,10 @@ class CodingQuestionsRepo:
                 user_id,
                 today.date()
             )
+
         return row['count']
 
-    async def get_coding_question(self, coding_question_id: int) -> asyncpg.Record | None:
+    async def get_by_id(self, coding_question_id: int) -> asyncpg.Record | None:
         async with self.pg_pool.acquire() as conn:
             row = await conn.fetchrow(
                 """
@@ -34,7 +35,12 @@ class CodingQuestionsRepo:
                   title,
                   text,
                   def_init
-                """
+                FROM
+                  coding_questions
+                WHERE
+                  id = $1
+                """,
+                coding_question_id
             )
 
         return row
