@@ -18,17 +18,6 @@ class CodingQuestion(BaseModel):
     difficulty: dict
 
 
-class GetNewRandomCodingQuestionForUserStatus(StrEnum):
-    no_coding_questions_for_today = auto()
-    no_more_coding_questions = auto()
-    ok = auto()
-
-
-class GetNewRandomCodingQuestionForUserResp(BaseModel):
-    status: GetNewRandomCodingQuestionForUserStatus = GetNewRandomCodingQuestionForUserStatus.ok
-    coding_question: CodingQuestion | None = None
-
-
 class CodingQuestionsService:
     def __init__(self, pg_pool: asyncpg.Pool) -> None:
         self.repo = CodingQuestionsRepo(pg_pool=pg_pool)

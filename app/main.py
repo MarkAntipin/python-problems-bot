@@ -23,7 +23,7 @@ app.add_middleware(
 templates = Jinja2Templates(directory='templates')
 
 
-@app.get('/question/{question_id:int}')
+@app.get('/question/{question_id}')
 async def get_question_page(request: Request, question_id: int): # noqa ANN201
     return templates.TemplateResponse(
         "main.html",
@@ -34,14 +34,12 @@ async def get_question_page(request: Request, question_id: int): # noqa ANN201
     )
 
 
-@app.post('/question/{question_id:int}/result')
-async def execute_code(code: str = Body()):
-    code = code.replace('\"', '').split('\\n')
-    func_def, func_body = code[0], code[1:]
-    code = f'''{func_def}'''
+@app.post('/question/{question_id}/result')
+async def execute_code(question_id: int, code: str = Body()):
+    code = code.replace('\"', '').replace('\\n', '\n').replace('\\t', '\t')
 
-    for i in func_body:
-        code += f'\n{i}'
+    # make code 39 str
+    # validate code, check for exceptions
 
     if 'while True:' in code:
         return {
@@ -49,12 +47,12 @@ async def execute_code(code: str = Body()):
             "data": "ForeverLoopError: function cannot contain \"while True\""
         }
 
-    executable_code = compile(code, '<string>', 'exec')
+    executable_code = compile(code, '<string>', 'exec')  # add to services coding_questions
     globals_dict, locals_dict = {}, {}
     exec(executable_code, globals_dict, locals_dict)
 
     try:
-        result = locals_dict['func'](10, 5)
+        result = locals_dict['func']()
     except KeyError as e:  # если неправильное имя функции
         result = f'FunctionNameError: function name must be {e}'
         status = 'error'
@@ -71,7 +69,7 @@ async def execute_code(code: str = Body()):
     return {
         "status": status,
         "data": result
-    }
+    }  # PydanticModel
 
 
 if __name__ == '__main__':
