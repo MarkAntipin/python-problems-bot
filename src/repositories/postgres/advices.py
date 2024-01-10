@@ -12,7 +12,6 @@ class AdvicesRepo:
                 """
                 SELECT
                   count(*) AS false_answers,
-                  id,
                   theme
                 FROM
                   users_questions t1   
@@ -26,6 +25,7 @@ class AdvicesRepo:
                   level = $2
                 GROUP BY
                   user_id,
+                  t2.id,
                   is_correct,
                   theme,
                   level
