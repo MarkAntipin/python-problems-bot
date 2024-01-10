@@ -157,3 +157,29 @@ async def add_advice(
         link
     )
     return row['id']
+
+
+async def add_users_send_advices(
+    pg: asyncpg.Pool,
+    user_id: int,
+    advice_id: int,
+    created_at: datetime
+) -> None:
+    row = await pg.fetchrow(
+        """
+        INSERT INTO
+            users_send_advices (
+              user_id, 
+              advice_id, 
+              created_at
+            )
+            VALUES (
+              $1, 
+              $2, 
+              $3
+            );
+        """,
+        user_id,
+        advice_id,
+        created_at
+    )
