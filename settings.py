@@ -11,7 +11,6 @@ ENV_FILE = Path(BASE_DIR, '.env')
 load_dotenv(ENV_FILE)
 
 MAX_QUESTION_PER_DAY: int = 3
-MAX_CODING_QUESTION_PER_DAY: int = 1
 
 
 class PostgresSettings(BaseSettings):

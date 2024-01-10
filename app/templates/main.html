@@ -56,16 +56,15 @@
             matchBrackets: true
         });
 
-        editor.setValue(``);
+        editor.setValue(`def solution({{ params }}) -> {{ return_type }}:\n\t`);
 
         function addToOutput(s) {
             output.value = s;
         }
 
         async function executeCode() {
-        	const url = "http://localhost:8000/question/{{question_id}}/result";
+        	const url = "http://localhost:8000/question/{{ question_id }}/result/{{ return_type }}";
         	const code = editor.getValue();
-        	console.log(code);
         	const response = await fetch(url, {
 				method: "POST",
 				body: JSON.stringify(code)

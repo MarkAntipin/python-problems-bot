@@ -1,13 +1,7 @@
-import json
-import random
-from enum import StrEnum, auto
-
 import asyncpg
 from pydantic import BaseModel
 
-from settings import MAX_CODING_QUESTION_PER_DAY
 from src.repositories.postgres.coding_questions import CodingQuestionsRepo
-from src.utils.is_answer_correct import is_answer_correct
 
 
 class CodingQuestion(BaseModel):
@@ -19,72 +13,61 @@ class CodingQuestion(BaseModel):
 
 
 class CodingQuestionsService:
-    def __init__(self, pg_pool: asyncpg.Pool) -> None:
-        self.repo = CodingQuestionsRepo(pg_pool=pg_pool)
+    def __init__(self, code: str, return_type: str):
+        self.code = code
+        self.return_type = return_type
+        self.status = 'error'
+        self.result = None
 
-    async def is_answered_all_questions_for_today(self, user_id: int) -> bool:
-        today_answered_coding_questions_count = await self.repo.get_today_answered_coding_questions_count(
-            user_id=user_id
-        )
-        if today_answered_coding_questions_count >= MAX_CODING_QUESTION_PER_DAY:
-            return True
-        return False
+    def convert_code(self) -> None:
+        self.code = self.code.replace('\"', '').replace('\\n', '\n').replace('\\t', '\t')
 
-    async def get_new_random_question_for_user(self, user_id: int, user_level: int) -> GetNewRandomCodingQuestionForUserResp:
-        today_send_questions_count = await self.repo.get_today_send_coding_questions_count(
-            user_id=user_id
-        )
-        if today_send_questions_count >= MAX_CODING_QUESTION_PER_DAY:
-            return GetNewRandomCodingQuestionForUserResp(
-                status=GetNewRandomCodingQuestionForUserStatus.no_coding_questions_for_today
-            )
+    def convert_return_type(self) -> None:
+        self.return_type = f'<class \'{self.return_type}\'>'
 
-        rows = await self.repo.get_new_questions_for_user(
-            user_id=user_id,
-            level=user_level,
-            limit=10
-        )
-        if not rows:
-            return GetNewRandomCodingQuestionForUserResp(
-                status=GetNewRandomCodingQuestionForUserStatus.no_more_coding_questions
-            )
+    def execute(self) -> tuple[dict, dict] | str:
+        try:
+            executable_code = compile(self.code, '<string>', 'exec')
+            globals_dict, locals_dict = {}, {}
+            exec(executable_code, globals_dict, locals_dict)
+        except SyntaxError as e:
+            return f'SyntaxError: {e}'
 
-        row = random.choice(rows)
-        return GetNewRandomCodingQuestionForUserResp(
-            question=CodingQuestion(
-                id=row['id'],
-                text=row['text'],
-                answer=row['answer'],
-                explanation=row['explanation'],
-                choices=json.loads(row['choices']),
-            ),
-            status=GetNewRandomCodingQuestionForUserStatus.ok
-        )
+        return globals_dict, locals_dict
 
-    async def get_by_id(self, coding_question_id: int) -> CodingQuestion | None:
-        row = await self.repo.get_by_id(coding_question_id=coding_question_id)
-        if not row:
-            return
-        return CodingQuestion(
-            id=row['id'],
-            text=row['text'],
-            answer=row['answer'],
-            explanation=row['explanation'],
-            choices=json.loads(row['choices']),
-        )
+    def run_code(self) -> tuple[str, str] | None:
+        if not self.code:
+            self.result = 'InputError: input cannot be empty'
+            return self.status, self.result
 
-    async def answer_question(self, user_id: int, coding_question: CodingQuestion, user_answer: str) -> bool:
-        is_correct = is_answer_correct(user_answer=user_answer, correct_answer=coding_question.answer)
-        await self.repo.answer_question(
-            id=coding_question.id,
-            title=title,
-            text=text,
-            def_inti=def_inti,
-        )
-        return is_correct
+        self.convert_code()
+        self.convert_return_type()
 
-    async def send_question(self, user_id: int, coding_question_id: int) -> None:
-        await self.repo.send_coding_question(
-            coding_question_id=coding_question_id,
-            user_id=user_id,
-        )
+        if 'while True:' in self.code:
+            self.result = 'ForeverLoopError: function cannot contain forever loop'
+            return self.status, self.result
+
+        res = self.execute()
+        if not isinstance(res, str):
+            globals_dict, locals_dict = res
+        else:
+            self.result = res.replace('<string>, ', '')
+            return self.status, self.result
+
+        try:
+            self.result = locals_dict['solution']([1, 2, 3])
+        except KeyError as e:  # если неправильное имя функции
+            self.result = f'FunctionNameError: function name must be {e}'
+        except TypeError as e:  # если нет аргументов в определении функции
+            self.result = f'FunctionArgsError: {e}'
+        except NameError as e:  # если используется переменная, которая не объявлена
+            self.result = f'NameError: {e}'
+        else:
+            if str(type(self.result)) != self.return_type:
+                self.status = 'error'
+                self.result = f'ReturnTypeError: return type must be {self.return_type}'
+            else:
+                self.status = 'success'
+                self.result = str(self.result)
+
+        return self.status, self.result

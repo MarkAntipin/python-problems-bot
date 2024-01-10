@@ -1,7 +1,14 @@
-from fastapi import FastAPI, Request, Body
+from typing import Any
+
+from fastapi import FastAPI, Request, Response, Body
 from fastapi.templating import Jinja2Templates
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 from starlette.middleware.cors import CORSMiddleware
 import uvicorn
+
+from src.services.coding_questions import CodingQuestionsService
+
 
 app = FastAPI(
     title='Mentor Bot'
@@ -23,6 +30,16 @@ app.add_middleware(
 templates = Jinja2Templates(directory='templates')
 
 
+class QuestionData(BaseModel):
+    code: str
+    return_type: str
+
+
+class QuestionResult(BaseModel):
+    status: str
+    data: str
+
+
 @app.get('/question/{question_id}')
 async def get_question_page(request: Request, question_id: int): # noqa ANN201
     return templates.TemplateResponse(
@@ -30,46 +47,21 @@ async def get_question_page(request: Request, question_id: int): # noqa ANN201
         {
             "request": request,
             "question_id": question_id,
+            "params": 'numbers: list[int]',
+            "return_type": 'int'
         }
     )
 
 
-@app.post('/question/{question_id}/result')
-async def execute_code(question_id: int, code: str = Body()):
-    code = code.replace('\"', '').replace('\\n', '\n').replace('\\t', '\t')
+@app.post('/question/{question_id}/result/{return_type}', response_model=QuestionResult)
+async def execute_code(question_id: int, return_type: str, code: str = Body()) -> Response:
+    coding_questions_service = CodingQuestionsService(code, return_type)
+    status, result = coding_questions_service.run_code()
 
-    # make code 39 str
-    # validate code, check for exceptions
-
-    if 'while True:' in code:
-        return {
-            "status": "error",
-            "data": "ForeverLoopError: function cannot contain \"while True\""
-        }
-
-    executable_code = compile(code, '<string>', 'exec')  # add to services coding_questions
-    globals_dict, locals_dict = {}, {}
-    exec(executable_code, globals_dict, locals_dict)
-
-    try:
-        result = locals_dict['func']()
-    except KeyError as e:  # если неправильное имя функции
-        result = f'FunctionNameError: function name must be {e}'
-        status = 'error'
-    except TypeError:  # если нет аргументов в определении функции
-        args_num = 2
-        result = f'FunctionArgsError: function must take {args_num} positional arguments'
-        status = 'error'
-    except NameError as e:  # если используется переменная, которая не объявлена
-        result = f'NameError: {e}'
-        status = 'error'
-    else:
-        status = 'success'
-
-    return {
+    return JSONResponse(content={
         "status": status,
         "data": result
-    }  # PydanticModel
+    })
 
 
 if __name__ == '__main__':
