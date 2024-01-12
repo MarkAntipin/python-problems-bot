@@ -70,7 +70,7 @@ docker run --name postgres-ppb -e POSTGRES_USER=python-problems-bot -e POSTGRES_
 ```
 migrate -path ./migrations -database "postgres://python-problems-bot:python-problems-bot@localhost:5432/python-problems-bot?sslmode=disable" up
 ```
-**Apply migrations**
+**Run functional tests**
 ```
 pytest -v tests_functional
 ```

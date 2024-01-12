@@ -25,6 +25,7 @@ class AdvicesRepo:
                   level = $2
                 GROUP BY
                   user_id,
+                  t2.id,
                   is_correct,
                   theme,
                   level
@@ -40,7 +41,7 @@ class AdvicesRepo:
 
         return row
 
-    async def get_advice_by_theme_and_level(self, theme: str, level: int) -> asyncpg.Record | None:
+    async def get_new_advice(self, theme: str, level: int) -> asyncpg.Record | None:
         async with self.pg_pool.acquire() as conn:
             row = await conn.fetchrow(
                 """
@@ -62,7 +63,7 @@ class AdvicesRepo:
 
         return row
 
-    async def get_by_id(self, advice_id: int) -> asyncpg.Record | None:
+    async def get_advice_by_id(self, advice_id: int) -> asyncpg.Record | None:
         async with self.pg_pool.acquire() as conn:
             row = await conn.fetchrow(
                 """
@@ -77,6 +78,32 @@ class AdvicesRepo:
                     id = $1
                 """,
                 advice_id
+            )
+
+        return row
+
+    async def get_send_advice(self, user_id: int, theme: str, level: int) -> asyncpg.Record | None:
+        async with self.pg_pool.acquire() as conn:
+            row = await conn.fetchrow(
+                """
+                SELECT
+                  id
+                FROM
+                  advices
+                  JOIN users_send_advices
+                    ON advices.id = users_send_advices.advice_id
+                WHERE
+                  user_id = $1
+                AND
+                  created_at BETWEEN CURRENT_DATE - 14 AND CURRENT_DATE
+                AND
+                  theme = $2
+                AND
+                  level = $3;
+                """,
+                user_id,
+                theme,
+                level,
             )
 
         return row
