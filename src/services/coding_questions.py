@@ -1,3 +1,5 @@
+from typing import Any
+
 import asyncpg
 from pydantic import BaseModel
 
@@ -7,13 +9,64 @@ from src.repositories.postgres.coding_questions import CodingQuestionsRepo
 class CodingQuestion(BaseModel):
     id: int  # noqa A003
     title: str
-    text: str
-    def_init: str
-    difficulty: dict
+    problem: str
+    params: str
+    return_type: str
+    difficulty: str
+
+
+class TestCase(BaseModel):
+    input: Any
+    output: Any
+
+
+class TestCases(BaseModel):
+    test_cases: list[TestCase]
 
 
 class CodingQuestionsService:
-    def __init__(self, code: str, return_type: str):
+    def __init__(self, pg_pool: asyncpg.Pool) -> None:
+        self.repo = CodingQuestionsRepo(pg_pool=pg_pool)
+
+    async def get_coding_question(
+            self,
+            coding_question_id: int
+            # user_id: int
+    ) -> tuple[CodingQuestion, TestCases] | None:
+        # row = await self.repo.get_decided_coding_question(coding_question_id=coding_question_id, user_id=user_id)
+        # if row:
+        #     return
+
+        row = await self.repo.get_coding_question_by_id(coding_question_id=coding_question_id)
+        if not row:
+            return
+
+        coding_question = CodingQuestion(
+            id=coding_question_id,
+            title=row['title'],
+            problem=row['problem'],
+            params=row['params'],
+            return_type=row['return_type'],
+            difficulty=row['difficulty']
+        )
+
+        rows = await self.repo.get_test_cases(coding_question_id=coding_question_id)
+        print(rows)
+        test_cases = []
+        for row in rows:
+            test_cases.append(TestCase(
+                input=row['input'],
+                output=row['output']
+            ))
+        test_cases = TestCases(
+            test_cases=test_cases
+        )
+
+        return coding_question, test_cases
+
+
+class CodingQuestionsExecutionService:
+    def __init__(self, code: str, return_type: str) -> None:
         self.code = code
         self.return_type = return_type
         self.status = 'error'
@@ -35,7 +88,7 @@ class CodingQuestionsService:
 
         return globals_dict, locals_dict
 
-    def run_code(self) -> tuple[str, str] | None:
+    def run_code(self) -> tuple[str, str]:
         if not self.code:
             self.result = 'InputError: input cannot be empty'
             return self.status, self.result

@@ -2,7 +2,8 @@ CREATE TABLE IF NOT EXISTS coding_questions (
     id SERIAL NOT NULL PRIMARY KEY,
     title TEXT NOT NULL,
     problem TEXT NOT NULL,
-    def_init TEXT NOT NULL,
+    params TEXT NOT NULL,
+    return_type TEXT NOT NULL,
     difficulty TEXT NOT NULL
 );
 
