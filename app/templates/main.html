@@ -67,9 +67,9 @@
         function addToOutput(s) {
             output.value = s;
         }
-
+		// TODO: move url to setting and pass to html
         async function executeCode() {
-        	const url = "http://localhost:8000/question/{{ question_id }}/result/{{ return_type }}";
+        	const url = "http://localhost:8000/question/{{ question_id }}/result/?return_type={{ return_type }}";
         	const code = editor.getValue();
         	const response = await fetch(url, {
 				method: "POST",

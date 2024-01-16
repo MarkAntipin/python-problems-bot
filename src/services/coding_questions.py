@@ -2,6 +2,7 @@ from typing import Any
 
 import asyncpg
 from pydantic import BaseModel
+import asyncio
 
 from src.repositories.postgres.coding_questions import CodingQuestionsRepo
 
@@ -49,9 +50,9 @@ class CodingQuestionsService:
             return_type=row['return_type'],
             difficulty=row['difficulty']
         )
-
+        # TODO: remove get_test_cases
         rows = await self.repo.get_test_cases(coding_question_id=coding_question_id)
-        print(rows)
+
         test_cases = []
         for row in rows:
             test_cases.append(TestCase(
@@ -65,50 +66,63 @@ class CodingQuestionsService:
         return coding_question, test_cases
 
 
+class ExecutionResult(BaseModel):
+    result: Any | None = None
+    error: str | None = None
+
+
 class CodingQuestionsExecutionService:
     def __init__(self, code: str, return_type: str) -> None:
-        self.code = code
-        self.return_type = return_type
-        self.status = 'error'
-        self.result = None
+        self.code = self.convert_code(code)
+        self.return_type = self.convert_return_type(return_type)
 
-    def convert_code(self) -> None:
-        self.code = self.code.replace('\"', '').replace('\\n', '\n').replace('\\t', '\t')
+    @staticmethod
+    def convert_code(code: str) -> str:
+        return code.replace('\"', '').replace('\\n', '\n').replace('\\t', '\t')
 
-    def convert_return_type(self) -> None:
-        self.return_type = f'<class \'{self.return_type}\'>'
+    @staticmethod
+    def convert_return_type(return_type: str) -> str:
+        return f'<class \'{return_type}\'>'
 
-    def execute(self) -> tuple[dict, dict] | str:
+    # TODO: not execute code; it is compilation
+    def execute(self) -> ExecutionResult:
         try:
             executable_code = compile(self.code, '<string>', 'exec')
             globals_dict, locals_dict = {}, {}
             exec(executable_code, globals_dict, locals_dict)
         except SyntaxError as e:
-            return f'SyntaxError: {e}'
+            return ExecutionResult(
+                error=f'SyntaxError: {e}'
+            )
+        return ExecutionResult(
+            result=locals_dict['solution']
+        )
 
-        return globals_dict, locals_dict
-
-    def run_code(self) -> tuple[str, str]:
+    def validate_input(self) -> str | None:
         if not self.code:
-            self.result = 'InputError: input cannot be empty'
-            return self.status, self.result
-
-        self.convert_code()
-        self.convert_return_type()
+            return 'InputError: input cannot be empty'
 
         if 'while True:' in self.code:
-            self.result = 'ForeverLoopError: function cannot contain forever loop'
-            return self.status, self.result
+            return 'ForeverLoopError: function cannot contain forever loop'
+
+    def run_code(self) -> tuple[str, str]:
+        # TODO: remove status and result from class attributes
+
+        # TODO: divide func on parts; (def validate_input)
+        #
+        error = self.validate_input()
+        if error:
+            return 'error', error
 
         res = self.execute()
-        if not isinstance(res, str):
-            globals_dict, locals_dict = res
-        else:
-            self.result = res.replace('<string>, ', '')
-            return self.status, self.result
 
+        if res.error:
+            return 'error', res.error
+
+        # TODO: refactor (move to execute func)
         try:
-            self.result = locals_dict['solution']([1, 2, 3])
+            # TODO: un with test cases
+            self.result = res.result([1, 2, 3])
         except KeyError as e:  # если неправильное имя функции
             self.result = f'FunctionNameError: function name must be {e}'
         except TypeError as e:  # если нет аргументов в определении функции
