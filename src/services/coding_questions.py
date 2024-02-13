@@ -1,8 +1,8 @@
-from typing import Any
+from typing import Any, Callable
+import random
 
 import asyncpg
 from pydantic import BaseModel
-import asyncio
 
 from src.repositories.postgres.coding_questions import CodingQuestionsRepo
 
@@ -25,24 +25,32 @@ class TestCases(BaseModel):
     test_cases: list[TestCase]
 
 
+class ReturnTypeError(Exception):
+    def __init__(self, return_type: str, wrong_type: str):
+        self.return_type = return_type
+        self.wrong_type = wrong_type
+
+    def __str__(self):
+        return f'ReturnTypeError: return type must be {self.return_type}, not {self.wrong_type}'
+
+
+class WrongOutputError(Exception):
+    def __init__(self, correct_output: str, wrong_output: str):
+        self.correct_output = correct_output
+        self.wrong_output = wrong_output
+
+    def __str__(self):
+        return f'WrongOutputError: wrong output value {self.wrong_output}, output must be {self.correct_output}'
+
+
 class CodingQuestionsService:
     def __init__(self, pg_pool: asyncpg.Pool) -> None:
         self.repo = CodingQuestionsRepo(pg_pool=pg_pool)
 
-    async def get_coding_question(
-            self,
-            coding_question_id: int
-            # user_id: int
-    ) -> tuple[CodingQuestion, TestCases] | None:
-        # row = await self.repo.get_decided_coding_question(coding_question_id=coding_question_id, user_id=user_id)
-        # if row:
-        #     return
-
+    async def get_coding_question(self, coding_question_id: int) -> CodingQuestion | None:
         row = await self.repo.get_coding_question_by_id(coding_question_id=coding_question_id)
-        if not row:
-            return
 
-        coding_question = CodingQuestion(
+        return CodingQuestion(
             id=coding_question_id,
             title=row['title'],
             problem=row['problem'],
@@ -50,20 +58,22 @@ class CodingQuestionsService:
             return_type=row['return_type'],
             difficulty=row['difficulty']
         )
-        # TODO: remove get_test_cases
-        rows = await self.repo.get_test_cases(coding_question_id=coding_question_id)
 
-        test_cases = []
-        for row in rows:
-            test_cases.append(TestCase(
-                input=row['input'],
-                output=row['output']
-            ))
-        test_cases = TestCases(
-            test_cases=test_cases
-        )
+    async def get_random_coding_question(self, user_id: int, user_level: int) -> CodingQuestion | None:
+        while True:
+            row = await self.repo.get_random_coding_question(difficulty=user_level)
+            is_decided = await self.repo.get_decided_coding_question(coding_question_id=row['id'], user_id=user_id)
+            if not is_decided:
+                break
 
-        return coding_question, test_cases
+        coding_question = await self.get_coding_question(row['id'])
+
+        return coding_question
+
+
+class CompilationResult(BaseModel):
+    func: Any | None = None
+    error: str | None = None
 
 
 class ExecutionResult(BaseModel):
@@ -72,7 +82,9 @@ class ExecutionResult(BaseModel):
 
 
 class CodingQuestionsExecutionService:
-    def __init__(self, code: str, return_type: str) -> None:
+    def __init__(self, pg_pool: asyncpg.Pool, question_id: int, code: str, return_type: str) -> None:
+        self.repo = CodingQuestionsRepo(pg_pool=pg_pool)
+        self.question_id = question_id
         self.code = self.convert_code(code)
         self.return_type = self.convert_return_type(return_type)
 
@@ -84,18 +96,47 @@ class CodingQuestionsExecutionService:
     def convert_return_type(return_type: str) -> str:
         return f'<class \'{return_type}\'>'
 
-    # TODO: not execute code; it is compilation
-    def execute(self) -> ExecutionResult:
+    def compilation(self) -> CompilationResult:
         try:
             executable_code = compile(self.code, '<string>', 'exec')
             globals_dict, locals_dict = {}, {}
             exec(executable_code, globals_dict, locals_dict)
         except SyntaxError as e:
-            return ExecutionResult(
+            return CompilationResult(
                 error=f'SyntaxError: {e}'
             )
+        return CompilationResult(
+            func=locals_dict['solution']
+        )
+
+    def execute(self, func: Callable, test_case: TestCase) -> ExecutionResult:
+        try:
+            result = func(test_case.input)
+
+            if str(type(result)) != self.return_type:
+                raise ReturnTypeError(return_type=self.return_type, wrong_type=str(type(result)))
+            elif result != TestCase.output:
+                raise WrongOutputError(
+                    correct_output=test_case.output,
+                    wrong_output=result
+                )
+            else:
+                return ExecutionResult(
+                    result=result
+                )
+        except KeyError as e:
+            error = f'FunctionNameError: function name must be {e}'
+        except TypeError as e:
+            error = f'FunctionArgsError: {e}'
+        except NameError as e:
+            error = f'NameError: {e}'
+        except ReturnTypeError as e:
+            error = str(e)
+        except WrongOutputError as e:
+            error = str(e)
+
         return ExecutionResult(
-            result=locals_dict['solution']
+            error=error
         )
 
     def validate_input(self) -> str | None:
@@ -105,36 +146,35 @@ class CodingQuestionsExecutionService:
         if 'while True:' in self.code:
             return 'ForeverLoopError: function cannot contain forever loop'
 
-    def run_code(self) -> tuple[str, str]:
-        # TODO: remove status and result from class attributes
+    async def get_test_cases(self) -> TestCases:
+        rows = await self.repo.get_test_cases(coding_question_id=self.question_id)
 
-        # TODO: divide func on parts; (def validate_input)
-        #
+        test_cases = []
+        for row in rows:
+            test_cases.append(TestCase(
+                input=row['input'],
+                output=row['output']
+            ))
+
+        return TestCases(
+            test_cases=test_cases
+        )
+
+    async def run_code(self) -> tuple[str, str]:
+        status = 'error'
+
         error = self.validate_input()
         if error:
-            return 'error', error
+            return status, error
 
-        res = self.execute()
+        func = self.compilation()
+        if func.error:
+            return status, func.error
 
-        if res.error:
-            return 'error', res.error
+        test_cases = await self.get_test_cases()
 
-        # TODO: refactor (move to execute func)
-        try:
-            # TODO: un with test cases
-            self.result = res.result([1, 2, 3])
-        except KeyError as e:  # если неправильное имя функции
-            self.result = f'FunctionNameError: function name must be {e}'
-        except TypeError as e:  # если нет аргументов в определении функции
-            self.result = f'FunctionArgsError: {e}'
-        except NameError as e:  # если используется переменная, которая не объявлена
-            self.result = f'NameError: {e}'
-        else:
-            if str(type(self.result)) != self.return_type:
-                self.status = 'error'
-                self.result = f'ReturnTypeError: return type must be {self.return_type}'
-            else:
-                self.status = 'success'
-                self.result = str(self.result)
+        result = None
+        for test_case in test_cases.test_cases:
+            result = self.execute(func.func, test_case)
 
-        return self.status, self.result
+        return status, str(result)

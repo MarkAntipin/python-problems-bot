@@ -1,16 +1,14 @@
-from fastapi import FastAPI, Request, Response, Body, Query, Depends
-from fastapi.templating import Jinja2Templates
-from fastapi.responses import JSONResponse
-from pydantic import BaseModel
-from starlette.middleware.cors import CORSMiddleware
 import uvicorn
-
 import asyncpg
+from fastapi import FastAPI, Request, Body, Query
+from fastapi.templating import Jinja2Templates
+from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
+from starlette.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
 
+from settings import PostgresSettings, WEB_APP_URL
 from src.services.coding_questions import CodingQuestionsService, CodingQuestionsExecutionService
-from enum import StrEnum, auto
-
-from settings import PostgresSettings
+from data_formats import QuestionData, QuestionAnswerStatus, QuestionResult
 
 
 async def get_pg_pool() -> asyncpg.Pool:
@@ -18,8 +16,17 @@ async def get_pg_pool() -> asyncpg.Pool:
     return await asyncpg.create_pool(dsn=pg_settings.url)
 
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    pg_settings = PostgresSettings()
+    pool = await asyncpg.create_pool(dsn=pg_settings.url)
+    app.state.pool = pool
+    yield
+
+
 app = FastAPI(
-    title='Mentor Bot'
+    title='Mentor Bot',
+    lifespan=lifespan
 )
 
 origins = [
@@ -34,36 +41,11 @@ app.add_middleware(
     allow_methods=['*'],
     allow_headers=['*']
 )
+# app.add_middleware(
+#     HTTPSRedirectMiddleware
+# )
 
 templates = Jinja2Templates(directory='templates')
-
-
-class QuestionData(BaseModel):
-    code: str
-    return_type: str
-
-
-class QuestionAnswerStatus(StrEnum):
-    success = auto()
-    error = auto()
-
-
-class QuestionResult(BaseModel):
-    status: QuestionAnswerStatus
-    data: str
-
-
-# async def get_pg_connection() -> asyncpg.Connection:
-#     async with app.state.pool.acquire() as conn:
-#         yield conn
-
-
-
-@app.on_event('startup')
-async def startup() -> None:
-    pg_settings = PostgresSettings()
-    pool = await asyncpg.create_pool(dsn=pg_settings.url)
-    app.state.pool = pool
 
 
 @app.get('/question/{question_id}')
@@ -71,31 +53,42 @@ async def get_question_page(request: Request, question_id: int): # noqa ANN201
     coding_questions_service = CodingQuestionsService(pg_pool=request.app.state.pool)
     coding_question = await coding_questions_service.get_coding_question(coding_question_id=question_id)
     if not coding_question:
-        pass
+        return templates.TemplateResponse(
+            'error.html',
+            {
+                'question': coding_question.title
+            }
+        )
 
-    coding_question, test_cases = coding_question
+    url = WEB_APP_URL.format(question_id=question_id, return_type=coding_question.return_type)
 
     return templates.TemplateResponse(
         'main.html',
         {
             'request': request,
+            'url': url,
             'question_id': question_id,
-            'title': coding_question['title'],
-            'problem': coding_question['problem'],
-            'params': coding_question['params'],
-            'return_type': coding_question['return_type']
+            'title': coding_question.title,
+            'problem': coding_question.problem,
+            'params': coding_question.params,
+            'return_type': coding_question.return_type
         }
     )
 
 
 @app.post('/question/{question_id}/result/', response_model=QuestionResult)
-async def execute_code(question_id: int, return_type: str = Query(), code: str = Body()) -> QuestionResult:
+async def execute_code(request: Request, question_id: int, return_type: str = Query(), code: str = Body()):
     # TODO: get question
     # TODO: get test cases
     # TODO: execute code
     # TODO: check result
     # TODO: save result (return error/success)
-    coding_questions_execution_service = CodingQuestionsExecutionService(code, return_type)
+    coding_questions_execution_service = CodingQuestionsExecutionService(
+        pg_pool=request.app.state.pool,
+        question_id=question_id,
+        code=code,
+        return_type=return_type
+    )
     status, result = coding_questions_execution_service.run_code()
 
     return QuestionResult(

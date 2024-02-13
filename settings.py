@@ -12,6 +12,8 @@ load_dotenv(ENV_FILE)
 
 MAX_QUESTION_PER_DAY: int = 3
 
+WEB_APP_URL = 'https://localhost:8000/question/{question_id}/result/?return_type={return_type}'
+
 
 class PostgresSettings(BaseSettings):
     HOST: str = 'localhost'
@@ -34,7 +36,7 @@ class PostgresSettings(BaseSettings):
 
 
 class BotSettings(BaseSettings):
-    TOKEN: str
+    TOKEN: str = '6605895101:AAEPjxsl0ORfNwawp4ZWhmGzA8sckj9ShZY'
 
     class Config:
         case_sensitive = False
