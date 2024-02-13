@@ -160,3 +160,5 @@ cython_debug/
 .idea/
 bot_data/bot_data
 database
+
+.DS_Store

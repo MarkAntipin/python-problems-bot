@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from dotenv import load_dotenv
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -30,16 +30,13 @@ class PostgresSettings(BaseSettings):
     def url_for_persistence(self) -> str:
         return f'postgresql://{self.USER}:{self.PASSWORD}@{self.HOST}:{self.PORT}/{self.DATABASE}'
 
-    class Config:
-        case_sensitive = False
-        env_prefix = "PG_"
+    model_config = SettingsConfigDict(env_file=ENV_FILE, case_sensitive=False, env_prefix="PG_")
 
 
 class BotSettings(BaseSettings):
     TOKEN: str = '6605895101:AAEPjxsl0ORfNwawp4ZWhmGzA8sckj9ShZY'
 
-    class Config:
-        case_sensitive = False
+    model_config = SettingsConfigDict(env_file=ENV_FILE, case_sensitive=False)
 
 
 class TestSettings(BaseSettings):
@@ -49,6 +46,4 @@ class TestSettings(BaseSettings):
     PG_DATABASE: str = 'python-problems-bot'
     PG_PORT: int = 5432
 
-    class Config:
-        case_sensitive = False
-        env_prefix = "TEST_"
+    model_config = SettingsConfigDict(env_file=ENV_FILE, case_sensitive=False, env_prefix="TEST_")

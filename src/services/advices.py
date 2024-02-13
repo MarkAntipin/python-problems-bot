@@ -20,16 +20,15 @@ class AdvicesService:
         self.repo = AdvicesRepo(pg_pool=pg_pool)
 
     async def get_new_advice_for_user(self, user_id: int, user_level: int) -> GetNewAdviceForUserResp | None:
-        weak_theme = await self.repo.get_weak_theme(
-            user_id=user_id,
-            user_level=user_level
-        )
-
+        weak_theme = await self.repo.get_weak_theme(user_id=user_id, user_level=user_level)
         if not weak_theme:
             return
 
-        advice = await self.repo.get_advice_by_theme_and_level(weak_theme['theme'], user_level)
+        advice_send = await self.repo.get_send_advice(user_id, weak_theme['theme'], user_level)
+        if advice_send:
+            return
 
+        advice = await self.repo.get_new_advice(weak_theme['theme'], user_level)
         if not advice:
             return
 
@@ -43,15 +42,15 @@ class AdvicesService:
         )
 
     async def get_by_id(self, advice_id: int) -> Advice | None:
-        row = await self.repo.get_by_id(advice_id=advice_id)
+        row = await self.repo.get_advice_by_id(advice_id=advice_id)
         if not row:
             return
         return Advice(
-                advice_id=row['id'],
-                theme=row['theme'],
-                level=row['level'],
-                link=row['link']
-            )
+            advice_id=row['id'],
+            theme=row['theme'],
+            level=row['level'],
+            link=row['link']
+        )
 
     async def send_advice(
         self,
