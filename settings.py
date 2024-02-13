@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from dotenv import load_dotenv
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings
 
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -12,13 +12,11 @@ load_dotenv(ENV_FILE)
 
 MAX_QUESTION_PER_DAY: int = 3
 
-WEB_APP_URL = 'https://localhost:8000/question/{question_id}/result/?return_type={return_type}'
-
 
 class PostgresSettings(BaseSettings):
     HOST: str = 'localhost'
-    USER: str = 'postgres'
-    PASSWORD: str = 'postgres'
+    USER: str = 'python-problems-bot'
+    PASSWORD: str = 'python-problems-bot'
     DATABASE: str = 'python-problems-bot'
     PORT: int = 5432
 
@@ -30,13 +28,16 @@ class PostgresSettings(BaseSettings):
     def url_for_persistence(self) -> str:
         return f'postgresql://{self.USER}:{self.PASSWORD}@{self.HOST}:{self.PORT}/{self.DATABASE}'
 
-    model_config = SettingsConfigDict(env_file=ENV_FILE, case_sensitive=False, env_prefix="PG_")
+    class Config:
+        case_sensitive = False
+        env_prefix = "PG_"
 
 
 class BotSettings(BaseSettings):
     TOKEN: str
 
-    model_config = SettingsConfigDict(env_file=ENV_FILE, case_sensitive=False)
+    class Config:
+        case_sensitive = False
 
 
 class TestSettings(BaseSettings):
@@ -46,4 +47,6 @@ class TestSettings(BaseSettings):
     PG_DATABASE: str = 'python-problems-bot'
     PG_PORT: int = 5432
 
-    model_config = SettingsConfigDict(env_file=ENV_FILE, case_sensitive=False, env_prefix="TEST_")
+    class Config:
+        case_sensitive = False
+        env_prefix = "TEST_"
