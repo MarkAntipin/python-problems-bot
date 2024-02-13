@@ -12,6 +12,8 @@ load_dotenv(ENV_FILE)
 
 MAX_QUESTION_PER_DAY: int = 3
 
+WEB_APP_URL = ''
+
 
 class PostgresSettings(BaseSettings):
     HOST: str = 'localhost'
