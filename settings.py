@@ -34,7 +34,7 @@ class PostgresSettings(BaseSettings):
 
 
 class BotSettings(BaseSettings):
-    TOKEN: str = '6605895101:AAEPjxsl0ORfNwawp4ZWhmGzA8sckj9ShZY'
+    TOKEN: str
 
     model_config = SettingsConfigDict(env_file=ENV_FILE, case_sensitive=False)
 
