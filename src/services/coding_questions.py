@@ -1,5 +1,4 @@
 from typing import Any, Callable
-import random
 
 import asyncpg
 from pydantic import BaseModel
@@ -17,7 +16,7 @@ class CodingQuestion(BaseModel):
 
 
 class TestCase(BaseModel):
-    input: Any
+    input: Any  # noqa:A003
     output: Any
 
 
@@ -26,20 +25,20 @@ class TestCases(BaseModel):
 
 
 class ReturnTypeError(Exception):
-    def __init__(self, return_type: str, wrong_type: str):
+    def __init__(self, return_type: str, wrong_type: str) -> None:
         self.return_type = return_type
         self.wrong_type = wrong_type
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'ReturnTypeError: return type must be {self.return_type}, not {self.wrong_type}'
 
 
 class WrongOutputError(Exception):
-    def __init__(self, correct_output: str, wrong_output: str):
+    def __init__(self, correct_output: str, wrong_output: str) -> None:
         self.correct_output = correct_output
         self.wrong_output = wrong_output
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'WrongOutputError: wrong output value {self.wrong_output}, output must be {self.correct_output}'
 
 

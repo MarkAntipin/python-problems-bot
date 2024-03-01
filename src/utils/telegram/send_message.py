@@ -6,13 +6,10 @@ from telegram.constants import ParseMode
 from telegram.error import Forbidden
 
 from src.images import IMAGE_TYPE_TO_IMAGE_PATH, ImageType
-from src.services.questions import Question, QuestionsService
 from src.services.advices import Advice, AdvicesService
-from src.utils.formaters import format_question, format_advice
-from src.utils.telegram.inline_keyboard import (
-    format_inline_keyboard,
-    format_inline_keyboard_for_question
-)
+from src.services.questions import Question, QuestionsService
+from src.utils.formaters import format_advice, format_question
+from src.utils.telegram.inline_keyboard import format_inline_keyboard, format_inline_keyboard_for_question
 
 logger = logging.getLogger(__name__)
 
