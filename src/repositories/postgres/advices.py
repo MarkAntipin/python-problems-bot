@@ -14,13 +14,13 @@ class AdvicesRepo:
                   count(*) AS false_answers,
                   theme
                 FROM
-                  users_questions t1   
+                  users_questions t1
                   JOIN questions t2
                     ON t1.question_id = t2.id
                 WHERE
-                  is_correct = 'false' 
+                  is_correct = 'false'
                 AND
-                  user_id = $1 
+                  user_id = $1
                 AND
                   level = $2
                 GROUP BY
@@ -53,7 +53,7 @@ class AdvicesRepo:
                 FROM
                   advices
                 WHERE
-                  theme = $1 
+                  theme = $1
                 AND
                   level = $2;
                 """,

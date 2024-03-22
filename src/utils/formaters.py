@@ -1,7 +1,9 @@
+import random
+
+from src.services.advices import Advice
 from src.services.leaders import Leader, UserInLeaders
 from src.services.questions import Question
-from src.services.advices import Advice
-from src.texts import CORRECT_ANSWER_TEXT, INCORRECT_ANSWER_TEXT
+from src.texts import CORRECT_ANSWERS, INCORRECT_ANSWERS
 
 
 def _format_choices(choices: dict) -> str:
@@ -14,19 +16,28 @@ def format_question(question: Question) -> str:
 
 
 def format_explanation(question: Question, is_correct: bool) -> str:
+    user_choice = question.choices[question.answer] if is_correct else "Неверный ответ"
     if is_correct:
-        answer_text = CORRECT_ANSWER_TEXT
-    else:
-        answer_text = INCORRECT_ANSWER_TEXT
+        answer_text = random.choice(CORRECT_ANSWERS)
 
-    return (
-        f'{question.text}\n\n'
-        f'<b>Ответ:</b> {question.answer})'
-        f' {question.choices[question.answer]}\n\n'
-        f'{answer_text}'
-        f'<b> Объяснение:</b>\n'
-        f'{question.explanation}'
-    )
+        return (
+            f'\n{question.text}\n'
+            f'{answer_text}\n'
+            f'<b>Правильный ответ:/b> {question.answer})'
+            f' {question.choices[question.answer]}\n'
+             )
+    else:
+        answer_text = random.choice(INCORRECT_ANSWERS)
+
+        return (
+            f'\n{question.text}\n'
+            f'{answer_text}\n'
+            f'<b>Правильный ответ:/b> {question.answer})'
+            f' {question.choices[question.answer]}\n'
+            f'<b>Твой выбор:/b> {user_choice}\n'
+            f'<b> Объяснение:</b>\n'
+            f'{question.explanation}'
+        )
 
 
 def format_advice(advice: Advice) -> str:

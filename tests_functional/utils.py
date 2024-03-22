@@ -165,17 +165,17 @@ async def add_users_send_advices(
     advice_id: int,
     created_at: datetime
 ) -> None:
-    row = await pg.fetchrow(
+    await pg.fetchrow(
         """
         INSERT INTO
             users_send_advices (
-              user_id, 
-              advice_id, 
+              user_id,
+              advice_id,
               created_at
             )
             VALUES (
-              $1, 
-              $2, 
+              $1,
+              $2,
               $3
             );
         """,

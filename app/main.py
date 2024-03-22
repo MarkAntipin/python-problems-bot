@@ -1,14 +1,14 @@
-import uvicorn
-import asyncpg
-from fastapi import FastAPI, Request, Body, Query
-from fastapi.templating import Jinja2Templates
-from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
-from starlette.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
-from settings import PostgresSettings, WEB_APP_URL
-from src.services.coding_questions import CodingQuestionsService, CodingQuestionsExecutionService
-from data_formats import QuestionData, QuestionAnswerStatus, QuestionResult
+import asyncpg
+import uvicorn
+from data_formats import QuestionResult
+from fastapi import Body, FastAPI, Query, Request
+from fastapi.templating import Jinja2Templates
+from starlette.middleware.cors import CORSMiddleware
+
+from settings import WEB_APP_URL, PostgresSettings
+from src.services.coding_questions import CodingQuestionsExecutionService, CodingQuestionsService
 
 
 async def get_pg_pool() -> asyncpg.Pool:
