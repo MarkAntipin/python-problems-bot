@@ -60,3 +60,8 @@
 
         - name: Run functional tests
           run: poetry run pytest -v tests_functional
+          env:
+            POSTGRES_USER: python-problems-bot
+            POSTGRES_PASSWORD: python-problems-bot
+            POSTGRES_PORT: 5436
+            POSTGRES_DB: python-problems-bot
