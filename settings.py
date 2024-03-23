@@ -16,11 +16,11 @@ WEB_APP_URL = ''
 
 
 class PostgresSettings(BaseSettings):
-    HOST: str
-    USER: str
-    PASSWORD: str
-    DATABASE: str
-    PORT: int
+    HOST: str = 'localhost'
+    USER: str = 'python-problems-bot'
+    PASSWORD: str = 'python-problems-bot'
+    DATABASE: str = 'python-problems-bot'
+    PORT: int = 5432
 
     @property
     def url(self) -> str:
