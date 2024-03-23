@@ -1,29 +1,21 @@
 import logging
 
 from ptbcontrib.postgres_persistence import PostgresPersistence
-from telegram.ext import (
-    Application,
-    CallbackQueryHandler,
-    CommandHandler,
-    MessageHandler,
-    ConversationHandler,
-    filters
-)
+from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ConversationHandler
 
-from settings import BotSettings, PostgresSettings
-from bot.handlers.error import error_handler
-from bot.handlers.onboarding import choose_level_handler, finish_onboarding_handler
-from bot.handlers.questions import questions_handler
-from bot.handlers.states import States
-from bot.handlers.code import web_app_data
 from bot.handlers.commands import (
     cancel_handler,
+    code_handler,
     leaders_handler,
     set_difficult_handler,
     set_easy_handler,
     start_handler,
-    code_handler
 )
+from bot.handlers.error import error_handler
+from bot.handlers.onboarding import choose_level_handler, finish_onboarding_handler
+from bot.handlers.questions import questions_handler
+from bot.handlers.states import States
+from settings import BotSettings, PostgresSettings
 
 
 def _setup_logging() -> None:
@@ -70,7 +62,5 @@ def create_bot() -> Application:
     bot.add_handler(CommandHandler('easy', set_easy_handler))
     bot.add_handler(CommandHandler('difficult', set_difficult_handler))
     bot.add_handler(CommandHandler('code', code_handler))
-
-    bot.add_handler(MessageHandler(filters.StatusUpdate.WEB_APP_DATA, web_app_data))
 
     return bot
