@@ -65,3 +65,9 @@
             POSTGRES_PASSWORD: python-problems-bot
             POSTGRES_PORT: 5436
             POSTGRES_DB: python-problems-bot
+
+            TEST_POSTGRES_USER: python-problems-bot
+            TEST_POSTGRES_PASSWORD: python-problems-bot
+            TEST_POSTGRES_PORT: 5436
+            TEST_POSTGRES_DB: python-problems-bot
+
