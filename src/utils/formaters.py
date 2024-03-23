@@ -1,6 +1,6 @@
+from src.services.advices import Advice
 from src.services.leaders import Leader, UserInLeaders
 from src.services.questions import Question
-from src.services.advices import Advice
 from src.texts import CORRECT_ANSWER_TEXT, INCORRECT_ANSWER_TEXT
 
 

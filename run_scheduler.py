@@ -6,8 +6,8 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 
 from src.utils.postgres_pool import pg_pool
-from tasks.send_questions import send_daily_questions_task
 from tasks.send_advices import send_advices_task
+from tasks.send_questions import send_daily_questions_task
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO

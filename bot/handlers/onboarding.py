@@ -1,16 +1,15 @@
 import logging
 
 from telegram import Update
+from telegram import User as TGUser
 from telegram.error import BadRequest
 from telegram.ext import ContextTypes
 
 from bot.handlers.states import States
-from src.texts import CHOOSE_LEVEL_TEXT, FINISH_ONBOARDING_TEXT
-from src.utils.telegram.send_message import send_message
 from src.services.users import User, UsersService
+from src.texts import CHOOSE_LEVEL_TEXT, FINISH_ONBOARDING_TEXT
 from src.utils.postgres_pool import pg_pool
-from telegram import User as TGUser
-
+from src.utils.telegram.send_message import send_message
 
 logger = logging.getLogger(__name__)
 
