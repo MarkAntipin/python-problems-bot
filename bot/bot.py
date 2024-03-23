@@ -5,7 +5,6 @@ from telegram.ext import Application, CallbackQueryHandler, CommandHandler, Conv
 
 from bot.handlers.commands import (
     cancel_handler,
-    code_handler,
     leaders_handler,
     set_difficult_handler,
     set_easy_handler,
@@ -61,6 +60,5 @@ def create_bot() -> Application:
     bot.add_handler(CommandHandler('leaders', leaders_handler))
     bot.add_handler(CommandHandler('easy', set_easy_handler))
     bot.add_handler(CommandHandler('difficult', set_difficult_handler))
-    bot.add_handler(CommandHandler('code', code_handler))
 
     return bot

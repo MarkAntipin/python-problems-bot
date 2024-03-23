@@ -1,13 +1,11 @@
 import logging
 
-from telegram import KeyboardButton, ReplyKeyboardMarkup, Update, WebAppInfo
+from telegram import Update
 from telegram import User as TGUser
 from telegram.ext import ContextTypes
 
 from bot.handlers.states import States
-from settings import WEB_APP_URL
 from src.images import ImageType
-from src.services.coding_questions import CodingQuestionsService
 from src.services.leaders import LeadersService
 from src.services.users import UsersService
 from src.texts import GREETING_TEXT, START_BUTTON_TEXT
@@ -111,27 +109,3 @@ async def set_easy_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
     await users_service.set_level(user_id=user.id, level=1)
     await send_message(message=update.message, text='Теперь вопросы станут легче')
     return States.daily_question
-
-
-async def code_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
-    users_service = UsersService(pg_pool=pg_pool)
-    coding_questions_service = CodingQuestionsService(pg_pool=pg_pool)
-
-    tg_user: TGUser = update.message.from_user
-    user = await users_service.get_or_create(tg_user=tg_user)
-    logger.info('User %d run code handler', user.id)
-
-    coding_question = await coding_questions_service.get_random_coding_question(user_id=user.id, user_level=user.level)
-
-    url = WEB_APP_URL.format(question_id=coding_question.id, return_type=coding_question.return_type)
-
-    await update.message.reply_text(
-        text='Нажмите кнопку, чтобы начать',
-        reply_markup=ReplyKeyboardMarkup.from_button(
-            KeyboardButton(
-                text='Начать',
-                web_app=WebAppInfo(url=url)
-            )
-        )
-    )
-    return States.code
