@@ -1,17 +1,10 @@
 import logging
 
 from ptbcontrib.postgres_persistence import PostgresPersistence
-<<<<<<< HEAD
-from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ConversationHandler, MessageHandler, filters
-
-from bot.handlers.code import web_app_data
-=======
 from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ConversationHandler
 
->>>>>>> master
 from bot.handlers.commands import (
     cancel_handler,
-    code_handler,
     leaders_handler,
     set_difficult_handler,
     set_easy_handler,

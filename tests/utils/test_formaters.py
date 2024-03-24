@@ -1,11 +1,11 @@
+from unittest.mock import MagicMock
+
 import pytest
+from pytest_mock import MockerFixture
+
 from src.services.advices import Advice
 from src.services.leaders import Leader, UserInLeaders
 from src.services.questions import Question
-
-from src.texts import INCORRECT_ANSWERS, CORRECT_ANSWERS
-from src.utils.formaters import format_advice, format_leaders_message, format_question, format_explanation
-
 from src.utils.formaters import format_advice, format_explanation, format_leaders_message, format_question
 
 
@@ -23,7 +23,7 @@ def test_format_question() -> None:
 
 
 @pytest.fixture
-def test_question():
+def test_question() -> Question:
     """A fixture for creating a test question object"""
     return Question(
         id=1,
@@ -35,20 +35,22 @@ def test_question():
 
 
 @pytest.fixture
-def mocker_correct_answer_random(mocker):
+def mocker_correct_answer_random(mocker: MockerFixture) -> MagicMock:
     """return Mock fixture"""
     correct_mock = mocker.patch("random.choice", return_value="Правильный ответ! 👍")
     return correct_mock
 
 
 @pytest.fixture
-def mocker_incorrect_answer_random(mocker):
+def mocker_incorrect_answer_random(mocker: MockerFixture) -> MagicMock:
     """return Mock fixture"""
     incorrect_mock = mocker.patch("random.choice", return_value="Упс, мимо! 🙊")
     return incorrect_mock
 
 
-def test_format_explanation_correct_answer(test_question, mocker_correct_answer_random):
+def test_format_explanation_correct_answer(
+        test_question: Question,
+        mocker_correct_answer_random: MagicMock) -> None:
     """A test for the correct answer."""
     user_answer = "A"
     is_correct = True
@@ -62,7 +64,9 @@ def test_format_explanation_correct_answer(test_question, mocker_correct_answer_
     assert result == expected_output
 
 
-def test_format_explanation_incorrect_answer(test_question, mocker_incorrect_answer_random):
+def test_format_explanation_incorrect_answer(
+        test_question: Question,
+        mocker_incorrect_answer_random: MagicMock) -> None:
     """A test for the incorrect answer."""
     user_answer = "B"
     is_correct = False
