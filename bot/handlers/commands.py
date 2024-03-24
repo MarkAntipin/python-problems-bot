@@ -1,6 +1,10 @@
 import logging
 
+<<<<<<< HEAD
 from telegram import KeyboardButton, ReplyKeyboardMarkup, Update, WebAppInfo
+=======
+from telegram import Update
+>>>>>>> master
 from telegram import User as TGUser
 from telegram.ext import ContextTypes
 
@@ -111,6 +115,7 @@ async def set_easy_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
     await users_service.set_level(user_id=user.id, level=1)
     await send_message(message=update.message, text='Теперь вопросы станут легче')
     return States.daily_question
+<<<<<<< HEAD
 
 
 async def code_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
@@ -135,3 +140,5 @@ async def code_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
         )
     )
     return States.code
+=======
+>>>>>>> master

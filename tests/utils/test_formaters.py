@@ -2,8 +2,11 @@ import pytest
 from src.services.advices import Advice
 from src.services.leaders import Leader, UserInLeaders
 from src.services.questions import Question
+
 from src.texts import INCORRECT_ANSWERS, CORRECT_ANSWERS
 from src.utils.formaters import format_advice, format_leaders_message, format_question, format_explanation
+
+from src.utils.formaters import format_advice, format_explanation, format_leaders_message, format_question
 
 
 def test_format_question() -> None:

@@ -1,3 +1,4 @@
+
 import random
 
 from src.services.advices import Advice
@@ -5,6 +6,10 @@ from src.services.leaders import Leader, UserInLeaders
 from src.services.questions import Question
 from src.texts import CORRECT_ANSWERS, INCORRECT_ANSWERS
 
+from src.services.advices import Advice
+from src.services.leaders import Leader, UserInLeaders
+from src.services.questions import Question
+from src.texts import CORRECT_ANSWER_TEXT, INCORRECT_ANSWER_TEXT
 
 def _format_choices(choices: dict) -> str:
     return '\n'.join([f'{key.upper()}) {value}' for key, value in choices.items()])
