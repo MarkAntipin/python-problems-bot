@@ -1,7 +1,8 @@
+import pytest
 from src.services.advices import Advice
 from src.services.leaders import Leader, UserInLeaders
 from src.services.questions import Question
-from src.texts import INCORRECT_ANSWERS
+from src.texts import INCORRECT_ANSWERS, CORRECT_ANSWERS
 from src.utils.formaters import format_advice, format_leaders_message, format_question, format_explanation
 
 
@@ -18,20 +19,59 @@ def test_format_question() -> None:
     assert res == 'text\n\nA) 1\nB) 2'
 
 
-def test_format_explanation() -> None:
-    res = format_explanation(
-        question=Question(
-            id=1,
-            text='text',
-            answer='A',
-            choices={'A': 1, 'B': 2},
-            explanation='explanation'
-        ),
-        is_correct=False,
-        user_answer='B'
+@pytest.fixture
+def test_question():
+    """A fixture for creating a test question object"""
+    return Question(
+        id=1,
+        text='text',
+        choices={'A': 1, 'B': 2},
+        answer='A',
+        explanation='explanation'
     )
-    print(res)
-    # assert res == 'text\n\n<b>Ответ:</b> A) 1\n\nПравильно ✅\n\n<b> Объяснение:</b>\nexplanation'
+
+
+@pytest.fixture
+def mocker_correct_answer_random(mocker):
+    """return Mock fixture"""
+    correct_mock = mocker.patch("random.choice", return_value="Правильный ответ! 👍")
+    return correct_mock
+
+
+@pytest.fixture
+def mocker_incorrect_answer_random(mocker):
+    """return Mock fixture"""
+    incorrect_mock = mocker.patch("random.choice", return_value="Упс, мимо! 🙊")
+    return incorrect_mock
+
+
+def test_format_explanation_correct_answer(test_question, mocker_correct_answer_random):
+    """A test for the correct answer."""
+    user_answer = "A"
+    is_correct = True
+    expected_output = (
+        "\ntext\n"
+        "Правильный ответ! 👍\n"
+        "<b>Правильный ответ:</b> A) 1\n"
+        "<b>Твой выбор:</b> A)\n"
+    )
+    result = format_explanation(test_question, is_correct, user_answer)
+    assert result == expected_output
+
+
+def test_format_explanation_incorrect_answer(test_question, mocker_incorrect_answer_random):
+    """A test for the incorrect answer."""
+    user_answer = "B"
+    is_correct = False
+    expected_output = (
+        "\ntext\n"
+        "Упс, мимо! 🙊\n"
+        "<b>Правильный ответ:</b> A) 1\n"
+        "<b>Твой выбор:</b> B)\n"
+        "<b> Объяснение:</b>\nexplanation"
+    )
+    result = format_explanation(test_question, is_correct, user_answer)
+    assert result == expected_output
 
 
 def test_format_advice() -> None:

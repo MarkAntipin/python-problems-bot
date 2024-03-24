@@ -24,8 +24,8 @@ def format_explanation(question: Question, is_correct: bool, user_answer: str) -
     return (
         f'\n{question.text}\n'
         f'{answer_text}\n'
-        f'<b>Правильный ответ:/b> {question.answer}) {_q_choice}'
-        f'<b>Твой выбор:/b> {user_choice}) {_q_choice}'
+        f'<b>Правильный ответ:</b> {question.answer}) {_q_choice}'
+        f'<b>Твой выбор:</b> {user_choice})\n'
         f'{explanation}'
     )
 
