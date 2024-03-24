@@ -15,29 +15,19 @@ def format_question(question: Question) -> str:
     return f'{question.text}\n\n{formatted_choices}'
 
 
-def format_explanation(question: Question, is_correct: bool) -> str:
-    user_choice = question.choices[question.answer] if is_correct else "Неверный ответ"
-    if is_correct:
-        answer_text = random.choice(CORRECT_ANSWERS)
+def format_explanation(question: Question, is_correct: bool, user_answer: str) -> str:
+    user_choice = question.answer if is_correct else user_answer
+    answer_text = random.choice(CORRECT_ANSWERS if is_correct else INCORRECT_ANSWERS)
+    _q_choice = f'{question.choices[question.answer]}\n'
+    explanation = f'<b> Объяснение:</b>\n{question.explanation}' if not is_correct else ''
 
-        return (
-            f'\n{question.text}\n'
-            f'{answer_text}\n'
-            f'<b>Правильный ответ:/b> {question.answer})'
-            f' {question.choices[question.answer]}\n'
-             )
-    else:
-        answer_text = random.choice(INCORRECT_ANSWERS)
-
-        return (
-            f'\n{question.text}\n'
-            f'{answer_text}\n'
-            f'<b>Правильный ответ:/b> {question.answer})'
-            f' {question.choices[question.answer]}\n'
-            f'<b>Твой выбор:/b> {user_choice}\n'
-            f'<b> Объяснение:</b>\n'
-            f'{question.explanation}'
-        )
+    return (
+        f'\n{question.text}\n'
+        f'{answer_text}\n'
+        f'<b>Правильный ответ:/b> {question.answer}) {_q_choice}'
+        f'<b>Твой выбор:/b> {user_choice}) {_q_choice}'
+        f'{explanation}'
+    )
 
 
 def format_advice(advice: Advice) -> str:
