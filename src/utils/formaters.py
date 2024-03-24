@@ -19,13 +19,13 @@ def format_question(question: Question) -> str:
 def format_explanation(question: Question, is_correct: bool, user_answer: str) -> str:
     user_choice = question.answer if is_correct else user_answer
     answer_text = random.choice(CORRECT_ANSWERS if is_correct else INCORRECT_ANSWERS)
-    _q_choice = f'{question.choices[question.answer]}\n'
-    explanation = f'<b> Объяснение:</b>\n{question.explanation}' if not is_correct else ''
+    correct_choice = f'{question.choices[question.answer]}\n'
+    explanation = f'<b> Объяснение:</b>\n{question.explanation}'
 
     return (
         f'\n{question.text}\n'
         f'{answer_text}\n'
-        f'<b>Правильный ответ:</b> {question.answer}) {_q_choice}'
+        f'<b>Правильный ответ:</b> {question.answer}) {correct_choice}'
         f'<b>Твой выбор:</b> {user_choice})\n'
         f'{explanation}'
     )

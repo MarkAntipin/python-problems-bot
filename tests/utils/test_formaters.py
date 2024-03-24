@@ -1,7 +1,7 @@
-from unittest.mock import MagicMock
+import random
+from unittest.mock import Mock
 
 import pytest
-from pytest_mock import MockerFixture
 
 from src.services.advices import Advice
 from src.services.leaders import Leader, UserInLeaders
@@ -34,24 +34,10 @@ def test_question() -> Question:
     )
 
 
-@pytest.fixture
-def mocker_correct_answer_random(mocker: MockerFixture) -> MagicMock:
-    """return Mock fixture"""
-    correct_mock = mocker.patch("random.choice", return_value="Правильный ответ! 👍")
-    return correct_mock
-
-
-@pytest.fixture
-def mocker_incorrect_answer_random(mocker: MockerFixture) -> MagicMock:
-    """return Mock fixture"""
-    incorrect_mock = mocker.patch("random.choice", return_value="Упс, мимо! 🙊")
-    return incorrect_mock
-
-
-def test_format_explanation_correct_answer(
-        test_question: Question,
-        mocker_correct_answer_random: MagicMock) -> None:
+def test_format_explanation__correct_answer(test_question: Question) -> None:
     """A test for the correct answer."""
+    mock_choice = Mock(return_value="Правильный ответ! 👍")
+    random.choice = mock_choice
     user_answer = "A"
     is_correct = True
     expected_output = (
@@ -59,15 +45,16 @@ def test_format_explanation_correct_answer(
         "Правильный ответ! 👍\n"
         "<b>Правильный ответ:</b> A) 1\n"
         "<b>Твой выбор:</b> A)\n"
+        "<b> Объяснение:</b>\nexplanation"
     )
     result = format_explanation(test_question, is_correct, user_answer)
     assert result == expected_output
 
 
-def test_format_explanation_incorrect_answer(
-        test_question: Question,
-        mocker_incorrect_answer_random: MagicMock) -> None:
+def test_format_explanation__incorrect_answer(test_question: Question) -> None:
     """A test for the incorrect answer."""
+    mock_choice = Mock(return_value="Упс, мимо! 🙊")
+    random.choice = mock_choice
     user_answer = "B"
     is_correct = False
     expected_output = (
