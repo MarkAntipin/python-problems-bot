@@ -43,6 +43,7 @@ async def questions_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str
     callback_questions_data: ParsedCallbackQuestionsData = parse_callback_questions_data(callback_data=query.data)
     if callback_questions_data:
         # answer on previous question
+        user_answer = callback_questions_data.answer
         previous_question = await questions_service.get_by_id(question_id=callback_questions_data.question_id)
         if not previous_question:
             logger.error('No question found to answer. question_id: %d', callback_questions_data.question_id)
@@ -50,12 +51,13 @@ async def questions_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str
             is_correct = await questions_service.answer_question(
                 question=previous_question,
                 user_id=user.id,
-                user_answer=callback_questions_data.answer
+                user_answer=user_answer
             )
 
             await query.edit_message_text(
                 parse_mode=ParseMode.HTML,
-                text=format_explanation(question=previous_question, is_correct=is_correct)
+                text=format_explanation(question=previous_question,
+                                        is_correct=is_correct, user_answer=user_answer)
             )
 
     # send new question
