@@ -109,3 +109,4 @@ async def set_easy_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
     await users_service.set_level(user_id=user.id, level=1)
     await send_message(message=update.message, text='Теперь вопросы станут легче')
     return States.daily_question
+

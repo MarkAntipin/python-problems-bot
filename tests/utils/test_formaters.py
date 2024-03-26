@@ -1,3 +1,8 @@
+import random
+from unittest.mock import Mock
+
+import pytest
+
 from src.services.advices import Advice
 from src.services.leaders import Leader, UserInLeaders
 from src.services.questions import Question
@@ -17,18 +22,50 @@ def test_format_question() -> None:
     assert res == 'text\n\nA) 1\nB) 2'
 
 
-def test_format_explanation() -> None:
-    res = format_explanation(
-        question=Question(
-            id=1,
-            text='text',
-            answer='A',
-            choices={'A': 1, 'B': 2},
-            explanation='explanation'
-        ),
-        is_correct=True
+@pytest.fixture
+def test_question() -> Question:
+    """A fixture for creating a test question object"""
+    return Question(
+        id=1,
+        text='text',
+        choices={'A': 1, 'B': 2},
+        answer='A',
+        explanation='explanation'
     )
-    assert res == 'text\n\n<b>Ответ:</b> A) 1\n\nПравильно ✅\n\n<b> Объяснение:</b>\nexplanation'
+
+
+def test_format_explanation__correct_answer(test_question: Question) -> None:
+    """A test for the correct answer."""
+    mock_choice = Mock(return_value="Правильный ответ! 👍")
+    random.choice = mock_choice
+    user_answer = "A"
+    is_correct = True
+    expected_output = (
+        "\ntext\n"
+        "Правильный ответ! 👍\n"
+        "<b>Правильный ответ:</b> A) 1\n"
+        "<b>Твой выбор:</b> A)\n"
+        "<b> Объяснение:</b>\nexplanation"
+    )
+    result = format_explanation(test_question, is_correct, user_answer)
+    assert result == expected_output
+
+
+def test_format_explanation__incorrect_answer(test_question: Question) -> None:
+    """A test for the incorrect answer."""
+    mock_choice = Mock(return_value="Упс, мимо! 🙊")
+    random.choice = mock_choice
+    user_answer = "B"
+    is_correct = False
+    expected_output = (
+        "\ntext\n"
+        "Упс, мимо! 🙊\n"
+        "<b>Правильный ответ:</b> A) 1\n"
+        "<b>Твой выбор:</b> B)\n"
+        "<b> Объяснение:</b>\nexplanation"
+    )
+    result = format_explanation(test_question, is_correct, user_answer)
+    assert result == expected_output
 
 
 def test_format_advice() -> None:
