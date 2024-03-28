@@ -3,12 +3,12 @@ from datetime import datetime, timedelta
 import asyncpg
 from pytest_mock import MockerFixture
 
-from tasks.send_advices import send_advices_task
+from src.tasks.send_advices import send_advices_task
 from tests_functional.utils import add_advice, add_question, add_user, add_users_questions, add_users_send_advices
 
 
 async def test_send_advices_task(pg: asyncpg.Pool, mocker: MockerFixture) -> None:
-    mocker.patch('tasks.send_advices.Application', mocker.MagicMock())
+    mocker.patch('src.tasks.send_advices.Application', mocker.MagicMock())
     send_message_mock = mocker.patch('src.utils.telegram.send_message._send_message', return_value=True)
 
     await add_advice(pg=pg, level=1)

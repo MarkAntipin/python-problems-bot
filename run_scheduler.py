@@ -1,22 +1,17 @@
 import asyncio
-import logging
 from datetime import timezone
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 
+from src.tasks.send_advices import send_advices_task
+from src.tasks.send_questions import send_daily_questions_task
+from src.utils.logger import setup_logger
 from src.utils.postgres_pool import pg_pool
-from tasks.send_advices import send_advices_task
-from tasks.send_questions import send_daily_questions_task
-
-logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
-)
-logging.getLogger('httpx').setLevel(logging.WARNING)
-logging.getLogger('ptbcontrib').setLevel(logging.WARNING)
 
 
 def main() -> None:
+    setup_logger()
     scheduler = AsyncIOScheduler(timezone=timezone.utc)
     scheduler.add_job(
         send_daily_questions_task,

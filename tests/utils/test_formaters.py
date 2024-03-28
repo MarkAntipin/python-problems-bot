@@ -9,19 +9,6 @@ from src.services.questions import Question
 from src.utils.formaters import format_advice, format_explanation, format_leaders_message, format_question
 
 
-def test_format_question() -> None:
-    res = format_question(
-        question=Question(
-            id=1,
-            text='text',
-            answer='A',
-            choices={'A': 1, 'B': 2},
-            explanation='explanation'
-        )
-    )
-    assert res == 'text\n\nA) 1\nB) 2'
-
-
 @pytest.fixture
 def test_question() -> Question:
     """A fixture for creating a test question object"""
@@ -34,41 +21,59 @@ def test_question() -> Question:
     )
 
 
-def test_format_explanation__correct_answer(test_question: Question) -> None:
-    """A test for the correct answer."""
-    mock_choice = Mock(return_value="Правильный ответ! 👍")
-    random.choice = mock_choice
-    user_answer = "A"
-    is_correct = True
-    expected_output = (
-        "\ntext\n"
-        "Правильный ответ! 👍\n"
-        "<b>Правильный ответ:</b> A) 1\n"
-        "<b>Твой выбор:</b> A)\n"
-        "<b> Объяснение:</b>\nexplanation"
+def test_format_question(test_question: Question) -> None:
+    # act
+    res = format_question(question=test_question)
+
+    # assert
+    assert res == (
+        'text\n\n'
+        '*A\\)* 1\n'
+        '*B\\)* 2'
     )
+
+
+def test_format_explanation__correct_answer(test_question: Question) -> None:
+    # arrange
+    random.choice = Mock(return_value=r'Правильный ответ\! 👍')
+    user_answer = 'A'
+    is_correct = True
+
+    # act
     result = format_explanation(test_question, is_correct, user_answer)
-    assert result == expected_output
+
+    # assert
+    assert result == (
+        "\ntext\n\n"
+        "*Правильный ответ:* A\\) 1\n"
+        "*Твой выбор:* A\\) 1\n\n"
+        "Правильный ответ\\! 👍\n\n"
+        "*Объяснение:*\n"
+        "explanation"
+    )
 
 
 def test_format_explanation__incorrect_answer(test_question: Question) -> None:
-    """A test for the incorrect answer."""
-    mock_choice = Mock(return_value="Упс, мимо! 🙊")
-    random.choice = mock_choice
+    # arrange
+    random.choice = Mock(return_value=r"Упс, мимо\! 🙊")
     user_answer = "B"
     is_correct = False
-    expected_output = (
-        "\ntext\n"
-        "Упс, мимо! 🙊\n"
-        "<b>Правильный ответ:</b> A) 1\n"
-        "<b>Твой выбор:</b> B)\n"
-        "<b> Объяснение:</b>\nexplanation"
-    )
+
+    # act
     result = format_explanation(test_question, is_correct, user_answer)
-    assert result == expected_output
+
+    # assert
+    assert result == (
+        "\ntext\n\n"
+        "*Правильный ответ:* A\\) 1\n"
+        "*Твой выбор:* B\\) 2\n\n"
+        "Упс, мимо\\! 🙊\n\n"
+        "*Объяснение:*\nexplanation"
+    )
 
 
 def test_format_advice() -> None:
+    # act
     res = format_advice(
         advice=Advice(
             advice_id=1,
@@ -78,12 +83,16 @@ def test_format_advice() -> None:
         )
     )
 
-    assert res == 'Я понял, что тебе стоит подтянуть тему "lists".\n' \
-                  'Вот <a href="https://python.com/useful_link_to_handle_with_lists">ссылка</a>\n' \
-                  'Прочти, чтобы стать еще круче!'
+    # assert
+    assert res == (
+        'Я понял, что тебе стоит подтянуть тему *lists*\\.\n'
+        'Вот [ссылка](https://python.com/useful_link_to_handle_with_lists)\n'
+        'Прочти, чтобы стать еще круче\\!'
+    )
 
 
 def test_format_leaders_message() -> None:
+    # arrange
     leaders = [
         Leader(id=1, first_name='User1', username='user1', score=12),
         Leader(id=2, first_name='User2', username='user2', score=3),
@@ -91,17 +100,19 @@ def test_format_leaders_message() -> None:
     ]
     user_in_leaders = UserInLeaders(score=12, position=1)
 
+    # act
     formatted_message = format_leaders_message(leaders=leaders, user_in_leaders=user_in_leaders)
 
-    expected_message = (
-        '<b>Таблица лидеров:</b>\n'
-        '1. <a href="https://t.me/user1">User1</a> - 12 баллов\n'
-        '2. <a href="https://t.me/user2">User2</a> - 3 балла\n'
-        '3. <a href="https://t.me/user3">User3</a> - 1 балл\n'
+    # assert
+    assert formatted_message == (
+        '*Таблица лидеров:*\n'
+        '1\\. [User1](https://t.me/user1) \\- 12 баллов\n'
+        '2\\. [User2](https://t.me/user2) \\- 3 балла\n'
+        '3\\. [User3](https://t.me/user3) \\- 1 балл\n'
         '\n'
-        '<b>Ваше текущее место:</b> 1. Вы набрали 12 баллов.'
+        '*Твое текущее место:* 1\n'
+        '*Ты набрал* 12 баллов'
     )
-    assert formatted_message == expected_message
 
 
 def test_format_leaders_message__user_not_found() -> None:
@@ -114,9 +125,9 @@ def test_format_leaders_message__user_not_found() -> None:
     formatted_message = format_leaders_message(leaders=leaders, user_in_leaders=None)
 
     expected_message = (
-        '<b>Таблица лидеров:</b>\n'
-        '1. <a href="https://t.me/user1">User1</a> - 10 баллов\n'
-        '2. <a href="https://t.me/user2">User2</a> - 20 баллов\n'
-        '3. <a href="https://t.me/user3">User3</a> - 15 баллов\n'
+        '*Таблица лидеров:*\n'
+        '1\\. [User1](https://t.me/user1) \\- 10 баллов\n'
+        '2\\. [User2](https://t.me/user2) \\- 20 баллов\n'
+        '3\\. [User3](https://t.me/user3) \\- 15 баллов\n'
     )
     assert formatted_message == expected_message

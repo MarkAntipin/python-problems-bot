@@ -27,19 +27,20 @@ async def _send_message(
 
     if not reply_markup:
         reply_markup = ReplyKeyboardRemove()
+    parse_mode = ParseMode.MARKDOWN_V2
     try:
         if message:
             if photo_path:
                 await message.reply_photo(
                     photo=photo_path,
                     caption=text,
-                    parse_mode=ParseMode.HTML,
+                    parse_mode=parse_mode,
                     reply_markup=reply_markup,
                 )
             else:
                 await message.reply_text(
                     text=text,
-                    parse_mode=ParseMode.HTML,
+                    parse_mode=parse_mode,
                     reply_markup=reply_markup,
                 )
         elif bot:
@@ -48,14 +49,14 @@ async def _send_message(
                     chat_id=chat_id,
                     photo=photo_path,
                     caption=text,
-                    parse_mode=ParseMode.HTML,
+                    parse_mode=parse_mode,
                     reply_markup=reply_markup,
                 )
             else:
                 await bot.send_message(
                     chat_id=chat_id,
                     text=text,
-                    parse_mode=ParseMode.HTML,
+                    parse_mode=parse_mode,
                     reply_markup=reply_markup,
                 )
     except Forbidden:

@@ -5,7 +5,7 @@ from telegram import User as TGUser
 from telegram.error import BadRequest
 from telegram.ext import ContextTypes
 
-from bot.handlers.states import States
+from src.bot.handlers.states import States
 from src.services.users import User, UsersService
 from src.texts import CHOOSE_LEVEL_TEXT, FINISH_ONBOARDING_TEXT
 from src.utils.postgres_pool import pg_pool

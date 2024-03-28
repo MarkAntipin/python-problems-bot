@@ -8,7 +8,7 @@ from src.texts import CORRECT_ANSWERS, INCORRECT_ANSWERS
 
 
 def _format_choices(choices: dict) -> str:
-    return '\n'.join([f'{key.upper()}) {value}' for key, value in choices.items()])
+    return '\n'.join([rf'*{key.upper()}\)* {value}' for key, value in choices.items()])
 
 
 def format_question(question: Question) -> str:
@@ -17,24 +17,24 @@ def format_question(question: Question) -> str:
 
 
 def format_explanation(question: Question, is_correct: bool, user_answer: str) -> str:
-    user_choice = question.answer if is_correct else user_answer
+    correct_answer = question.answer
     answer_text = random.choice(CORRECT_ANSWERS if is_correct else INCORRECT_ANSWERS)
-    correct_choice = f'{question.choices[question.answer]}\n'
-    explanation = f'<b> Объяснение:</b>\n{question.explanation}'
 
     return (
-        f'\n{question.text}\n'
-        f'{answer_text}\n'
-        f'<b>Правильный ответ:</b> {question.answer}) {correct_choice}'
-        f'<b>Твой выбор:</b> {user_choice})\n'
-        f'{explanation}'
+        f'\n{question.text}\n\n'
+        f'*Правильный ответ:* {correct_answer}\\) {question.choices[correct_answer]}\n'
+        f'*Твой выбор:* {user_answer}\\) {question.choices[user_answer]}\n\n'
+        f'{answer_text}\n\n'
+        f'*Объяснение:*\n{question.explanation}'
     )
 
 
 def format_advice(advice: Advice) -> str:
-    formatted_advice = f'Я понял, что тебе стоит подтянуть тему "{advice.theme}".\n' \
-                       f'Вот <a href="{advice.link}">ссылка</a>\n' \
-                       f'Прочти, чтобы стать еще круче!'
+    formatted_advice = (
+        f'Я понял, что тебе стоит подтянуть тему *{advice.theme}*\\.\n'
+        f'Вот [ссылка]({advice.link})\n'
+        r'Прочти, чтобы стать еще круче\!'
+    )
 
     return formatted_advice
 
@@ -53,19 +53,19 @@ def format_word_declensions(n: int, declensions: dict[str, str]) -> str:
 
 
 def format_leaders_message(leaders: list[Leader], user_in_leaders: UserInLeaders | None) -> str:
-    message_text = '<b>Таблица лидеров:</b>\n'
+    message_text = '*Таблица лидеров:*\n'
     score_declensions = {'accusative_many': 'баллов', 'accusative_solo': 'балла', 'nominative': 'балл'}
 
     for i, leader in enumerate(leaders, start=1):
         score_word = format_word_declensions(n=leader.score, declensions=score_declensions)
-        user_link = f'<a href="https://t.me/{leader.username}">{leader.first_name}</a>'
-        message_text += f'{i}. {user_link} - {leader.score} {score_word}\n'
+        user_link = f'[{leader.first_name}](https://t.me/{leader.username})'
+        message_text += f'{i}\\. {user_link} \\- {leader.score} {score_word}\n'
 
     if user_in_leaders:
         score_word = format_word_declensions(n=user_in_leaders.score, declensions=score_declensions)
         message_text += (
-            f'\n<b>Ваше текущее место:</b> {user_in_leaders.position}.'
-            f' Вы набрали {user_in_leaders.score} {score_word}.'
+            f'\n*Твое текущее место:* {user_in_leaders.position}\n'
+            f'*Ты набрал* {user_in_leaders.score} {score_word}'
         )
 
     return message_text

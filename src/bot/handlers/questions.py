@@ -9,7 +9,7 @@ from telegram.constants import ParseMode
 from telegram.error import BadRequest
 from telegram.ext import ContextTypes
 
-from bot.handlers.states import States
+from src.bot.handlers.states import States
 from src.services.models.payment_status import PaymentStatus
 from src.services.questions import GetNewRandomQuestionForUserStatus, QuestionsService
 from src.services.users import User, UsersService
@@ -55,9 +55,12 @@ async def questions_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str
             )
 
             await query.edit_message_text(
-                parse_mode=ParseMode.HTML,
-                text=format_explanation(question=previous_question,
-                                        is_correct=is_correct, user_answer=user_answer)
+                parse_mode=ParseMode.MARKDOWN_V2,
+                text=format_explanation(
+                    question=previous_question,
+                    is_correct=is_correct,
+                    user_answer=user_answer
+                )
             )
 
     # send new question

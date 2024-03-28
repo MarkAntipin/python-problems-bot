@@ -2,7 +2,7 @@ import asyncpg
 from pytest_mock import MockerFixture
 from telegram import User as TGUser
 
-from bot.handlers.commands import set_difficult_handler, set_easy_handler
+from src.bot.handlers.commands import set_difficult_handler, set_easy_handler
 from tests_functional.utils import add_user
 
 
@@ -15,7 +15,7 @@ async def test_set_difficult_handler(
 
     update_mock = mocker.AsyncMock()
     update_mock.update.message.from_user = TGUser(id=1, is_bot=False, first_name='first_name')
-    await mocker.patch('bot.handlers.commands.pg_pool', pg)
+    await mocker.patch('src.bot.handlers.commands.pg_pool', pg)
 
     # act
     await set_difficult_handler(update_mock, None)
@@ -34,7 +34,7 @@ async def test_set_easy_handler(
 
     update_mock = mocker.AsyncMock()
     update_mock.update.message.from_user = TGUser(id=1, is_bot=False, first_name='first_name')
-    await mocker.patch('bot.handlers.commands.pg_pool', pg)
+    await mocker.patch('src.bot.handlers.commands.pg_pool', pg)
 
     # act
     await set_easy_handler(update_mock, None)

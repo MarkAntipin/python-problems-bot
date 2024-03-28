@@ -10,7 +10,7 @@ IMAGES_DIR = Path(BASE_DIR, 'images')
 ENV_FILE = Path(BASE_DIR, '.env')
 load_dotenv(ENV_FILE)
 
-MAX_QUESTION_PER_DAY: int = 3
+MAX_QUESTION_PER_DAY: int = 10
 
 WEB_APP_URL = ''
 
