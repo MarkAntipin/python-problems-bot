@@ -1,6 +1,6 @@
 from telegram import Update
 
-from bot.bot import create_bot
+from src.bot.bot import create_bot
 
 
 def main() -> None:

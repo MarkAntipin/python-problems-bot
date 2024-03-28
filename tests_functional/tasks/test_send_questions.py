@@ -1,7 +1,7 @@
 import asyncpg
 from pytest_mock import MockerFixture
 
-from tasks.send_questions import send_daily_questions_task
+from src.tasks.send_questions import send_daily_questions_task
 from tests_functional.utils import add_question, add_user
 
 
@@ -10,7 +10,7 @@ async def test_send_daily_questions_task(
     mocker: MockerFixture
 ) -> None:
     # arrange
-    mocker.patch('tasks.send_questions.Application', mocker.MagicMock())
+    mocker.patch('src.tasks.send_questions.Application', mocker.MagicMock())
     send_message_mock = mocker.patch('src.utils.telegram.send_message._send_message', return_value=True)
 
     await add_question(pg=pg)
@@ -39,7 +39,7 @@ async def test_send_daily_questions_task__user_baned_bot(
     mocker: MockerFixture
 ) -> None:
     # arrange
-    mocker.patch('tasks.send_questions.Application', mocker.MagicMock())
+    mocker.patch('src.tasks.send_questions.Application', mocker.MagicMock())
     mocker.patch('src.utils.telegram.send_message._send_message', return_value=False)
 
     await add_question(pg=pg)

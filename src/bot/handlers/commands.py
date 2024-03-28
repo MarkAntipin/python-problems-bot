@@ -4,7 +4,7 @@ from telegram import Update
 from telegram import User as TGUser
 from telegram.ext import ContextTypes
 
-from bot.handlers.states import States
+from src.bot.handlers.states import States
 from src.images import ImageType
 from src.services.leaders import LeadersService
 from src.services.users import UsersService
@@ -82,7 +82,7 @@ async def set_difficult_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) ->
 
     if user.level == 2:
         await send_message(
-            message=update.message, text='Вам уже и так приходят сложные вопросы'
+            message=update.message, text='Тебе уже и так приходят сложные вопросы'
         )
         return States.daily_question
 
@@ -102,7 +102,7 @@ async def set_easy_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
 
     if user.level == 1:
         await send_message(
-            message=update.message, text='Вам уже и так приходят простые вопросы'
+            message=update.message, text='Тебе уже и так приходят простые вопросы'
         )
         return States.daily_question
 
