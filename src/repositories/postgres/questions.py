@@ -29,7 +29,7 @@ class QuestionsRepo:
     async def get_today_answered_questions_count(self, user_id: int) -> int:
         today = datetime.utcnow()
         async with self.pg_pool.acquire() as conn:
-            row = await conn.fetchrow(
+            count = await conn.fetchval(
                 """
                 SELECT
                     COUNT(*)
@@ -43,7 +43,7 @@ class QuestionsRepo:
                 user_id,
                 today.date()
             )
-        return row['count']
+        return count
 
     async def get_new_questions_for_user(
             self, user_id: int, level: int, limit: int = 10
@@ -132,7 +132,7 @@ class QuestionsRepo:
             question_id: int,
     ) -> None:
         async with self.pg_pool.acquire() as conn:
-            row = await conn.fetchrow(
+            await conn.execute(
                 """
                 INSERT INTO
                     users_send_questions (
@@ -147,4 +147,23 @@ class QuestionsRepo:
                 question_id,
                 user_id,
             )
-        return row
+
+    async def get_user_solved_questions(self, user_id: int) -> list[asyncpg.Record]:
+        async with self.pg_pool.acquire() as conn:
+            rows = await conn.fetch(
+                """
+                    SELECT
+                        q.theme,
+                        q.level,
+                        uq.is_correct,
+                        uq.created_at
+                    FROM
+                        users_questions uq
+                    JOIN
+                        questions q ON q.id = uq.question_id
+                    WHERE
+                        uq.user_id = $1;
+                """,
+                user_id
+            )
+        return rows

@@ -1,5 +1,6 @@
 import logging
 import random
+from asyncio import sleep
 
 from telegram import (
     Update,
@@ -9,12 +10,14 @@ from telegram.constants import ParseMode
 from telegram.error import BadRequest
 from telegram.ext import ContextTypes
 
+from settings import bot_settings
 from src.bot.handlers.states import States
+from src.services.achievements import Achievement, AchievementsService
 from src.services.models.payment_status import PaymentStatus
 from src.services.questions import GetNewRandomQuestionForUserStatus, QuestionsService
 from src.services.users import User, UsersService
 from src.texts import ENOUGH_QUESTIONS_FOR_TODAY_TEXTS, NO_MORE_QUESTIONS_TEXT
-from src.utils.formaters import format_explanation
+from src.utils.formaters import format_achievement, format_explanation
 from src.utils.postgres_pool import pg_pool
 from src.utils.telegram.callback_data import ParsedCallbackQuestionsData, parse_callback_questions_data
 from src.utils.telegram.send_message import send_message, send_question
@@ -25,6 +28,7 @@ logger = logging.getLogger(__name__)
 async def questions_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
     users_service = UsersService(pg_pool=pg_pool)
     questions_service = QuestionsService(pg_pool=pg_pool)
+    achievements_service = AchievementsService(pg_pool=pg_pool)
 
     query = update.callback_query
     await query.answer()
@@ -62,6 +66,21 @@ async def questions_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str
                     user_answer=user_answer
                 )
             )
+            achievements: list[Achievement] | None = await achievements_service.check_for_new_achievements(
+                user_id=user.id
+            )
+            if achievements:
+                for achievement in achievements:
+                    await send_message(
+                        message=query.message,
+                        text=format_achievement(achievement=achievement)
+                    )
+                    await send_message(
+                        message=query.message,
+                        text=achievement.emoji
+                    )
+                    # TODO: do we need delay here?
+                    await sleep(bot_settings.DELAY_AFTER_ACHIEVEMENT)
 
     # send new question
     new_question_resp = await questions_service.get_new_random_question_for_user(user_id=user.id, user_level=user.level)

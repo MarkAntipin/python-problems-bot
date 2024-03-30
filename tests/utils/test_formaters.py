@@ -3,10 +3,17 @@ from unittest.mock import Mock
 
 import pytest
 
+from src.services.achievements import Achievement
 from src.services.advices import Advice
 from src.services.leaders import Leader, UserInLeaders
 from src.services.questions import Question
-from src.utils.formaters import format_advice, format_explanation, format_leaders_message, format_question
+from src.utils.formaters import (
+    format_achievement,
+    format_advice,
+    format_explanation,
+    format_leaders_message,
+    format_question,
+)
 
 
 @pytest.fixture
@@ -88,6 +95,25 @@ def test_format_advice() -> None:
         'Я понял, что тебе стоит подтянуть тему *lists*\\.\n'
         'Вот [ссылка](https://python.com/useful_link_to_handle_with_lists)\n'
         'Прочти, чтобы стать еще круче\\!'
+    )
+
+
+def test_format_achievements() -> None:
+    # arrange
+    achievement = Achievement(
+        text='text',
+        title='title',
+        emoji='',
+        name=''
+    )
+
+    # act
+    formatted_achievement = format_achievement(achievement=achievement)
+
+    # assert
+    assert formatted_achievement == (
+        '*У тебя новое достижение\\!* 🎉\n\n'
+        '||text \\- *title*||'
     )
 
 

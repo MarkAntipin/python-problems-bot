@@ -10,8 +10,6 @@ IMAGES_DIR = Path(BASE_DIR, 'images')
 ENV_FILE = Path(BASE_DIR, '.env')
 load_dotenv(ENV_FILE)
 
-MAX_QUESTION_PER_DAY: int = 10
-
 WEB_APP_URL = ''
 
 
@@ -38,6 +36,9 @@ class PostgresSettings(BaseSettings):
 class BotSettings(BaseSettings):
     TOKEN: str
 
+    MAX_QUESTION_PER_DAY: int = 3
+    DELAY_AFTER_ACHIEVEMENT: int = 3
+
     class Config:
         case_sensitive = False
 
@@ -52,3 +53,6 @@ class TestSettings(BaseSettings):
     class Config:
         case_sensitive = False
         env_prefix = "TEST_"
+
+
+bot_settings = BotSettings()
