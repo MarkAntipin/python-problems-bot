@@ -65,3 +65,4 @@
             PG_PASSWORD: python-problems-bot
             PG_PORT: 5436
             PG_DB: python-problems-bot
+            TOKEN: token
