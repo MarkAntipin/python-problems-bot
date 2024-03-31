@@ -57,6 +57,8 @@
 
         - name: Run unit tests
           run: poetry run pytest -v tests
+          env:
+            TOKEN: token
 
         - name: Run functional tests
           run: poetry run pytest -v tests_functional
