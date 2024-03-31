@@ -20,12 +20,14 @@ async def pg_fixture() -> asyncpg.Connection:
         await conn.execute('DELETE FROM users_send_advices;')
         await conn.execute('DELETE FROM advices;')
         await conn.execute('DELETE FROM users;')
+        await conn.execute('DELETE FROM users_achievements;')
 
     await teardown()
 
     yield conn
 
     await teardown()
+    await conn.close()
 
 
 @pytest.fixture(autouse=True)

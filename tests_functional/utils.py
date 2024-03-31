@@ -165,7 +165,7 @@ async def add_users_send_advices(
     advice_id: int,
     created_at: datetime
 ) -> None:
-    await pg.fetchrow(
+    await pg.execute(
         """
         INSERT INTO
             users_send_advices (
@@ -182,4 +182,26 @@ async def add_users_send_advices(
         user_id,
         advice_id,
         created_at
+    )
+
+
+async def add_user_achievement(
+    pg: asyncpg.Pool,
+    user_id: int,
+    achievement_name: str,
+) -> None:
+    await pg.execute(
+        """
+        INSERT INTO
+            users_achievements (
+              user_id,
+              achievement_name
+            )
+            VALUES (
+              $1,
+              $2
+            );
+        """,
+        user_id,
+        achievement_name,
     )

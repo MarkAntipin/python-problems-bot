@@ -2,7 +2,7 @@
 from ptbcontrib.postgres_persistence import PostgresPersistence
 from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ConversationHandler
 
-from settings import BotSettings, PostgresSettings
+from settings import PostgresSettings, bot_settings
 from src.bot.handlers.commands import (
     cancel_handler,
     leaders_handler,
@@ -20,7 +20,6 @@ from src.utils.logger import setup_logger
 def create_bot() -> Application:
     setup_logger()
 
-    bot_settings = BotSettings()
     pg_settings = PostgresSettings()
     persistence = PostgresPersistence(url=pg_settings.url_for_persistence)
     bot = Application.builder().token(bot_settings.TOKEN).persistence(persistence).build()

@@ -4,7 +4,7 @@ import logging
 import asyncpg
 from telegram.ext import Application
 
-from settings import BotSettings
+from settings import bot_settings
 from src.services.questions import GetNewRandomQuestionForUserStatus, QuestionsService
 from src.services.users import User, UsersService
 from src.utils.telegram.send_message import send_question
@@ -13,7 +13,6 @@ logger = logging.getLogger(__name__)
 
 
 async def send_daily_questions_task(pg_pool: asyncpg.Pool) -> None:
-    bot_settings = BotSettings()
     bot = Application.builder().token(bot_settings.TOKEN).build().bot
 
     users_service = UsersService(pg_pool=pg_pool)

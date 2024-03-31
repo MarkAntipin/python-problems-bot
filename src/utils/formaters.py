@@ -1,6 +1,7 @@
 
 import random
 
+from src.services.achievements import Achievement
 from src.services.advices import Advice
 from src.services.leaders import Leader, UserInLeaders
 from src.services.questions import Question
@@ -37,6 +38,15 @@ def format_advice(advice: Advice) -> str:
     )
 
     return formatted_advice
+
+
+def format_achievement(achievement: Achievement) -> str:
+    formatted_achievement = (
+        '*У тебя новое достижение\\!* 🎉\n\n'
+        f'||{achievement.text} \\- *{achievement.title}*||'
+    )
+
+    return formatted_achievement
 
 
 def format_word_declensions(n: int, declensions: dict[str, str]) -> str:

@@ -57,6 +57,8 @@
 
         - name: Run unit tests
           run: poetry run pytest -v tests
+          env:
+            TOKEN: token
 
         - name: Run functional tests
           run: poetry run pytest -v tests_functional
@@ -65,3 +67,4 @@
             PG_PASSWORD: python-problems-bot
             PG_PORT: 5436
             PG_DB: python-problems-bot
+            TOKEN: token
