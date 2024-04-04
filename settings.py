@@ -35,9 +35,10 @@ class PostgresSettings(BaseSettings):
 
 class BotSettings(BaseSettings):
     TOKEN: str
-
+    PAYMENT_PROVIDER_TOKEN: str
     MAX_QUESTION_PER_DAY: int = 3
     DELAY_AFTER_ACHIEVEMENT: int = 3
+    SUBSCRIPTION_PRICE: int = 899
 
     class Config:
         case_sensitive = False

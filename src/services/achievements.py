@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta, UTC
 
 import asyncpg
 from pydantic import BaseModel
@@ -340,10 +340,10 @@ class AchievementsService:
 
     @staticmethod
     def __solve_questions_n_days_in_a_row(solved_questions: list[SolvedQuestion], n: int) -> bool:
-        today = datetime.now()
+        today = datetime.now(UTC)
         for i in range(n):
-            day = today.replace(day=today.day - i)
-            if not any(question.created_at.date() == day.date() for question in solved_questions):
+            day_to_check = today - timedelta(days=i)
+            if not any(question.created_at.date() == day_to_check.date() for question in solved_questions):
                 return False
         return True
 

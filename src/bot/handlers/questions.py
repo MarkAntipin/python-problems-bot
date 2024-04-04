@@ -3,11 +3,11 @@ import random
 from asyncio import sleep
 
 from telegram import (
+    Message,
     Update,
 )
 from telegram import User as TGUser
 from telegram.constants import ParseMode
-from telegram.error import BadRequest
 from telegram.ext import ContextTypes
 
 from settings import bot_settings
@@ -18,11 +18,52 @@ from src.services.questions import GetNewRandomQuestionForUserStatus, QuestionsS
 from src.services.users import User, UsersService
 from src.texts import ENOUGH_QUESTIONS_FOR_TODAY_TEXTS, NO_MORE_QUESTIONS_TEXT
 from src.utils.formaters import format_achievement, format_explanation
+from src.utils.payment import PaymentInfo, get_payment_info
 from src.utils.postgres_pool import pg_pool
 from src.utils.telegram.callback_data import ParsedCallbackQuestionsData, parse_callback_questions_data
-from src.utils.telegram.send_message import send_message, send_question
+from src.utils.telegram.send_message import send_message, send_payment, send_question
+from src.utils.telegram.inline_keyboard import remove_inline_keyboard
 
 logger = logging.getLogger(__name__)
+
+
+async def send_question_if_possible(user: User, questions_service: QuestionsService, message: Message) -> None:
+    new_question_resp = await questions_service.get_new_random_question_for_user(
+        user_id=user.id, user_level=user.level
+    )
+
+    if new_question_resp.status == GetNewRandomQuestionForUserStatus.no_questions_for_today:
+        await send_message(message=message, text=random.choice(ENOUGH_QUESTIONS_FOR_TODAY_TEXTS))
+        return
+
+    if new_question_resp.status == GetNewRandomQuestionForUserStatus.no_more_questions:
+        await send_message(message=message, text=NO_MORE_QUESTIONS_TEXT)
+        return
+
+    await send_question(
+        message=message,
+        question=new_question_resp.question,
+        questions_service=questions_service,
+        user_id=user.id
+    )
+
+
+async def _send_achievement_if_needed(user: User, achievements_service: AchievementsService, message: Message) -> None:
+    achievements: list[Achievement] | None = await achievements_service.check_for_new_achievements(
+        user_id=user.id
+    )
+    if achievements:
+        for achievement in achievements:
+            await send_message(
+                message=message,
+                text=format_achievement(achievement=achievement)
+            )
+            await send_message(
+                message=message,
+                text=achievement.emoji
+            )
+            # TODO: do we need delay here?
+            await sleep(bot_settings.DELAY_AFTER_ACHIEVEMENT)
 
 
 async def questions_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
@@ -32,17 +73,19 @@ async def questions_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str
 
     query = update.callback_query
     await query.answer()
-    try:
-        # TODO: why errors here?
-        await query.edit_message_reply_markup()
-    except BadRequest as e:
-        logger.error(e, exc_info=True)
+    await remove_inline_keyboard(query)
 
     tg_user: TGUser = update.effective_user
     user: User = await users_service.get_or_create(tg_user=tg_user)
 
+    # set trial status if user is in onboarding (he is starting to answer questions)
     if user.payment_status == PaymentStatus.onboarding:
         user = await users_service.set_trial_status(user_id=user.id)
+
+    payment_info: PaymentInfo = get_payment_info(user=user)
+    if not payment_info.is_passed_paywall:
+        await send_payment(message=query.message, telegram_user_id=user.telegram_id)
+        return States.daily_question
 
     callback_questions_data: ParsedCallbackQuestionsData = parse_callback_questions_data(callback_data=query.data)
     if callback_questions_data:
@@ -66,37 +109,10 @@ async def questions_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str
                     user_answer=user_answer
                 )
             )
-            achievements: list[Achievement] | None = await achievements_service.check_for_new_achievements(
-                user_id=user.id
+            await _send_achievement_if_needed(
+                user=user, achievements_service=achievements_service, message=query.message
             )
-            if achievements:
-                for achievement in achievements:
-                    await send_message(
-                        message=query.message,
-                        text=format_achievement(achievement=achievement)
-                    )
-                    await send_message(
-                        message=query.message,
-                        text=achievement.emoji
-                    )
-                    # TODO: do we need delay here?
-                    await sleep(bot_settings.DELAY_AFTER_ACHIEVEMENT)
 
     # send new question
-    new_question_resp = await questions_service.get_new_random_question_for_user(user_id=user.id, user_level=user.level)
-
-    if new_question_resp.status == GetNewRandomQuestionForUserStatus.no_questions_for_today:
-        await send_message(message=query.message, text=random.choice(ENOUGH_QUESTIONS_FOR_TODAY_TEXTS))
-        return States.daily_question
-
-    if new_question_resp.status == GetNewRandomQuestionForUserStatus.no_more_questions:
-        await send_message(message=query.message, text=NO_MORE_QUESTIONS_TEXT)
-        return States.daily_question
-
-    await send_question(
-        message=query.message,
-        question=new_question_resp.question,
-        questions_service=questions_service,
-        user_id=user.id
-    )
+    await send_question_if_possible(user=user, questions_service=questions_service, message=query.message)
     return States.daily_question

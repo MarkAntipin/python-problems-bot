@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, UTC
 
 import asyncpg
 from pydantic import BaseModel
@@ -74,7 +74,7 @@ class UsersService:
         )
 
     async def set_trial_status(self, user_id: int) -> User:
-        now = datetime.utcnow()
+        now = datetime.now(UTC)
         row = await self.users_repo.update(
             user_id=user_id,
             payment_status=PaymentStatus.trial,
@@ -83,7 +83,7 @@ class UsersService:
         return User.from_row(row=row)
 
     async def set_send_payment_at(self, user_id: int) -> None:
-        now = datetime.utcnow()
+        now = datetime.now(UTC)
         await self.users_repo.update(
             user_id=user_id,
             send_payment_at=now
