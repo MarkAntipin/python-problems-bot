@@ -6,8 +6,7 @@ from pydantic import BaseModel
 from src.services.models.payment_status import PaymentStatus
 from src.services.users import User
 
-# THREE_DAYS = timedelta(days=3)
-THREE_DAYS = timedelta(minutes=1)
+THREE_DAYS = timedelta(days=3)
 
 logger = getLogger(__name__)
 

@@ -21,8 +21,8 @@ from src.utils.formaters import format_achievement, format_explanation
 from src.utils.payment import PaymentInfo, get_payment_info
 from src.utils.postgres_pool import pg_pool
 from src.utils.telegram.callback_data import ParsedCallbackQuestionsData, parse_callback_questions_data
-from src.utils.telegram.send_message import send_message, send_payment, send_question
 from src.utils.telegram.inline_keyboard import remove_inline_keyboard
+from src.utils.telegram.send_message import send_message, send_payment, send_question
 
 logger = logging.getLogger(__name__)
 
