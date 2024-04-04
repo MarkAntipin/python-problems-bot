@@ -1,4 +1,5 @@
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.error import BadRequest
 
 from src.utils.telegram.callback_data import format_callback_data_for_question
 
@@ -20,3 +21,10 @@ def format_inline_keyboard(choices: list[str]) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup([[InlineKeyboardButton(choice, callback_data=i) for i, choice in enumerate(
         choices, start=1
     )]])
+
+
+async def remove_inline_keyboard(query: CallbackQuery) -> None:
+    try:
+        await query.edit_message_reply_markup()
+    except BadRequest:
+        pass

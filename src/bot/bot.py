@@ -1,6 +1,14 @@
 
 from ptbcontrib.postgres_persistence import PostgresPersistence
-from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ConversationHandler
+from telegram.ext import (
+    Application,
+    CallbackQueryHandler,
+    CommandHandler,
+    ConversationHandler,
+    MessageHandler,
+    PreCheckoutQueryHandler,
+    filters,
+)
 
 from settings import PostgresSettings, bot_settings
 from src.bot.handlers.commands import (
@@ -12,6 +20,7 @@ from src.bot.handlers.commands import (
 )
 from src.bot.handlers.error import error_handler
 from src.bot.handlers.onboarding import choose_level_handler, finish_onboarding_handler
+from src.bot.handlers.payment import pre_checkout_handler, successful_payment_handler
 from src.bot.handlers.questions import questions_handler
 from src.bot.handlers.states import States
 from src.utils.logger import setup_logger
@@ -51,5 +60,8 @@ def create_bot() -> Application:
     bot.add_handler(CommandHandler('leaders', leaders_handler))
     bot.add_handler(CommandHandler('easy', set_easy_handler))
     bot.add_handler(CommandHandler('difficult', set_difficult_handler))
+
+    bot.add_handler(PreCheckoutQueryHandler(pre_checkout_handler))
+    bot.add_handler(MessageHandler(filters.SUCCESSFUL_PAYMENT, successful_payment_handler))
 
     return bot

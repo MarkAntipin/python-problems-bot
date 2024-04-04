@@ -1,13 +1,15 @@
 import logging
 import pathlib
 
-from telegram import Bot, InlineKeyboardMarkup, Message, ReplyKeyboardRemove
+from telegram import Bot, InlineKeyboardMarkup, LabeledPrice, Message, ReplyKeyboardRemove
 from telegram.constants import ParseMode
 from telegram.error import Forbidden
 
+from settings import bot_settings
 from src.images import IMAGE_TYPE_TO_IMAGE_PATH, ImageType
 from src.services.advices import Advice, AdvicesService
 from src.services.questions import Question, QuestionsService
+from src.texts import PREPAYMENT_TEXT
 from src.utils.formaters import format_advice, format_question
 from src.utils.telegram.inline_keyboard import format_inline_keyboard, format_inline_keyboard_for_question
 
@@ -128,3 +130,56 @@ async def send_advice(
         logger.info('Send advice to user %d', user_id)
 
     return is_sent
+
+
+async def send_payment(
+        telegram_user_id: int,
+        message: Message | None = None,
+        bot: Bot | None = None,
+) -> bool:
+    is_sent = await _send_message(
+        message=message,
+        bot=bot,
+        chat_id=telegram_user_id,
+        text=PREPAYMENT_TEXT
+    )
+    if not is_sent:
+        return False
+
+    title = 'Оплата (Python каждый день)'
+    description = 'Оплата тренажера для подготовки к собеседованиям на Python разработчика'
+    prices = [LabeledPrice('Python каждый день', bot_settings.SUBSCRIPTION_PRICE * 100)]
+    currency = 'RUB'
+    payload = str(telegram_user_id)
+
+    kwargs = {
+        'title': title,
+        'description': description,
+        'provider_token': bot_settings.PAYMENT_PROVIDER_TOKEN,
+        'currency': currency,
+        'payload': payload,
+        'prices': prices,
+        'need_email': True,
+        'send_email_to_provider': True,
+        'provider_data': {
+            'receipt': {
+                'items': [{
+                    'description': description,
+                    'amount': {
+                        'value': f'{bot_settings.SUBSCRIPTION_PRICE}.00',
+                        'currency': currency,
+                    },
+                    'vat_code': 1,
+                    'quantity': '1.00'
+                }]
+            }
+        }
+    }
+
+    if message:
+        await message.reply_invoice(**kwargs)
+    elif bot:
+        await bot.send_invoice(chat_id=telegram_user_id, **kwargs)
+
+    logger.info('Send advice to telegram_user_id %d', telegram_user_id)
+    return True
