@@ -6,10 +6,11 @@ from telegram.ext import ContextTypes
 
 from src.bot.handlers.states import States
 from src.images import ImageType
+from src.services.achievements import AchievementsService
 from src.services.leaders import LeadersService
 from src.services.users import UsersService
 from src.texts import GREETING_TEXT, START_BUTTON_TEXT
-from src.utils.formaters import format_leaders_message
+from src.utils.formaters import format_achievements_list, format_leaders_message
 from src.utils.postgres_pool import pg_pool
 from src.utils.telegram.send_message import send_message
 
@@ -108,4 +109,19 @@ async def set_easy_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
 
     await users_service.set_level(user_id=user.id, level=1)
     await send_message(message=update.message, text='Теперь вопросы станут легче')
+    return States.daily_question
+
+
+async def get_achievements_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
+    users_service = UsersService(pg_pool=pg_pool)
+    achievements_service = AchievementsService(pg_pool=pg_pool)
+
+    tg_user: TGUser = update.message.from_user
+    user = await users_service.get_or_create(tg_user=tg_user)
+    logger.info('User %d run achievements handler', user.id)
+
+    achievements = await achievements_service.get_user_achievements(user_id=user.id)
+    await send_message(
+        message=update.message, text=format_achievements_list(achievements=achievements)
+    )
     return States.daily_question

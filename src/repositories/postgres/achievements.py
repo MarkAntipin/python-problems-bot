@@ -5,7 +5,7 @@ class AchievementsRepo:
     def __init__(self, pg_pool: asyncpg.Pool) -> None:
         self.pg_pool = pg_pool
 
-    async def get_user_achievements(self, user_id: int) -> set[str]:
+    async def get_user_achievements_names(self, user_id: int) -> set[str]:
         async with self.pg_pool.acquire() as conn:
             rows = await conn.fetch(
                 """

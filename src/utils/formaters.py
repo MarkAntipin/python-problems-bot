@@ -1,7 +1,6 @@
-
 import random
 
-from src.services.achievements import Achievement
+from src.services.achievements import ACHIEVEMENTS, Achievement
 from src.services.advices import Advice
 from src.services.leaders import Leader, UserInLeaders
 from src.services.questions import Question
@@ -47,6 +46,20 @@ def format_achievement(achievement: Achievement) -> str:
     )
 
     return formatted_achievement
+
+
+def format_achievements_list(achievements: list[Achievement]) -> str:
+
+    formatted_achievements = []
+    for achievement in achievements:
+        formatted_achievements.append(f'{achievement.text} \\- *{achievement.title}* {achievement.emoji}')
+
+    number_of_achievements_text = f'Получено {len(formatted_achievements)} из {len(ACHIEVEMENTS)}'
+    formatted_achievements_text = 'У тебя пока нет достижений 🥲'
+    if formatted_achievements:
+        formatted_achievements_text = '*Твои достижения:*\n\n' + '\n'.join(formatted_achievements)
+
+    return f'{formatted_achievements_text}\n\n{number_of_achievements_text}'
 
 
 def format_word_declensions(n: int, declensions: dict[str, str]) -> str:
