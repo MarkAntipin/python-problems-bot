@@ -3,12 +3,13 @@ from unittest.mock import Mock
 
 import pytest
 
-from src.services.achievements import Achievement
+from src.services.achievements import ACHIEVEMENTS, Achievement
 from src.services.advices import Advice
 from src.services.leaders import Leader, UserInLeaders
 from src.services.questions import Question
 from src.utils.formaters import (
     format_achievement,
+    format_achievements_list,
     format_advice,
     format_explanation,
     format_leaders_message,
@@ -114,6 +115,46 @@ def test_format_achievements() -> None:
     assert formatted_achievement == (
         '*У тебя новое достижение\\!* 🎉\n\n'
         '||text \\- *title*||'
+    )
+
+
+def test_format_achievements_list() -> None:
+    # arrange
+    achievements = [
+        Achievement(
+            text='text',
+            title='title',
+            emoji='😀',
+            name=''
+        ),
+        Achievement(
+            text='text2',
+            title='title2',
+            emoji='🤘',
+            name=''
+        )
+    ]
+
+    # act
+    res = format_achievements_list(achievements=achievements)
+
+    # assert
+    assert res == (
+        '*Твои достижения:*\n\n'
+        'text \\- *title* 😀\n'
+        'text2 \\- *title2* 🤘\n\n'
+        f'Получено 2 из {len(ACHIEVEMENTS)}'
+    )
+
+
+def test_format_achievements_list__no_achievements() -> None:
+    # act
+    res = format_achievements_list(achievements=[])
+
+    # assert
+    assert res == (
+        'У тебя пока нет достижений 🥲\n\n'
+        f'Получено 0 из {len(ACHIEVEMENTS)}'
     )
 
 

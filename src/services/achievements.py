@@ -21,7 +21,7 @@ class SolvedQuestion(BaseModel):
     created_at: datetime
 
 
-_ACHIEVEMENTS = [
+ACHIEVEMENTS = [
     # special achievements
     Achievement(
         text='Решил по 10 задач разных уровней',
@@ -137,9 +137,13 @@ class AchievementsService:
         self.questions_repo = QuestionsRepo(pg_pool=pg_pool)
         self.achievements_repo = AchievementsRepo(pg_pool=pg_pool)
 
+    async def get_user_achievements(self, user_id: int) -> list[Achievement]:
+        user_achievements = await self.achievements_repo.get_user_achievements_names(user_id=user_id)
+        return [achievement for achievement in ACHIEVEMENTS if achievement.name in user_achievements]
+
     async def check_for_new_achievements(self, user_id: int) -> list[Achievement] | None:
-        user_current_achievements = await self.achievements_repo.get_user_achievements(user_id=user_id)
-        if len(user_current_achievements) == len(_ACHIEVEMENTS):
+        user_current_achievements = await self.achievements_repo.get_user_achievements_names(user_id=user_id)
+        if len(user_current_achievements) == len(ACHIEVEMENTS):
             return
 
         solved_questions_rows = await self.questions_repo.get_user_solved_questions(user_id=user_id)
@@ -167,7 +171,7 @@ class AchievementsService:
             self, solved_questions: list[SolvedQuestion], user_current_achievements: set[str]
     ) -> list[Achievement]:
         new_achievements = []
-        for achievement in _ACHIEVEMENTS:
+        for achievement in ACHIEVEMENTS:
             if achievement.name in user_current_achievements:
                 continue
 

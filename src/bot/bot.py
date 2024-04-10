@@ -13,6 +13,7 @@ from telegram.ext import (
 from settings import PostgresSettings, bot_settings
 from src.bot.handlers.commands import (
     cancel_handler,
+    get_achievements_handler,
     leaders_handler,
     set_difficult_handler,
     set_easy_handler,
@@ -60,6 +61,7 @@ def create_bot() -> Application:
     bot.add_handler(CommandHandler('leaders', leaders_handler))
     bot.add_handler(CommandHandler('easy', set_easy_handler))
     bot.add_handler(CommandHandler('difficult', set_difficult_handler))
+    bot.add_handler(CommandHandler('achievements', get_achievements_handler))
 
     bot.add_handler(PreCheckoutQueryHandler(pre_checkout_handler))
     bot.add_handler(MessageHandler(filters.SUCCESSFUL_PAYMENT, successful_payment_handler))
