@@ -6,7 +6,7 @@ from telegram.ext import ContextTypes
 
 from src.bot.handlers.states import States
 from src.services.users import User, UsersService
-from src.texts import CHOOSE_LEVEL_ONBOARDING_TEXT, FINISH_ONBOARDING_TEXT
+from src.texts import CHOOSE_LEVEL_TEXT
 from src.utils.postgres_pool import pg_pool
 from src.utils.telegram.inline_keyboard import remove_inline_keyboard
 from src.utils.telegram.send_message import send_message
@@ -14,22 +14,17 @@ from src.utils.telegram.send_message import send_message
 logger = logging.getLogger(__name__)
 
 
-async def choose_level_onboarding_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
-    query = update.callback_query
-
-    await query.answer()
-    await remove_inline_keyboard(query)
+async def choose_level_command(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
     await send_message(
-        message=query.message,
-        text=CHOOSE_LEVEL_ONBOARDING_TEXT,
+        message=update.message,
+        text=CHOOSE_LEVEL_TEXT,
         choices=['👶', '👨‍🎓', '🧑‍💻'],
     )
-    return States.finish_onboarding
+    return States.change_level
 
 
-async def finish_onboarding_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
+async def change_level_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
     query = update.callback_query
-
     await query.answer()
     await remove_inline_keyboard(query)
     users_service = UsersService(pg_pool=pg_pool)
@@ -42,7 +37,7 @@ async def finish_onboarding_handler(update: Update, _: ContextTypes.DEFAULT_TYPE
 
     await send_message(
         message=query.message,
-        text=FINISH_ONBOARDING_TEXT,
+        text=r'Уровень сложности изменен\!',
         choices=['К задачам!'],
     )
     return States.daily_question

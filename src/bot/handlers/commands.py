@@ -72,46 +72,6 @@ async def leaders_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
     return States.daily_question
 
 
-async def set_difficult_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
-    # TODO: rewrite texts
-
-    users_service = UsersService(pg_pool=pg_pool)
-
-    tg_user: TGUser = update.message.from_user
-    user = await users_service.get_or_create(tg_user=tg_user)
-    logger.info('User %d run difficult handler', user.id)
-
-    if user.level == 2:
-        await send_message(
-            message=update.message, text='Тебе уже и так приходят сложные вопросы'
-        )
-        return States.daily_question
-
-    await users_service.set_level(user_id=user.id, level=2)
-    await send_message(message=update.message, text='Теперь вопросы станут сложнее')
-    return States.onboarding
-
-
-async def set_easy_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
-    # TODO: rewrite texts
-
-    users_service = UsersService(pg_pool=pg_pool)
-
-    tg_user: TGUser = update.message.from_user
-    user = await users_service.get_or_create(tg_user=tg_user)
-    logger.info('User %d run easy handler', user.id)
-
-    if user.level == 1:
-        await send_message(
-            message=update.message, text='Тебе уже и так приходят простые вопросы'
-        )
-        return States.daily_question
-
-    await users_service.set_level(user_id=user.id, level=1)
-    await send_message(message=update.message, text='Теперь вопросы станут легче')
-    return States.daily_question
-
-
 async def get_achievements_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
     users_service = UsersService(pg_pool=pg_pool)
     achievements_service = AchievementsService(pg_pool=pg_pool)
