@@ -15,6 +15,7 @@ services:
       PG_DATABASE: python-problems-bot
 
       TOKEN: token  # change on production
+      PAYMENT_PROVIDER_TOKEN: token # change on production
     depends_on:
       postgres:
         condition: service_started
@@ -36,6 +37,7 @@ services:
       PG_DATABASE: python-problems-bot
 
       TOKEN: token  # change on production
+      PAYMENT_PROVIDER_TOKEN: token # change on production
     depends_on:
       postgres:
         condition: service_started
