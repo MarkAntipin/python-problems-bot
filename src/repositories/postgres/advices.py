@@ -97,16 +97,16 @@ class AdvicesRepo:
                 WHERE
                   user_id = $1
                 AND
-                  created_at BETWEEN CURRENT_DATE - $4 AND CURRENT_DATE
+                  created_at BETWEEN CURRENT_DATE - $2 AND CURRENT_DATE
                 AND
-                  theme = $2
+                  theme = $3
                 AND
-                  level = $3;
+                  level = $4;
                 """,
                 user_id,
+                bot_settings.WEAK_THEMES_ADVICE_INTERVAL,
                 theme,
                 level,
-                bot_settings.WEAK_THEMES_ADVICE_INTERVAL,
             )
 
         return row
