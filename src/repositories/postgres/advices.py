@@ -97,7 +97,7 @@ class AdvicesRepo:
                 WHERE
                   user_id = $1
                 AND
-                  created_at BETWEEN CURRENT_DATE - $2 AND CURRENT_DATE
+                  created_at (BETWEEN CURRENT_DATE - $2)::date AND CURRENT_DATE
                 AND
                   theme = $3
                 AND
