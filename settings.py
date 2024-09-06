@@ -39,6 +39,7 @@ class BotSettings(BaseSettings):
     MAX_QUESTION_PER_DAY: int = 3
     DELAY_AFTER_ACHIEVEMENT: int = 3
     SUBSCRIPTION_PRICE: int = 899
+    WEAK_THEMES_ADVICE_INTERVAL: int = 30
 
     class Config:
         case_sensitive = False
