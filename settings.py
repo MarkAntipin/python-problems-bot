@@ -40,6 +40,7 @@ class BotSettings(BaseSettings):
     DELAY_AFTER_ACHIEVEMENT: int = 3
     SUBSCRIPTION_PRICE: int = 499
     ENABLE_PAYMENT: bool = False
+    WEAK_THEMES_ADVICE_INTERVAL: int = 30
 
     class Config:
         case_sensitive = False
