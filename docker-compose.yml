@@ -14,8 +14,8 @@ services:
       PG_PASSWORD: python-problems-bot  # change on production
       PG_DATABASE: python-problems-bot
 
-      TOKEN: token  # change on production
-      PAYMENT_PROVIDER_TOKEN: token # change on production
+      TOKEN: 6524906969:AAHdyCVU7XWxCtusxP1eu1jGWY5HXD5haVo  # change on production
+      PAYMENT_PROVIDER_TOKEN: 390540012:LIVE:40707 # change on production
     depends_on:
       postgres:
         condition: service_started
@@ -36,8 +36,8 @@ services:
       PG_PASSWORD: python-problems-bot  # change on production
       PG_DATABASE: python-problems-bot
 
-      TOKEN: token  # change on production
-      PAYMENT_PROVIDER_TOKEN: token # change on production
+      TOKEN: 6524906969:AAHdyCVU7XWxCtusxP1eu1jGWY5HXD5haVo  # change on production
+      PAYMENT_PROVIDER_TOKEN: 390540012:LIVE:40707 # change on production
     depends_on:
       postgres:
         condition: service_started

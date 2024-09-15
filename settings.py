@@ -38,7 +38,8 @@ class BotSettings(BaseSettings):
     PAYMENT_PROVIDER_TOKEN: str
     MAX_QUESTION_PER_DAY: int = 3
     DELAY_AFTER_ACHIEVEMENT: int = 3
-    SUBSCRIPTION_PRICE: int = 899
+    SUBSCRIPTION_PRICE: int = 499
+    ENABLE_PAYMENT: bool = False
 
     class Config:
         case_sensitive = False

@@ -24,14 +24,15 @@ async def send_daily_questions_task(pg_pool: asyncpg.Pool) -> None:
         if user.status != 'active':
             continue
 
-        payment_info: PaymentInfo = get_payment_info(user=user)
-        if not payment_info.is_passed_paywall:
-            if payment_info.is_need_to_send_payment:
-                is_payment_sent = await send_payment(telegram_user_id=user.telegram_id, bot=bot)
-                if is_payment_sent:
-                    await users_service.set_send_payment_at(user_id=user.id)
+        if bot_settings.ENABLE_PAYMENT:
+            payment_info: PaymentInfo = get_payment_info(user=user)
+            if not payment_info.is_passed_paywall:
+                if payment_info.is_need_to_send_payment:
+                    is_payment_sent = await send_payment(telegram_user_id=user.telegram_id, bot=bot)
+                    if is_payment_sent:
+                        await users_service.set_send_payment_at(user_id=user.id)
 
-            continue
+                continue
 
         new_question_resp = await questions_service.get_new_random_question_for_user(
             user_id=user.id, user_level=user.level
