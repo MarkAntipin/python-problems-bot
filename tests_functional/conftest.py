@@ -40,3 +40,5 @@ async def env(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv('PG_USER', test_settings.PG_USER)
     monkeypatch.setenv('PG_PASSWORD', test_settings.PG_PASSWORD)
     monkeypatch.setenv('PG_DATABASE', test_settings.PG_DATABASE)
+    monkeypatch.setenv('ENABLE_PAYMENT', '1')
+

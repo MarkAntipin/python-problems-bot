@@ -52,6 +52,7 @@ class TestSettings(BaseSettings):
     PG_PASSWORD: str = 'python-problems-bot'
     PG_DATABASE: str = 'python-problems-bot'
     PG_PORT: int = 5436
+    ENABLE_PAYMENT: bool = True
 
     class Config:
         case_sensitive = False
