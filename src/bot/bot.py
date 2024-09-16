@@ -48,7 +48,6 @@ def create_bot() -> Application:
             ],
             States.change_level: [
                 CallbackQueryHandler(change_level_handler),
-                # CallbackQueryHandler(questions_handler),
             ],
         },
         persistent=True,
@@ -64,7 +63,6 @@ def create_bot() -> Application:
     bot.add_handler(CommandHandler('start', start_handler))
     bot.add_handler(CommandHandler('leaders', leaders_handler))
     bot.add_handler(CommandHandler('achievements', get_achievements_handler))
-    # bot.add_handler(CommandHandler('level', choose_level_command))
 
     bot.add_handler(PreCheckoutQueryHandler(pre_checkout_handler))
     bot.add_handler(MessageHandler(filters.SUCCESSFUL_PAYMENT, successful_payment_handler))

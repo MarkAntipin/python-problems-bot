@@ -38,7 +38,8 @@ class BotSettings(BaseSettings):
     PAYMENT_PROVIDER_TOKEN: str
     MAX_QUESTION_PER_DAY: int = 3
     DELAY_AFTER_ACHIEVEMENT: int = 3
-    SUBSCRIPTION_PRICE: int = 899
+    SUBSCRIPTION_PRICE: int = 499
+    ENABLE_PAYMENT: bool = False
     WEAK_THEMES_ADVICE_INTERVAL: int = 30
 
     class Config:
@@ -51,6 +52,7 @@ class TestSettings(BaseSettings):
     PG_PASSWORD: str = 'python-problems-bot'
     PG_DATABASE: str = 'python-problems-bot'
     PG_PORT: int = 5436
+    ENABLE_PAYMENT: bool = True
 
     class Config:
         case_sensitive = False
