@@ -13,7 +13,8 @@ def _format_choices(choices: dict) -> str:
 
 def format_question(question: Question) -> str:
     formatted_choices = _format_choices(choices=question.choices)
-    return f'{question.text}\n\n{formatted_choices}'
+    prefix = ">задача с собеседования||\n\n" if question.from_interview else ""
+    return f'{prefix}{question.text}\n\n{formatted_choices}'
 
 
 def format_explanation(question: Question, is_correct: bool, user_answer: str) -> str:
