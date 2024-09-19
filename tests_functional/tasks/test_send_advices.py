@@ -9,7 +9,6 @@ from tests_functional.utils import add_advice, add_question, add_user, add_users
 
 async def test_add_users_questions(pg: asyncpg.Pool, mocker: MockerFixture) -> None:
     mocker.patch('src.tasks.send_advices.Application', mocker.MagicMock())
-    send_message_mock = mocker.patch('src.utils.telegram.send_message._send_message', return_value=True)
 
     question_id_1 = await add_question(pg=pg)
     question_id_2 = await add_question(pg=pg, theme='syntax')
