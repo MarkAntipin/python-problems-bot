@@ -50,11 +50,13 @@ async def test_add_users_questions(pg: asyncpg.Pool, mocker: MockerFixture) -> N
 
 async def test_send_advices_task(pg: asyncpg.Pool, mocker: MockerFixture) -> None:
     mocker.patch('src.tasks.send_advices.Application', mocker.MagicMock())
-    send_message_mock = mocker.patch('src.utils.telegram.send_message._send_message', return_value=False)
+    send_message_mock = mocker.patch('src.utils.telegram.send_message._send_message', return_value=True)
 
     await add_advice(pg=pg, level=1)
     advice_id_2 = await add_advice(pg=pg, level=2)
 
+    user_id_1 = await add_user(pg=pg, username='user_1')
+    user_id_2 = await add_user(pg=pg, username='user_2')
     user_id_3 = await add_user(pg=pg, username='user_3')
     user_id_4 = await add_user(pg=pg, username='user_4')
 
@@ -66,14 +68,24 @@ async def test_send_advices_task(pg: asyncpg.Pool, mocker: MockerFixture) -> Non
 
     await send_advices_task(pg_pool=pg)
 
-    row = await pg.fetchrow("""SELECT * FROM users_send_advices WHERE user_id = $1""", user_id_3)
-    assert (row is not None)
+    row = await pg.fetchrow("""SELECT * FROM users_send_advices WHERE user_id = $1""", user_id_1)
+    assert (
+        row is not None
+    )
 
-    row = await pg.fetchrow("""SELECT * FROM users_send_advices WHERE user_id = $1""", user_id_4)
-    assert (row is not None)
+    row = await pg.fetchrow("""SELECT * FROM users_send_advices WHERE user_id = $1""", user_id_2)
+    assert (
+        row is None
+    )
 
     row = await pg.fetchrow("""SELECT COUNT(*) FROM users_send_advices WHERE user_id = $1""", user_id_3)
-    assert (row['count'] == 1)
+    assert (
+        row['count'] == 1
+    )
 
     row = await pg.fetchrow("""SELECT COUNT(*) FROM users_send_advices WHERE user_id = $1""", user_id_4)
-    assert (row['count'] == 1)
+    assert (
+        row['count'] == 2
+    )
+
+    assert send_message_mock.call_count == 2
