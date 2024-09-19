@@ -66,10 +66,16 @@ async def test_send_advices_task(pg: asyncpg.Pool, mocker: MockerFixture) -> Non
 
     await send_advices_task(pg_pool=pg)
 
+    row = await pg.fetchrow("""SELECT * FROM users_send_advices WHERE user_id = $1""", user_id_3)
+    assert (row is not None)
+
+    row = await pg.fetchrow("""SELECT * FROM users_send_advices WHERE user_id = $1""", user_id_4)
+    assert (row is not None)
+
     row = await pg.fetchrow("""SELECT COUNT(*) FROM users_send_advices WHERE user_id = $1""", user_id_3)
     assert (row['count'] == 1)
 
     row = await pg.fetchrow("""SELECT COUNT(*) FROM users_send_advices WHERE user_id = $1""", user_id_4)
-    assert (row['count'] == 1)
+    assert (row['count'] == 2)
 
     assert send_message_mock.call_count == 2
