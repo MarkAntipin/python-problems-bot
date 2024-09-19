@@ -26,10 +26,26 @@ async def test_add_users_questions(pg: asyncpg.Pool, mocker: MockerFixture) -> N
     row = await pg.fetchrow("""SELECT * FROM users_questions WHERE user_id = $1""", user_id_2)
     assert (row is not None)
 
-    row = await pg.fetchrow("""SELECT COUNT(*) FROM users_questions WHERE user_id = $1 AND question_id = $2""", user_id_1, question_id_1)
+    row = await pg.fetchrow("""
+                            SELECT COUNT(*) FROM 
+                                users_questions 
+                            WHERE user_id = $1 
+                            AND question_id = $2
+                            """, 
+                            user_id_1, 
+                            question_id_1
+                           )
     assert (row['count'] == 1)
 
-    row = await pg.fetchrow("""SELECT COUNT(*) FROM users_questions WHERE user_id = $1 AND question_id = $2""", user_id_2, question_id_2)
+    row = await pg.fetchrow("""
+                            SELECT COUNT(*) FROM 
+                                users_questions 
+                            WHERE user_id = $1 
+                            AND question_id = $2
+                            """, 
+                            user_id_2, 
+                            question_id_2
+                           )
     assert (row['count'] == 2)
 
     assert send_message_mock.call_count == 2
