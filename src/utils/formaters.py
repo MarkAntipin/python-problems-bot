@@ -15,7 +15,7 @@ def _format_choices(choices: dict) -> str:
 
 def format_question(question: Question) -> str:
     formatted_choices = _format_choices(choices=question.choices)
-    prefix = f"{_INTERVIEW_QUESTION_PREFIX}\n\n" if question.from_interview else ""
+    prefix = f">{_INTERVIEW_QUESTION_PREFIX}||\n\n" if question.from_interview else ""
     return f'{prefix}{question.text}\n\n{formatted_choices}'
 
 
