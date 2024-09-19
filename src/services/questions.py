@@ -16,7 +16,7 @@ class Question(BaseModel):
     answer: str
     choices: dict
     explanation: str | None
-    from_interview: bool
+    from_interview: bool = False
 
 
 class GetNewRandomQuestionForUserStatus(StrEnum):
