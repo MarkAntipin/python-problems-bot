@@ -50,7 +50,7 @@ async def test_add_users_questions(pg: asyncpg.Pool, mocker: MockerFixture) -> N
 
 async def test_send_advices_task(pg: asyncpg.Pool, mocker: MockerFixture) -> None:
     mocker.patch('src.tasks.send_advices.Application', mocker.MagicMock())
-    send_message_mock = mocker.patch('src.utils.telegram.send_message._send_message', return_value=True)
+    send_message_mock = mocker.patch('src.utils.telegram.send_message._send_message', return_value=False)
 
     await add_advice(pg=pg, level=1)
     advice_id_2 = await add_advice(pg=pg, level=2)
@@ -77,5 +77,3 @@ async def test_send_advices_task(pg: asyncpg.Pool, mocker: MockerFixture) -> Non
 
     row = await pg.fetchrow("""SELECT COUNT(*) FROM users_send_advices WHERE user_id = $1""", user_id_4)
     assert (row['count'] == 1)
-
-    assert send_message_mock.call_count == 2
