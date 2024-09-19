@@ -1,0 +1,2 @@
+ALTER TABLE questions
+ADD COLUMN from_interview BOOLEAN NOT NULL DEFAULT FALSE;

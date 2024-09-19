@@ -16,6 +16,7 @@ class Question(BaseModel):
     answer: str
     choices: dict
     explanation: str | None
+    from_interview: bool = False
 
 
 class GetNewRandomQuestionForUserStatus(StrEnum):
@@ -64,6 +65,7 @@ class QuestionsService:
                 answer=row['answer'],
                 explanation=row['explanation'],
                 choices=json.loads(row['choices']),
+                from_interview=row['from_interview'],
             ),
             status=GetNewRandomQuestionForUserStatus.ok
         )
@@ -78,6 +80,7 @@ class QuestionsService:
             answer=row['answer'],
             explanation=row['explanation'],
             choices=json.loads(row['choices']),
+            from_interview=row['from_interview'],
         )
 
     async def answer_question(

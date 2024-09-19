@@ -175,74 +175,73 @@ class AchievementsService:
             if achievement.name in user_current_achievements:
                 continue
 
-            match achievement.name:
-                case 'solve_10_different_level_questions':
-                    if self._solve_10_different_level_questions(solved_questions):
-                        new_achievements.append(achievement)
+            if achievement.name == 'solve_10_different_level_questions':
+                if self._solve_10_different_level_questions(solved_questions):
+                    new_achievements.append(achievement)
 
-                case 'less_than_20_percent_errors_in_50_questions':
-                    if self._less_than_20_percent_errors_in_50_questions(solved_questions):
-                        new_achievements.append(achievement)
+            if achievement.name == 'less_than_20_percent_errors_in_50_questions':
+                if self._less_than_20_percent_errors_in_50_questions(solved_questions):
+                    new_achievements.append(achievement)
 
-                case 'comeback_after_3_days':
-                    if self._comeback_after_3_days(solved_questions):
-                        new_achievements.append(achievement)
+            if achievement.name == 'comeback_after_3_days':
+                if self._comeback_after_3_days(solved_questions):
+                    new_achievements.append(achievement)
 
-                case 'first_correct_answer':
-                    if self._first_correct_answer(solved_questions):
-                        new_achievements.append(achievement)
+            if achievement.name == 'first_correct_answer':
+                if self._first_correct_answer(solved_questions):
+                    new_achievements.append(achievement)
 
-                case 'solve_10_questions':
-                    if self._solve_10_questions(solved_questions):
-                        new_achievements.append(achievement)
+            if achievement.name == 'solve_10_questions':
+                if self._solve_10_questions(solved_questions):
+                    new_achievements.append(achievement)
 
-                case 'solve_27_questions':
-                    if self._solve_27_questions(solved_questions):
-                        new_achievements.append(achievement)
+            if achievement.name == 'solve_27_questions':
+                if self._solve_27_questions(solved_questions):
+                    new_achievements.append(achievement)
 
-                case 'solve_50_questions':
-                    if self._solve_50_questions(solved_questions):
-                        new_achievements.append(achievement)
+            if achievement.name == 'solve_50_questions':
+                if self._solve_50_questions(solved_questions):
+                    new_achievements.append(achievement)
 
-                case 'solve_100_questions':
-                    if self._solve_100_questions(solved_questions):
-                        new_achievements.append(achievement)
+            if achievement.name == 'solve_100_questions':
+                if self._solve_100_questions(solved_questions):
+                    new_achievements.append(achievement)
 
-                case 'first_incorrect_answer':
-                    if self._first_incorrect_answer(solved_questions):
-                        new_achievements.append(achievement)
+            if achievement.name == 'first_incorrect_answer':
+                if self._first_incorrect_answer(solved_questions):
+                    new_achievements.append(achievement)
 
-                case 'solve_10_incorrect_questions':
-                    if self._solve_10_incorrect_questions(solved_questions):
-                        new_achievements.append(achievement)
+            if achievement.name == 'solve_10_incorrect_questions':
+                if self._solve_10_incorrect_questions(solved_questions):
+                    new_achievements.append(achievement)
 
-                case 'solve_50_incorrect_questions':
-                    if self._solve_50_incorrect_questions(solved_questions):
-                        new_achievements.append(achievement)
+            if achievement.name == 'solve_50_incorrect_questions':
+                if self._solve_50_incorrect_questions(solved_questions):
+                    new_achievements.append(achievement)
 
-                case 'solve_10_list_questions':
-                    if self._solve_10_list_questions(solved_questions):
-                        new_achievements.append(achievement)
+            if achievement.name == 'solve_10_list_questions':
+                if self._solve_10_list_questions(solved_questions):
+                    new_achievements.append(achievement)
 
-                case 'solve_10_loops_questions':
-                    if self._solve_10_loops_questions(solved_questions):
-                        new_achievements.append(achievement)
+            if achievement.name == 'solve_10_loops_questions':
+                if self._solve_10_loops_questions(solved_questions):
+                    new_achievements.append(achievement)
 
-                case 'solve_3_questions_in_a_row':
-                    if self._solve_3_questions_in_a_row(solved_questions):
-                        new_achievements.append(achievement)
+            if achievement.name == 'solve_3_questions_in_a_row':
+                if self._solve_3_questions_in_a_row(solved_questions):
+                    new_achievements.append(achievement)
 
-                case 'solve_questions_3_days_in_a_row':
-                    if self._solve_questions_3_days_in_a_row(solved_questions):
-                        new_achievements.append(achievement)
+            if achievement.name == 'solve_questions_3_days_in_a_row':
+                if self._solve_questions_3_days_in_a_row(solved_questions):
+                    new_achievements.append(achievement)
 
-                case 'solve_questions_10_days_in_a_row':
-                    if self._solve_questions_10_days_in_a_row(solved_questions):
-                        new_achievements.append(achievement)
+            if achievement.name == 'solve_questions_10_days_in_a_row':
+                if self._solve_questions_10_days_in_a_row(solved_questions):
+                    new_achievements.append(achievement)
 
-                case 'solve_questions_30_days_in_a_row':
-                    if self._solve_questions_30_days_in_a_row(solved_questions):
-                        new_achievements.append(achievement)
+            if achievement.name == 'solve_questions_30_days_in_a_row':
+                if self._solve_questions_30_days_in_a_row(solved_questions):
+                    new_achievements.append(achievement)
 
         return new_achievements
 

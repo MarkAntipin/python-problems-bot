@@ -18,28 +18,39 @@ from src.utils.formaters import (
 
 
 @pytest.fixture
-def test_question() -> Question:
+def test_question(request: pytest.FixtureRequest) -> Question:
     """A fixture for creating a test question object"""
+    from_interview = request.param if hasattr(request, 'param') else False
     return Question(
         id=1,
         text='text',
         choices={'A': 1, 'B': 2},
         answer='A',
-        explanation='explanation'
+        explanation='explanation',
+        from_interview=from_interview,
     )
 
-
-def test_format_question(test_question: Question) -> None:
+@pytest.mark.parametrize('test_question, expected_output', [
+    (False, (
+        'text\n\n'
+        '*A\\)* 1\n'
+        '*B\\)* 2'
+        )
+    ),
+    (True, (
+        '>задача с собеседования||\n\n'
+        'text\n\n'
+        '*A\\)* 1\n'
+        '*B\\)* 2'
+        )
+     )
+], indirect=['test_question'])
+def test_format_question(test_question: Question, expected_output: str) -> None:
     # act
     res = format_question(question=test_question)
 
     # assert
-    assert res == (
-        'text\n\n'
-        '*A\\)* 1\n'
-        '*B\\)* 2'
-    )
-
+    assert res == expected_output
 
 def test_format_explanation__correct_answer(test_question: Question) -> None:
     # arrange

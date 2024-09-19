@@ -82,10 +82,11 @@ async def questions_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str
     if user.payment_status == PaymentStatus.onboarding:
         user = await users_service.set_trial_status(user_id=user.id)
 
-    payment_info: PaymentInfo = get_payment_info(user=user)
-    if not payment_info.is_passed_paywall:
-        await send_payment(message=query.message, telegram_user_id=user.telegram_id)
-        return States.daily_question
+    if bot_settings.ENABLE_PAYMENT:
+        payment_info: PaymentInfo = get_payment_info(user=user)
+        if not payment_info.is_passed_paywall:
+            await send_payment(message=query.message, telegram_user_id=user.telegram_id)
+            return States.daily_question
 
     callback_questions_data: ParsedCallbackQuestionsData = parse_callback_questions_data(callback_data=query.data)
     if callback_questions_data:
