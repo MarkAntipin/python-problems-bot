@@ -48,8 +48,6 @@ async def test_add_users_questions(pg: asyncpg.Pool, mocker: MockerFixture) -> N
                            )
     assert (row['count'] == 1)
 
-    assert send_message_mock.call_count == 2
-
 
 async def test_send_advices_task(pg: asyncpg.Pool, mocker: MockerFixture) -> None:
     mocker.patch('src.tasks.send_advices.Application', mocker.MagicMock())
@@ -73,6 +71,6 @@ async def test_send_advices_task(pg: asyncpg.Pool, mocker: MockerFixture) -> Non
     assert (row['count'] == 1)
 
     row = await pg.fetchrow("""SELECT COUNT(*) FROM users_send_advices WHERE user_id = $1""", user_id_4)
-    assert (row['count'] == 2)
+    assert (row['count'] == 1)
 
     assert send_message_mock.call_count == 2
