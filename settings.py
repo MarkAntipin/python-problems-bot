@@ -59,4 +59,15 @@ class TestSettings(BaseSettings):
         env_prefix = "TEST_"
 
 
+class AppSettings(BaseSettings):
+    PORT: int = 8080
+    IS_DEBUG: bool = False
+
+    TITLE: str = 'Pythin bot API'
+    VERSION: str = '0.1.0'
+
+    class Config:
+        case_sensitive = False
+
+
 bot_settings = BotSettings()

@@ -86,7 +86,8 @@ class QuestionsRepo:
                     text,
                     answer,
                     choices,
-                    explanation
+                    explanation,
+                    from_interview
                 FROM
                     questions
                 WHERE
