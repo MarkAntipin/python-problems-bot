@@ -23,8 +23,7 @@ services:
         condition: service_completed_successfully
 
   scheduler:
-    build:
-      context: .
+    image: python-problems-bot
     command: ["python", "run_scheduler.py"]
     networks:
       - bot_network
