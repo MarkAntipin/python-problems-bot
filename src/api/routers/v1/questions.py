@@ -7,7 +7,7 @@ router = APIRouter(prefix='/api/v1', tags=['questions'])
 
 
 @router.get('/{question_id}')
-async def get_stations_by_area(
+async def get_question_by_id(
     question_id: int,
     questions_service: QuestionsService = Depends(get_questions_service)
 ) -> str:
