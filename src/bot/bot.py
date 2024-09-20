@@ -1,4 +1,3 @@
-
 from ptbcontrib.postgres_persistence import PostgresPersistence
 from telegram.ext import (
     Application,
