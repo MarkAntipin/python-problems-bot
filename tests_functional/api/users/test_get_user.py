@@ -22,10 +22,10 @@ async def test_get_user(client: TestClient, pg: asyncpg.Pool, mocker: MockerFixt
 
     mocker.patch('src.utils.user_init_data.bot_settings.TOKEN', 'token')
 
-    #act
-    resp = client.get(
-        '/api/v1/users',
-        params={
+    # act
+    resp = client.post(
+        '/api/v1/users/get-user',
+        json={
             'user_init_data': user_init_data_raw
         },
     )
@@ -56,10 +56,10 @@ async def test_get_user__invalid_hash(client: TestClient, pg: asyncpg.Pool, mock
 
     mocker.patch('src.utils.user_init_data.bot_settings.TOKEN', 'token')
 
-    #act
-    resp = client.get(
-        '/api/v1/users',
-        params={
+    # act
+    resp = client.post(
+        '/api/v1/users/get-user',
+        json={
             'user_init_data': user_init_data_raw
         },
     )

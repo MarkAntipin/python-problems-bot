@@ -18,6 +18,11 @@ class UserInitData(BaseModel):
     hash: str  # noqa A003
 
 
+class UserInitDataRaw(BaseModel):
+    """payload from telegram web app which need to be parsed into UserInitData"""
+    user_init_data: str
+
+
 class User(BaseModel):
     id: int  # noqa A003
     telegram_id: int
