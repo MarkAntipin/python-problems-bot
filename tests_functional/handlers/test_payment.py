@@ -15,8 +15,8 @@ async def test_successful_payment_handler(
     question_id = await add_question(pg=pg, level=1)
 
     update_mock = mocker.AsyncMock()
-    update_mock.update.message.from_user = TGUser(id=1, is_bot=False, first_name='first_name')
-    mocker.patch('src.bot.handlers.payment.pg_pool', pg)
+    update_mock.effective_user = TGUser(id=1, is_bot=False, first_name='first_name')
+    await mocker.patch('src.bot.handlers.payment.pg_pool', pg)
 
     # act
     await successful_payment_handler(update_mock, None)

@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from settings import AppSettings, PostgresSettings
 from src.api.routers.v1.questions import router as questions_router_v1
+from src.api.routers.v1.users import router as users_router_v1
 
 
 def setup_middlewares(app: FastAPI) -> None:
@@ -38,4 +39,5 @@ def create_app(settings: AppSettings) -> FastAPI:
         await app.state.pg_pool.close()
 
     app.include_router(questions_router_v1)
+    app.include_router(users_router_v1)
     return app

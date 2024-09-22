@@ -2,7 +2,7 @@ from datetime import datetime
 
 import asyncpg
 
-from src.services.models.payment_status import PaymentStatus
+from src.models.payment_status import PaymentStatus
 
 
 class UsersRepo:
@@ -84,7 +84,7 @@ class UsersRepo:
             )
         return row
 
-    async def create(
+    async def create_or_update(
         self,
         telegram_id: int,
         first_name: str | None = None,
@@ -115,6 +115,12 @@ class UsersRepo:
                     $6,
                     $7
                 )
+                ON CONFLICT (telegram_id)
+                DO UPDATE SET
+                    first_name = EXCLUDED.first_name,
+                    last_name = EXCLUDED.last_name,
+                    username = EXCLUDED.username,
+                    language_code = EXCLUDED.language_code
                 RETURNING
                     id,
                     telegram_id,
