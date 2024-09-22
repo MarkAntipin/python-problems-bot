@@ -2,7 +2,7 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 
-from src.services.models.payment_status import PaymentStatus
+from src.models.payment_status import PaymentStatus
 from src.services.users import User
 from src.utils.payment import PaymentInfo, get_payment_info
 

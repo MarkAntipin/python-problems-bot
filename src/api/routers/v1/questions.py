@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from src.api.depends import get_questions_service
 from src.services.questions import QuestionsService
 
-router = APIRouter(prefix='/api/v1', tags=['questions'])
+router = APIRouter(prefix='/api/v1/questions', tags=['questions'])
 
 
 @router.get('/{question_id}')

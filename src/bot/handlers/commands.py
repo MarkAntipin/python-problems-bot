@@ -6,6 +6,7 @@ from telegram.ext import ContextTypes
 
 from src.bot.handlers.states import States
 from src.images import ImageType
+from src.mappers.users import map_inner_telegram_user_from_tg_user
 from src.services.achievements import AchievementsService
 from src.services.leaders import LeadersService
 from src.services.users import UsersService
@@ -34,7 +35,7 @@ async def start_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
 
     came_from = _get_deep_link_param(update=update)
     tg_user: TGUser = update.message.from_user
-    user = await users_service.get_or_create(tg_user=tg_user, came_from=came_from)
+    user = await users_service.get_or_create(tg_user=map_inner_telegram_user_from_tg_user(tg_user), came_from=came_from)
     await users_service.set_status(user_id=user.id, status='active')
     logger.info('User %d run start handler', user.id)
 
@@ -53,7 +54,7 @@ async def leaders_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> str:
     users_service = UsersService(pg_pool=pg_pool)
 
     tg_user: TGUser = update.message.from_user
-    user = await users_service.get_or_create(tg_user=tg_user)
+    user = await users_service.get_or_create(tg_user=map_inner_telegram_user_from_tg_user(tg_user))
     logger.info('User %d run leaders handler', user.id)
 
     leaders = await leaders_service.get_top_users(limit=5)
@@ -77,7 +78,7 @@ async def get_achievements_handler(update: Update, _: ContextTypes.DEFAULT_TYPE)
     achievements_service = AchievementsService(pg_pool=pg_pool)
 
     tg_user: TGUser = update.message.from_user
-    user = await users_service.get_or_create(tg_user=tg_user)
+    user = await users_service.get_or_create(tg_user=map_inner_telegram_user_from_tg_user(tg_user))
     logger.info('User %d run achievements handler', user.id)
 
     achievements = await achievements_service.get_user_achievements(user_id=user.id)

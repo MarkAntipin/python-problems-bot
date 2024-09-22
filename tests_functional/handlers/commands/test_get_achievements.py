@@ -16,7 +16,7 @@ async def test_get_achievements_handler(
     await add_user_achievement(pg=pg, user_id=user_id, achievement_name='first_correct_answer')
 
     update_mock = mocker.AsyncMock()
-    update_mock.update.message.from_user = TGUser(id=telegram_id, is_bot=False, first_name='first_name')
+    update_mock.message.from_user = TGUser(id=telegram_id, is_bot=False, first_name='first_name')
     await mocker.patch('src.bot.handlers.commands.pg_pool', pg)
 
     # act
