@@ -1,8 +1,21 @@
 import pitLogo from "../assets/pit-logo.svg"
 import pitGreeting from "../assets/pit-greeting.png"
-import {Link} from "react-router-dom"
+import { useNavigate} from "react-router-dom"
 
 const LandingPage = () => {
+  const navigate = useNavigate();
+
+  const handleStart = () => {
+    const condition = false;
+    // const condition = true;
+
+    if (condition) {
+      navigate('/choose-level');
+    } else {
+      navigate('/solve-question');
+    }
+  };
+
   return (
     <>
       <div className="landing-page">
@@ -13,18 +26,21 @@ const LandingPage = () => {
             alt="Pit Logo"
           />
         </div>
-
         <p className="landing-page__text">
-          Привет! Я — Пит, твой карманный помощник в изучении Python и подготовке к собеседованиям.
-          🔹 Выбирай уровень сложности вопросов — от новичка до опытного разработчика
-          🔹 Бот каждый день будет присылать 3 вопроса. Это займет всего 5-10 минут в день!
-          🔹 Зарабатывай достижения и соревнуйся с другими пользователями
+          <h3>Карманный помощник в изучении Python️</h3>
+          <ul className="landing-page__list">
+            <li>⭐ 500+ задач разного уровня сложности</li>
+            <li>⭐ Новые вопросы каждый день!</li>
+            <li>⭐ Получай достижения!</li>
+            <li>⭐ Займи первое место в таблице лидеров!</li>
+          </ul>
         </p>
-        <Link to="/choose-level" className="arrow-button button">Начать 🚀
-          <span className="arrow">
-            <img src={pitLogo} alt="Arrow Right"/>
+        <button onClick={handleStart} className="start-button button">
+          Начать 🚀
+          <span>
+            <img src={pitLogo} alt="Start" />
           </span>
-        </Link>
+        </button>
       </div>
     </>
   )

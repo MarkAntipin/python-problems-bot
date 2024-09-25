@@ -1,5 +1,5 @@
 .button {
-  font-family: "Josefin Sans", sans-serif;
+  font-family: "Nunito Sans", sans-serif;
   background: none;
   box-sizing: border-box;
   cursor: pointer;
@@ -9,7 +9,7 @@
   text-decoration: none;
 }
 
-.arrow-button {
+.start-button {
   @include displayFlex(center, center, row);
 
   text-decoration: none;
@@ -23,19 +23,6 @@
   padding: 15px 0;
   width: 200px;
   margin: 22px auto 27px;
-
-  &:hover {
-    filter: brightness(1.05);
-  }
-}
-
-.button-second {
-  @include displayFlex(center, center, row);
-
-  color: $tg-theme-button;
-  font-size: 18px;
-  font-weight: $font-weight-bold;
-  margin-bottom: 80px;
 
   &:hover {
     filter: brightness(1.05);

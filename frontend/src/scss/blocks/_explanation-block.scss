@@ -1,0 +1,17 @@
+.explanation-block {
+}
+
+.explanation-block__title {
+  @include displayFlex(space-between, center, row);
+  font-size: 20px;           /* Slightly larger title */
+  font-weight: bold;         /* Bold title */
+  margin-bottom: 10px;       /* Space below the title */
+  margin-top: 20px;       /* Space below the title */
+}
+
+/* Explanation text */
+.explanation-block__text {
+  @include displayFlex(space-between, center, row);
+  font-size: 16px;           /* Regular font size for explanation */
+  line-height: 1.6;          /* Comfortable line height */
+}
