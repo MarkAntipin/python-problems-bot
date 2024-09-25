@@ -1,6 +1,6 @@
 import asyncpg
-from pydantic import BaseModel
 
+from pydantic import BaseModel
 from src.repositories.postgres.advices import AdvicesRepo
 
 
