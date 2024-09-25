@@ -1,4 +1,5 @@
 import asyncpg
+
 from datetime import datetime, timedelta
 
 from pytest_mock import MockerFixture
