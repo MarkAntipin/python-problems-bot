@@ -2,8 +2,6 @@ import asyncpg
 
 from settings import bot_settings
 
-from settings import bot_settings
-
 
 # done
 class AdvicesRepo:
@@ -89,7 +87,7 @@ class AdvicesRepo:
     async def get_send_advice(self, user_id: int, theme: str, level: int) -> asyncpg.Record | None:
         async with self.pg_pool.acquire() as conn:
             row = await conn.fetchrow(
-                f"""
+                """
                 SELECT
                   id
                 FROM

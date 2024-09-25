@@ -2,10 +2,11 @@ import asyncpg
 
 from datetime import datetime, timedelta
 from pytest_mock import MockerFixture
+
+from src.repositories.postgres.advices import AdvicesRepo
+from src.services.advices import AdvicesService
 from src.tasks.send_advices import send_advices_task
 from tests_functional.utils import add_advice, add_question, add_user, add_users_questions, add_users_send_advices
-from src.services.advices import AdvicesService
-from src.repositories.postgres.advices import AdvicesRepo
 
 
 async def test_send_advices_task(pg: asyncpg.Pool, mocker: MockerFixture) -> None:
