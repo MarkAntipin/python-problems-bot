@@ -39,8 +39,9 @@ class BotSettings(BaseSettings):
     PAYMENT_PROVIDER_TOKEN: str
     MAX_QUESTION_PER_DAY: int = 3
     DELAY_AFTER_ACHIEVEMENT: int = 3
-    SUBSCRIPTION_PRICE: int = 899
-    WEAK_THEMES_ADVICE_INTERVAL = 30
+    SUBSCRIPTION_PRICE: int = 499
+    ENABLE_PAYMENT: bool = False
+    WEAK_THEMES_ADVICE_INTERVAL: int = 30
 
     class Config:
         case_sensitive = False
@@ -52,10 +53,22 @@ class TestSettings(BaseSettings):
     PG_PASSWORD: str = 'python-problems-bot'
     PG_DATABASE: str = 'python-problems-bot'
     PG_PORT: int = 5436
+    ENABLE_PAYMENT: bool = True
 
     class Config:
         case_sensitive = False
         env_prefix = "TEST_"
+
+
+class AppSettings(BaseSettings):
+    PORT: int = 8080
+    IS_DEBUG: bool = False
+
+    TITLE: str = 'Pythin bot API'
+    VERSION: str = '0.1.0'
+
+    class Config:
+        case_sensitive = False
 
 
 bot_settings = BotSettings()

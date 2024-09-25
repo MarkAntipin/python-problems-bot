@@ -1,6 +1,8 @@
 import asyncpg
 from settings import bot_settings
 
+from settings import bot_settings
+
 
 # done
 class AdvicesRepo:
@@ -96,7 +98,7 @@ class AdvicesRepo:
                 WHERE
                   user_id = $1
                 AND
-                  created_at BETWEEN CURRENT_DATE - $2 AND CURRENT_DATE
+                  created_at BETWEEN CURRENT_DATE - $2::integer AND CURRENT_DATE
                 AND
                   theme = $3
                 AND

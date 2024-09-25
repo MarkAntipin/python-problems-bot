@@ -61,10 +61,11 @@ async def test_send_daily_questions_task__user_baned_bot(
 
 async def test_send_daily_questions_task__user_not_payed(
     pg: asyncpg.Pool,
-    mocker: MockerFixture
+    mocker: MockerFixture,
 ) -> None:
     # arrange
     mocker.patch('src.tasks.send_questions.Application', mocker.MagicMock())
+    mocker.patch('src.tasks.send_questions.bot_settings.ENABLE_PAYMENT', True)
     send_payment_mock = mocker.patch('src.tasks.send_questions.send_payment', return_value=True)
     user_id_1 = await add_user(
         pg=pg, username='user_1', payment_status='trial', start_trial_at=datetime.now(UTC) - timedelta(days=4)

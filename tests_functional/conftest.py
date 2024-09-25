@@ -1,5 +1,6 @@
 import asyncpg
 import pytest
+from fastapi.testclient import TestClient
 
 from settings import TestSettings
 
@@ -40,3 +41,11 @@ async def env(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv('PG_USER', test_settings.PG_USER)
     monkeypatch.setenv('PG_PASSWORD', test_settings.PG_PASSWORD)
     monkeypatch.setenv('PG_DATABASE', test_settings.PG_DATABASE)
+    monkeypatch.setenv('ENABLE_PAYMENT', '1')
+
+
+@pytest.fixture()
+async def client() -> TestClient:
+    from run_app import app
+    with TestClient(app=app) as client:
+        yield client

@@ -25,7 +25,7 @@ async def test_send_advices_task(pg: asyncpg.Pool, mocker: MockerFixture) -> Non
     user_id_4 = await add_user(pg=pg, username='user_4')
 
     created_at_3 = datetime.utcnow() - timedelta(days=3)
-    created_at_4 = datetime.utcnow() - timedelta(days=15)
+    created_at_4 = datetime.utcnow() - timedelta(days=31)
 
     await add_users_questions(pg=pg, question_id=question_id_1, user_id=user_id_1, is_correct=False)
     await add_users_questions(pg=pg, question_id=question_id_2, user_id=user_id_2, is_correct=False)

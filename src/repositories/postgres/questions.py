@@ -56,7 +56,8 @@ class QuestionsRepo:
                     q.text,
                     q.answer,
                     q.explanation,
-                    q.choices
+                    q.choices,
+                    q.from_interview
                 FROM
                     questions q
                 LEFT JOIN
@@ -85,7 +86,8 @@ class QuestionsRepo:
                     text,
                     answer,
                     choices,
-                    explanation
+                    explanation,
+                    from_interview
                 FROM
                     questions
                 WHERE
