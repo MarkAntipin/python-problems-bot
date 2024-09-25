@@ -1,8 +1,7 @@
-from datetime import datetime, timedelta
-
 import asyncpg
-from pytest_mock import MockerFixture
 
+from datetime import datetime, timedelta
+from pytest_mock import MockerFixture
 from src.tasks.send_advices import send_advices_task
 from tests_functional.utils import add_advice, add_question, add_user, add_users_questions, add_users_send_advices
 from src.services.advices import AdvicesService
