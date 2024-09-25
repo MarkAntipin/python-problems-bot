@@ -1,7 +1,6 @@
-import asyncpg
-
 from datetime import datetime, timedelta
 
+import asyncpg
 from pytest_mock import MockerFixture
 
 from src.repositories.postgres.advices import AdvicesRepo

@@ -1,7 +1,7 @@
 import asyncio
-import asyncpg
 import logging
 
+import asyncpg
 from telegram.ext import Application
 
 from settings import bot_settings
