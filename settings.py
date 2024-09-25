@@ -3,6 +3,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from pydantic_settings import BaseSettings
 
+
 BASE_DIR = Path(__file__).resolve().parent
 
 IMAGES_DIR = Path(BASE_DIR, 'images')
@@ -39,6 +40,7 @@ class BotSettings(BaseSettings):
     MAX_QUESTION_PER_DAY: int = 3
     DELAY_AFTER_ACHIEVEMENT: int = 3
     SUBSCRIPTION_PRICE: int = 899
+    WEAK_THEMES_ADVICE_INTERVAL = 30
 
     class Config:
         case_sensitive = False
