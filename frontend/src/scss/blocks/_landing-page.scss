@@ -20,6 +20,13 @@
     line-height: normal;
   }
 
+  &__list {
+    list-style-type: none;
+    padding-left: 0;
+    text-align: left;
+    font-size: 16px;
+  }
+
   &__bottom {
     color: $tg-theme-text;
     text-align: center;
