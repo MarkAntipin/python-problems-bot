@@ -33,6 +33,19 @@ handler.setFormatter(formatter)
   const question = "## Что делает следующий код?"
   const explanation = "Этот код создает обработчик `FileHandler` для записи логов в файл `myapp.log` и настраивает его с помощью заданного форматтера, который определяет формат логов\\."
   const explanationTitle = "Браво! Совершенно верно! 🤝"
+  const correctExplanationTitles = [
+    "Браво! Совершенно верно! 🤝",
+    "И это правильный ответ! ✅",
+    "Точно в яблочко! 🎯",
+    "Ура, это правильный ответ! 🎉",
+    "Верно! Ты просто космос! 🚀",
+    "Правильный ответ! 👍",
+    "Так точно! Ты справился на ура! 🏆",
+    "Верно! У тебя отлично получается! 😉",
+    "Да, это правильный ответ! 👌",
+    "Абсолютно верно! 🌟"
+  ]
+  const randomCorrectExplanationTitle = Math.floor(Math.random() * correctExplanationTitles.length);
 
 
   const handleAnswerClick = async (answer) => {
@@ -50,9 +63,13 @@ handler.setFormatter(formatter)
     }
   }
 
-    const handleMainButtonClick = async () => {
-      setShowExplanation(true);
-    };
+  const handleMainButtonClick = async () => {
+    setShowExplanation(true);
+  };
+
+  const handleMainButtonClickAfterExplanation = async () => {
+    navigate('/new-achievement');
+  };
 
   useEffect(() => {
   }, []);
@@ -102,7 +119,7 @@ handler.setFormatter(formatter)
           ) : (
           <ExplanationBlock
             explanation={explanation}
-            title={explanationTitle}
+            title={correctExplanationTitles[randomCorrectExplanationTitle]}
             userAnswer="Создает и настраивает обработчик для записи логов в файл `myapp.log` с заданным форматированием"
           >
           </ExplanationBlock>
@@ -112,11 +129,10 @@ handler.setFormatter(formatter)
         {selectedAnswer && (
           <MainButton
             text={showExplanation ? "Далее" : `Ответить ${selectedAnswer}`}
-            onClick={showExplanation ? handleMainButtonClick : handleMainButtonClick}
+            onClick={showExplanation ? handleMainButtonClickAfterExplanation : handleMainButtonClick}
           />
         )}
     </>
-
   );
 }
 

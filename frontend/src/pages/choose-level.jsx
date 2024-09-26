@@ -89,7 +89,7 @@ const ChooseLevel = () => {
     {selectedLevelId && <
       MainButton
         text={`Выбран уровень ${selectedLevelId}`}
-        onClick={async () => showPopup({"message": `выбран уровень ${selectedLevelId}`})}
+        onClick={async () => navigate('/solve-question')}
     />}
     </>
   )

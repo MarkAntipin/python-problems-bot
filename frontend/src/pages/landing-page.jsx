@@ -6,8 +6,8 @@ const LandingPage = () => {
   const navigate = useNavigate();
 
   const handleStart = () => {
-    const condition = false;
-    // const condition = true;
+    // const condition = false;
+    const condition = true;
 
     if (condition) {
       navigate('/choose-level');
