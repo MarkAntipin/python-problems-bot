@@ -164,9 +164,9 @@ bot_data/bot_data
 
 # VSCode
 .vscode/*
-!.vscode/settings.json
+.vscode/settings.json
 !.vscode/tasks.json
-!.vscode/launch.json
+.vscode/launch.json
 !.vscode/extensions.json
 !.vscode/*.code-snippets
 
@@ -175,4 +175,3 @@ bot_data/bot_data
 
 # Built Visual Studio Code Extensions
 *.vsix
-.vscode/launch.json

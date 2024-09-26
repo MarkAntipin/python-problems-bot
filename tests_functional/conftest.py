@@ -54,7 +54,7 @@ async def client() -> TestClient:
 
 
 @pytest.fixture
-async def user_init_data_raw(pg: asyncpg.Pool, mocker: MockerFixture) -> str:
+async def user_data(pg: asyncpg.Pool, mocker: MockerFixture) -> str:
     user_id = 1
     first_name = 'John'
     language_code = 'en'
@@ -66,8 +66,8 @@ async def user_init_data_raw(pg: asyncpg.Pool, mocker: MockerFixture) -> str:
         f'%22%2C%22language_code%22%3A%22{language_code}%22%7D&hash={user_hash}'
     )
 
-    await add_user(pg=pg, telegram_id=user_id, level=user_level)
+    user_id = await add_user(pg=pg, telegram_id=user_id, level=user_level)
 
     mocker.patch('src.utils.user_init_data.bot_settings.TOKEN', 'token')
 
-    return user_init_data_raw
+    return {'user_id': user_id, 'user_init_data_raw': user_init_data_raw}

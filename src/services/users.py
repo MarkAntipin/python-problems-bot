@@ -1,11 +1,13 @@
 from datetime import UTC, datetime
 
 import asyncpg
+from fastapi import HTTPException, status
 
 from src.mappers.users import map_user_from_pg_row
 from src.models.payment_status import PaymentStatus
-from src.models.users import TelegramUser, User
+from src.models.users import TelegramUser, User, UserInitData, UserInitDataRaw
 from src.repositories.postgres.users import UsersRepo
+from src.utils.user_init_data import validate_and_parce_user_init_data
 
 
 class UsersService:
@@ -72,3 +74,11 @@ class UsersService:
             user_id=user_id,
             status=status
         )
+
+    async def get_user_by_user_init_data(self, user_init_data_raw: UserInitDataRaw) -> User:
+        user_init_data: UserInitData = validate_and_parce_user_init_data(user_init_data_raw=user_init_data_raw)
+        if not user_init_data:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Invalid user_init_data')
+
+        user: User = await self.get_or_create(tg_user=user_init_data.user)
+        return user
