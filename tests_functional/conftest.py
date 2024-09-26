@@ -1,8 +1,10 @@
 import asyncpg
 import pytest
 from fastapi.testclient import TestClient
+from pytest_mock import MockerFixture
 
 from settings import TestSettings
+from tests_functional.utils import add_user
 
 test_settings = TestSettings()
 
@@ -49,3 +51,23 @@ async def client() -> TestClient:
     from run_app import app
     with TestClient(app=app) as client:
         yield client
+
+
+@pytest.fixture
+async def user_init_data_raw(pg: asyncpg.Pool, mocker: MockerFixture) -> str:
+    user_id = 1
+    first_name = 'John'
+    language_code = 'en'
+    user_level = 1
+    user_hash = '4f97fa2703d6a8088bcb68eb038c7308fd5c1b6ce30874c389b03ce53f850795'
+
+    user_init_data_raw = (
+        f'user=%7B%22id%22%3A{user_id}%2C%22first_name%22%3A%22{first_name}'
+        f'%22%2C%22language_code%22%3A%22{language_code}%22%7D&hash={user_hash}'
+    )
+
+    await add_user(pg=pg, telegram_id=user_id, level=user_level)
+
+    mocker.patch('src.utils.user_init_data.bot_settings.TOKEN', 'token')
+
+    return user_init_data_raw
