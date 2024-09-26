@@ -8,6 +8,8 @@ from tests_functional.utils import add_question
 
 
 async def test_get_new_random_question_for_user(client: TestClient, pg: asyncpg.Pool, user_init_data_raw: str) -> None:
+    # TODO: act, assert, arrange
+    # TODO: test naming
     user_level: int = 1
     question_id = await add_question(pg=pg, level=user_level)
 
@@ -53,7 +55,7 @@ async def test_answer_question(
     assert resp.json()['is_correct'] == expected_result
 
 
-async def test_answer_nonexistent_question(
+async def test_answer_question__question_not_found(
     client: TestClient,
     pg: asyncpg.Pool,
     user_init_data_raw: str

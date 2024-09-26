@@ -38,19 +38,20 @@ async def _get_user_from_answer_request(
 
 @router.post('/answer', response_model=AnswerResponse)
 async def answer_question(
-    answer_data: AnswerRequest,
+    payload: AnswerRequest,
+    # TODO: move to service new method .get_user_by_user_init_data
     user: User = Depends(_get_user_from_answer_request),
     question_service: QuestionsService = Depends(get_questions_service)
 ) -> AnswerResponse:
-    question = await question_service.get_by_id(question_id=answer_data.question_id)
+    question = await question_service.get_by_id(question_id=payload.question_id)
     if question is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f'Not found question with id - {answer_data.question_id}'
+            detail=f'Not found question with id - {payload.question_id}'
         )
     is_correct = await question_service.answer_question(
         user_id=user.id,
         question=question,
-        user_answer=answer_data.user_answer,
+        user_answer=payload.user_answer,
     )
     return AnswerResponse(is_correct=is_correct)
