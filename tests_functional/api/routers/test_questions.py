@@ -21,7 +21,7 @@ async def test_get_new_random_question_for_user__ok(
     resp = client.post(
         '/api/v1/questions/get-new-question',
         json={
-            'user_init_data': user_data['user_init_data']
+            'user_init_data': user_data['user_init_data_raw']
         },
     )
 
