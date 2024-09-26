@@ -205,3 +205,25 @@ async def add_user_achievement(
         user_id,
         achievement_name,
     )
+
+
+async def add_user_send_question(
+    pg: asyncpg.Pool,
+    user_id: int,
+    question_id: int,
+) -> None:
+    await pg.execute(
+        """
+        INSERT INTO
+            users_send_questions (
+                user_id,
+                question_id
+            )
+            VALUES (
+                $1,
+                $2
+            );
+        """,
+        user_id,
+        question_id,
+    )
