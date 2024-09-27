@@ -36,3 +36,7 @@ class User(BaseModel):
     start_trial_at: datetime | None = None
     last_paid_at: datetime | None = None
     send_payment_at: datetime | None = None
+
+
+class SetUserLevelRequest(UserInitDataRaw):
+    level: int

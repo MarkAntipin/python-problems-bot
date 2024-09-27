@@ -1,38 +1,15 @@
-import pitLogo from "../assets/pit-logo.svg"
 import moonImage from "../assets/moon.svg"
 import { useNavigate} from "react-router-dom"
 import {
   BackButton,
-  useInitData,
-  useShowPopup,
-  useHapticFeedback,
-  useCloudStorage,
   MainButton
 } from "@vkruglikov/react-telegram-web-app"
 import Header from "../components/Header.jsx";
-import LevelItem from "../components/LevelItem.jsx";
-import kidImage from "../assets/kid.svg";
-import graduatedImage from "../assets/graduated.svg";
-import programmerImage from "../assets/programmer.svg";
-import ReactMarkdown from "react-markdown";
-import CodeBlock from "../components/CodeBlock.jsx";
-import AnswerItem from "../components/AnswerlItem.jsx";
-import ExplanationBlock from "../components/ExplanationBlock.jsx";
 
 
 const NewAchievementPage = () => {
   const navigate = useNavigate();
-
-  const handleStart = () => {
-    // const condition = false;
-    const condition = true;
-
-    if (condition) {
-      navigate('/choose-level');
-    } else {
-      navigate('/solve-question');
-    }
-  };
+  // const
 
   return (
     <>

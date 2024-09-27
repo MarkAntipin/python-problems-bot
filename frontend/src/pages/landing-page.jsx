@@ -1,19 +1,18 @@
 import pitLogo from "../assets/pit-logo.svg"
 import pitGreeting from "../assets/pit-greeting.png"
 import { useNavigate} from "react-router-dom"
+import axios from "axios";
+import {useInitData, useShowPopup} from "@vkruglikov/react-telegram-web-app";
+import {useState, useEffect} from "react";
 
 const LandingPage = () => {
   const navigate = useNavigate();
+  const [InitDataUnsafe, InitData] = useInitData()
+  const [user, setUser] = useState([])
+  const showPopup = useShowPopup()
 
   const handleStart = () => {
-    // const condition = false;
-    const condition = true;
-
-    if (condition) {
-      navigate('/choose-level');
-    } else {
-      navigate('/solve-question');
-    }
+    navigate('/choose-level');
   };
 
   return (
