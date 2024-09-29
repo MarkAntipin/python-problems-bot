@@ -1,6 +1,44 @@
 version: "3.9"
 
 services:
+  app-backend:
+    image: python-problems-bot
+    command: ["python", "run_app.py"]
+    networks:
+      - bot_network
+    restart: always
+    environment:
+      PG_HOST: postgres
+      PG_PORT: 5432
+      PG_USER: python-problems-bot
+      PG_PASSWORD: python-problems-bot  # change on production
+      PG_DATABASE: python-problems-bot
+
+      TOKEN: token  # change on production
+      PAYMENT_PROVIDER_TOKEN: token # change on production
+      PORT: 8080
+    depends_on:
+      postgres:
+        condition: service_started
+      migrate:
+        condition: service_completed_successfully
+    ports:
+      - "8080:8080"
+
+  app-frontend:
+    build:
+      context: frontend/.
+    networks:
+      - bot_network
+    restart: always
+    environment:
+      VITE_REACT_APP_API_URL: http://app-backend:8080/api/v1
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - app-backend
+
   bot:
     image: python-problems-bot
     command: ["python", "run.py"]
