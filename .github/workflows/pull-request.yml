@@ -36,15 +36,18 @@
           uses: snok/install-poetry@v1
 
         - name: Install dependencies
+          working-directory: ./backend
           run: poetry install --no-interaction --no-root
 
         - name: Install golang-migrate
+          working-directory: ./backend
           run: |
             curl -L https://github.com/golang-migrate/migrate/releases/download/v4.16.2/migrate.linux-amd64.tar.gz | tar xvz;
             sudo mv migrate /usr/bin/migrate;
             which migrate
 
         - name: Run migrations
+          working-directory: ./backend
           run: migrate -path ./migrations -database "postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@localhost:$POSTGRES_PORT/$POSTGRES_DB?sslmode=disable" --verbose up
           env:
             POSTGRES_USER: python-problems-bot
@@ -53,15 +56,18 @@
             POSTGRES_DB: python-problems-bot
 
         - name: Run linter
+          working-directory: ./backend
           run: poetry run ruff check .
 
         - name: Run unit tests
+          working-directory: ./backend
           run: poetry run pytest -v tests
           env:
             TOKEN: token
             PAYMENT_PROVIDER_TOKEN: token
 
         - name: Run functional tests
+          working-directory: ./backend
           run: poetry run pytest -v tests_functional
           env:
             PG_USER: python-problems-bot
