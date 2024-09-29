@@ -1,7 +1,8 @@
-import asyncpg
-
 from datetime import datetime, timedelta
+
+import asyncpg
 from pytest_mock import MockerFixture
+
 from src.tasks.send_advices import send_advices_task
 from tests_functional.utils import add_advice, add_question, add_user, add_users_questions, add_users_send_advices
 
@@ -24,7 +25,7 @@ async def test_send_advices_task(pg: asyncpg.Pool, mocker: MockerFixture) -> Non
     user_id_4 = await add_user(pg=pg, username='user_4')
 
     created_at_3 = datetime.utcnow() - timedelta(days=3)
-    created_at_4 = datetime.utcnow() - timedelta(days=15)
+    created_at_4 = datetime.utcnow() - timedelta(days=31)
 
     await add_users_questions(pg=pg, question_id=question_id_1, user_id=user_id_1, is_correct=False)
     await add_users_questions(pg=pg, question_id=question_id_2, user_id=user_id_2, is_correct=False)
