@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "disable_existing_loggers": false,
+  "formatters": {
+    "json": {
+      "()": "pythonjsonlogger.jsonlogger.JsonFormatter",
+      "format": "%(asctime)s - %(name)s - %(levelname)s - %(filename)s - %(funcName)s - %(lineno)d - %(message)s"
+    },
+    "simple": {
+      "format": "%(asctime)s - %(name)s - %(levelname)s - %(filename)s - %(funcName)s - %(lineno)d - %(message)s"
+    }
+  },
+  "handlers": {
+    "console_json": {
+      "class": "logging.StreamHandler",
+      "formatter": "json",
+      "level": "INFO"
+    },
+    "console_simple": {
+      "class": "logging.StreamHandler",
+      "formatter": "simple",
+      "level": "INFO"
+    }
+  },
+  "root": {
+    "handlers": ["console_json"],
+    "level": "WARNING"
+  },
+  "loggers": {
+    "httpx": {
+      "level": "WARNING",
+      "handlers": ["console_json"],
+      "propagate": false
+    },
+    "ptbcontrib": {
+      "level": "WARNING",
+      "handlers": ["console_json"],
+      "propagate": false
+    }
+  }
+}

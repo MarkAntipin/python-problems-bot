@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from src.api.depends import get_questions_service, get_users_service
@@ -5,6 +7,8 @@ from src.models.questions import AnswerRequest, AnswerResponse
 from src.models.users import UserInitDataRaw
 from src.services.questions import GetNewRandomQuestionForUserResp, QuestionsService
 from src.services.users import UsersService
+
+logger = logging.getLogger('__name__')
 
 router = APIRouter(prefix='/api/v1/questions', tags=['questions'])
 
@@ -25,6 +29,7 @@ async def get_new_random_question_for_user(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f'Not found question for user - {user.id}, level - {user.level}',
         )
+    logger.info(f'Returning new question for user {user.id} (Level: {user.level})')
     return new_random_question
 
 
@@ -39,11 +44,12 @@ async def answer_question(
     if question is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f'Not found question with id - {payload.question_id}'
+            detail=f'Not found question with id - {payload.question_id}',
         )
     is_correct = await question_service.answer_question(
         user_id=user.id,
         question=question,
         user_answer=payload.user_answer,
     )
+    logger.info(f'User {user.id} answered question {payload.question_id}. Correct: {is_correct}')
     return AnswerResponse(is_correct=is_correct)
