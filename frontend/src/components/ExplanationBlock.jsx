@@ -1,26 +1,45 @@
 import ReactMarkdown from "react-markdown";
 
-const ExplanationBlock = ({ explanation, title, correctAnswer, userAnswer }) => (
+const ExplanationBlock = ({explanation, correctTitle, incorrectTitle, correctAnswer, userAnswer , isCorrect}) => (
   <div className="explanation-block">
+    {/* Title */}
     <div className="explanation-block__title">
-      <ReactMarkdown>{title}</ReactMarkdown>
+      <ReactMarkdown>{isCorrect ? correctTitle : incorrectTitle}</ReactMarkdown>
     </div>
-      <ReactMarkdown>
-        ## Твой ответ:
-      </ReactMarkdown>
 
-      <div className="explanation-block__text">
+    {/* User's answer */}
+    <ReactMarkdown>
+      ## Твой ответ:
+    </ReactMarkdown>
+    <div className="explanation-block__text">
+      <ReactMarkdown>
+        {userAnswer}
+      </ReactMarkdown>
+    </div>
+
+    {/* Correct answer (only if isCorrect is false) */}
+    {!isCorrect && (
+      <>
         <ReactMarkdown>
-          {userAnswer}
+          ## Правильный ответ:
         </ReactMarkdown>
-      </div>
+        <div className="explanation-block__text">
+          <ReactMarkdown>
+            {correctAnswer}
+          </ReactMarkdown>
+        </div>
+      </>
+    )}
 
+    {/* Explanation */}
+    <ReactMarkdown>
+      ## Объяснение:
+    </ReactMarkdown>
+    <div className="explanation-block__text">
       <ReactMarkdown>
-        ## Объяснение:
-      </ReactMarkdown>
-      <ReactMarkdown className="explanation-block__text">
         {explanation}
       </ReactMarkdown>
+    </div>
   </div>
 )
 
