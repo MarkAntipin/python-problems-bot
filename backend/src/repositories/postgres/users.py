@@ -133,7 +133,8 @@ class UsersRepo:
                     last_paid_at,
                     send_payment_at,
                     level,
-                    status
+                    status,
+                    (xmax = 0) AS is_created
                 """,
                 telegram_id,
                 first_name,

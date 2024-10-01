@@ -11,7 +11,11 @@ GREETING_TEXT: str = (
 )
 
 START_BUTTON_TEXT: str = (
-    'Поехали 🚀'
+    'Играть в 1 клик! 🚀'
+)
+
+CHANGE_LEVEL_BUTTON_TEXT: str = (
+    'Изменить уровень 🎓'
 )
 
 CORRECT_ANSWERS: list = [

@@ -12,7 +12,11 @@ from src.services.advices import Advice, AdvicesService
 from src.services.questions import QuestionsService
 from src.texts import PREPAYMENT_TEXT
 from src.utils.formaters import format_advice, format_question
-from src.utils.telegram.inline_keyboard import format_inline_keyboard, format_inline_keyboard_for_question
+from src.utils.telegram.inline_keyboard import (
+    KeyboardButtonForFormatting,
+    format_inline_keyboard,
+    format_inline_keyboard_for_question,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -71,7 +75,7 @@ async def _send_message(
 
 async def send_message(
     text: str,
-    choices: list[str] | None = None,
+    keyboard_buttons: list[KeyboardButtonForFormatting] | None = None,
     message: Message | None = None,
     bot: Bot | None = None,
     chat_id: int | None = None,
@@ -82,7 +86,7 @@ async def send_message(
         bot=bot,
         chat_id=chat_id,
         text=text,
-        reply_markup=format_inline_keyboard(choices=choices) if choices else None,
+        reply_markup=format_inline_keyboard(keyboard_buttons=keyboard_buttons) if keyboard_buttons else None,
         photo_path=IMAGE_TYPE_TO_IMAGE_PATH.get(image) or None
     )
 
