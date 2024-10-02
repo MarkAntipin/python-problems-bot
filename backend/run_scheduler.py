@@ -6,8 +6,9 @@ from apscheduler.triggers.interval import IntervalTrigger
 
 from src.tasks.send_advices import send_advices_task
 from src.tasks.send_questions import send_daily_questions_task
-from src.utils.postgres_pool import pg_pool
 from src.utils.logging.logger import init_logger
+from src.utils.postgres_pool import pg_pool
+
 
 def main() -> None:
     init_logger()

@@ -24,6 +24,7 @@ from src.bot.handlers.questions import questions_handler
 from src.bot.handlers.states import States
 from src.utils.logging.logger import init_logger
 
+
 def create_bot() -> Application:
     init_logger()
 
