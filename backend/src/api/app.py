@@ -1,32 +1,15 @@
-import logging
 
 import asyncpg
-from fastapi import FastAPI, HTTPException, Request, Response
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
-from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 
 from settings import AppSettings, PostgresSettings
 from src.api.routers.v1.questions import router as questions_router_v1
 from src.api.routers.v1.users import router as users_router_v1
 
-logger = logging.getLogger(__name__)
-
-
-class LogExceptionMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
-        try:
-            response = await call_next(request)
-            return response
-        except HTTPException as http_exc:
-            logger.warning(f"HTTPException occurred: {http_exc.detail}, (Path: {request.url.path})")
-            raise http_exc
-        except Exception:
-            logger.exception("Unhandled exception occurred. Path: {request.url.path}, Method: {request.method}")
-            return JSONResponse(
-                status_code=500,
-                content={"detail": "Internal server error"}
-            )
+from ..utils.logging.logger import init_logger
+from .middlewares.exception import LogExceptionMiddleware
+from .middlewares.logging import LogRequestsMiddleware
 
 
 def setup_middlewares(app: FastAPI) -> None:
@@ -40,6 +23,9 @@ def setup_middlewares(app: FastAPI) -> None:
     app.add_middleware(
         LogExceptionMiddleware,
     )
+    app.add_middleware(
+        LogRequestsMiddleware,
+    )
 
 
 async def setup_pg_pool(app: FastAPI) -> None:
@@ -49,6 +35,7 @@ async def setup_pg_pool(app: FastAPI) -> None:
 
 
 def create_app(settings: AppSettings) -> FastAPI:
+    init_logger(name=settings.TITLE, is_debug=settings.IS_DEBUG)
     app = FastAPI(
         title=settings.TITLE,
         version=settings.VERSION,
