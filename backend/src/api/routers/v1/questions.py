@@ -1,5 +1,3 @@
-import logging
-
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from src.api.depends import get_achievements_service, get_questions_service, get_users_service
@@ -9,8 +7,6 @@ from src.models.users import UserInitDataRaw
 from src.services.achievements import AchievementsService
 from src.services.questions import GetNewRandomQuestionForUserStatus, QuestionsService
 from src.services.users import UsersService
-
-logger = logging.getLogger('__name__')
 
 router = APIRouter(prefix='/api/v1/questions', tags=['questions'])
 
@@ -34,8 +30,6 @@ async def get_new_question_for_user(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f'Not found question for user - {user.id}, level - {user.level}',
         )
-
-    logger.info(f'Returning new question for user {user.id} (Level: {user.level})')
     return new_question_resp.question
 
 
@@ -66,6 +60,5 @@ async def answer_question(
     achievements: list[Achievement] | None = await achievements_service.check_for_new_achievements(
         user_id=user.id
     )
-    logger.info(f'User {user.id} answered question {payload.question_id}. Correct: {is_correct}')
     return AnswerResponse(is_correct=is_correct, achievements=achievements)
 
