@@ -64,7 +64,7 @@ class AppSettings(BaseSettings):
     PORT: int = 3779
     IS_DEBUG: bool = False
 
-    TITLE: str = 'Pythin bot API'
+    TITLE: str = 'Python bot API'
     VERSION: str = '0.1.0'
 
     class Config:
@@ -72,3 +72,4 @@ class AppSettings(BaseSettings):
 
 
 bot_settings = BotSettings()
+app_settings = AppSettings()

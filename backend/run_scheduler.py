@@ -6,12 +6,12 @@ from apscheduler.triggers.interval import IntervalTrigger
 
 from src.tasks.send_advices import send_advices_task
 from src.tasks.send_questions import send_daily_questions_task
-from src.utils.logger import setup_logger
+from src.utils.logging.logger import init_logger
 from src.utils.postgres_pool import pg_pool
 
 
 def main() -> None:
-    setup_logger()
+    init_logger()
     scheduler = AsyncIOScheduler(timezone=timezone.utc)
     scheduler.add_job(
         send_daily_questions_task,

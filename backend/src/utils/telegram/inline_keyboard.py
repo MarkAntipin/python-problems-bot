@@ -1,8 +1,8 @@
 from pydantic import BaseModel
-from telegram import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
-from telegram.error import BadRequest
 
 from src.utils.telegram.callback_data import format_callback_data_for_question
+from telegram import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
+from telegram.error import BadRequest
 
 
 class KeyboardButtonForFormatting(BaseModel):

@@ -1,10 +1,6 @@
 import logging
 import pathlib
 
-from telegram import Bot, InlineKeyboardMarkup, LabeledPrice, Message, ReplyKeyboardRemove
-from telegram.constants import ParseMode
-from telegram.error import Forbidden
-
 from settings import bot_settings
 from src.images import IMAGE_TYPE_TO_IMAGE_PATH, ImageType
 from src.models.questions import Question
@@ -17,6 +13,9 @@ from src.utils.telegram.inline_keyboard import (
     format_inline_keyboard,
     format_inline_keyboard_for_question,
 )
+from telegram import Bot, InlineKeyboardMarkup, LabeledPrice, Message, ReplyKeyboardRemove
+from telegram.constants import ParseMode
+from telegram.error import Forbidden
 
 logger = logging.getLogger(__name__)
 

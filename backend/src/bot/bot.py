@@ -14,9 +14,11 @@ from src.bot.handlers.commands import (
 from src.bot.handlers.error import error_handler
 from src.bot.handlers.payment import pre_checkout_handler, successful_payment_handler
 from src.utils.logger import setup_logger
+from src.utils.logging.logger import init_logger
 
 
 def create_bot() -> Application:
+    init_logger()
     setup_logger()
 
     pg_settings = PostgresSettings()
