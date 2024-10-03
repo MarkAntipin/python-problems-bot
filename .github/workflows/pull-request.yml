@@ -65,6 +65,7 @@
           env:
             TOKEN: token
             PAYMENT_PROVIDER_TOKEN: token
+            WEB_APP_URL: web-app-url.com
 
         - name: Run functional tests
           working-directory: ./backend
@@ -76,3 +77,4 @@
             PG_DB: python-problems-bot
             TOKEN: token
             PAYMENT_PROVIDER_TOKEN: token
+            WEB_APP_URL: web-app-url.com

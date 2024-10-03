@@ -41,7 +41,7 @@ services:
 
   bot:
     image: python-problems-bot
-    command: ["python", "run.py"]
+    command: ["python", "run_bot.py"]
     networks:
       - bot_network
     restart: always

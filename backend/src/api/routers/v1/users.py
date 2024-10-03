@@ -8,7 +8,7 @@ router = APIRouter(prefix='/api/v1/users', tags=['users'])
 
 
 @router.post('/get-user')
-async def get_user(
+async def get_user_handler(
     payload: UserInitDataRaw,
     users_service: UsersService = Depends(get_users_service)
 ) -> User:
@@ -19,7 +19,7 @@ async def get_user(
 
 
 @router.post('/set-level')
-async def set_user_level(
+async def set_user_level_handler(
     payload: SetUserLevelRequest,
     users_service: UsersService = Depends(get_users_service)
 ) -> User:

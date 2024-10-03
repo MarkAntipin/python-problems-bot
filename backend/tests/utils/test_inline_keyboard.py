@@ -1,17 +1,25 @@
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 
-from src.utils.telegram.inline_keyboard import format_inline_keyboard, format_inline_keyboard_for_question
+from src.utils.telegram.inline_keyboard import (
+    KeyboardButtonForFormatting,
+    format_inline_keyboard,
+    format_inline_keyboard_for_question,
+)
 
 
 def test_format_inline_keyboard() -> None:
     res = format_inline_keyboard(
-        choices=['A', 'B', 'C']
+        keyboard_buttons=[
+            KeyboardButtonForFormatting(text='A'),
+            KeyboardButtonForFormatting(text='B'),
+            KeyboardButtonForFormatting(text='C', web_app_url='https://google.com')
+        ]
     )
     assert res == InlineKeyboardMarkup(
-        inline_keyboard=((
-            InlineKeyboardButton(callback_data=1, text='A'),
-            InlineKeyboardButton(callback_data=2, text='B'),
-            InlineKeyboardButton(callback_data=3, text='C')),
+        inline_keyboard=(
+            (InlineKeyboardButton(callback_data=1, text='A'),),
+            (InlineKeyboardButton(callback_data=2, text='B'),),
+            (InlineKeyboardButton(text='C', web_app=WebAppInfo(url='https://google.com')),)
         )
     )
 

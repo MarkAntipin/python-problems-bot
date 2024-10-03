@@ -21,7 +21,7 @@ class UsersService:
         rows = await self.users_repo.get_all()
         return [map_user_from_pg_row(row=row) for row in rows]
 
-    async def get_or_create(self, tg_user: TelegramUser, came_from: str | None = None) -> User:
+    async def get_or_create(self, tg_user: TelegramUser, came_from: str | None = None) -> tuple[User, bool]:
         row = await self.users_repo.create_or_update(
             telegram_id=tg_user.id,
             first_name=tg_user.first_name,
@@ -30,7 +30,7 @@ class UsersService:
             language_code=tg_user.language_code,
             came_from=came_from
         )
-        return map_user_from_pg_row(row=row)
+        return map_user_from_pg_row(row=row), row['is_created']
 
     async def set_paid_status(self, user_id: int) -> None:
         now = datetime.utcnow()
@@ -79,5 +79,5 @@ class UsersService:
         if not user_init_data:
             return
 
-        user: User = await self.get_or_create(tg_user=user_init_data.user)
+        user, _ = await self.get_or_create(tg_user=user_init_data.user)
         return user

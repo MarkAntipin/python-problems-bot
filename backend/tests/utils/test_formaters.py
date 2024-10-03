@@ -31,6 +31,7 @@ def test_question(request: pytest.FixtureRequest) -> Question:
         from_interview=from_interview,
     )
 
+
 @pytest.mark.parametrize('test_question, expected_output', [
     (False, (
         'text\n\n'
@@ -52,6 +53,7 @@ def test_format_question(test_question: Question, expected_output: str) -> None:
 
     # assert
     assert res == expected_output
+
 
 def test_format_explanation__correct_answer(test_question: Question) -> None:
     # arrange

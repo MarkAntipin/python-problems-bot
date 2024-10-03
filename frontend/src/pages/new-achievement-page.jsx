@@ -24,33 +24,32 @@ import {
 import Header from "../components/Header.jsx";
 import {useState} from "react"
 
+const emojiKeyToImage = {
+  "axe": axeImage,
+  "blin": blinImage,
+  "brain": brainImage,
+  "graduated": graduatedImage,
+  "guitar": guitarImage,
+  "infinity": infinityImage,
+  "iron": ironImage,
+  "kid": kidImage,
+  "marafon": marafonImage,
+  "medal": medalImage,
+  "moon": moonImage,
+  "music": musicImage,
+  "ninja": ninjaImage,
+  "programmer": programmerImage,
+  "rocket": rocketImage,
+  "science": scienceImage,
+  "senior": seniorImage,
+  "target": targetImage,
+}
 
 const NewAchievementPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const achievements = location.state?.achievements;
   const [currentAchievementIndex, setCurrentAchievementIndex] = useState(0);
-  const emojiKeyToImage = {
-    "axe": axeImage,
-    "blin": blinImage,
-    "brain": brainImage,
-    "graduated": graduatedImage,
-    "guitar": guitarImage,
-    "infinity": infinityImage,
-    "iron": ironImage,
-    "kid": kidImage,
-    "marafon": marafonImage,
-    "medal": medalImage,
-    "moon": moonImage,
-    "music": musicImage,
-    "ninja": ninjaImage,
-    "programmer": programmerImage,
-    "rocket": rocketImage,
-    "science": scienceImage,
-    "senior": seniorImage,
-    "target": targetImage,
-  }
-
 
   const handleMainButtonClick = () => {
     if (currentAchievementIndex < achievements.length - 1) {
