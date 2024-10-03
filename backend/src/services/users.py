@@ -2,11 +2,11 @@ from datetime import UTC, datetime
 
 import asyncpg
 
-from src.mappers.users import map_user_from_pg_row
-from src.models.payment_status import PaymentStatus
-from src.models.users import TelegramUser, User, UserInitData
-from src.repositories.postgres.users import UsersRepo
-from src.utils.user_init_data import validate_and_parce_user_init_data
+from backend.src.mappers.users import map_user_from_pg_row
+from backend.src.models.payment_status import PaymentStatus
+from backend.src.models.users import TelegramUser, User, UserInitData
+from backend.src.repositories.postgres.users import UsersRepo
+from backend.src.utils.user_init_data import validate_and_parce_user_init_data
 
 
 class UsersService:
@@ -81,3 +81,13 @@ class UsersService:
 
         user: User = await self.get_or_create(tg_user=user_init_data.user)
         return user
+
+    async def get_info(self, user_id: int) -> dict:
+        row = await self.users_repo.get_info(user_id=user_id)
+        total_questions = row['number_answered']
+        questions_solved = row['number_solved']
+        percentage = (questions_solved / total_questions) * 100
+        answers_score = dict()
+        answers_score['total_questions_answered'] = total_questions
+        answers_score['correct_answers_percentage'] = percentage
+        return answers_score

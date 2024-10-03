@@ -2,7 +2,7 @@ from datetime import datetime
 
 import asyncpg
 
-from src.models.payment_status import PaymentStatus
+from backend.src.models.payment_status import PaymentStatus
 
 
 class UsersRepo:
@@ -199,5 +199,27 @@ class UsersRepo:
                 """,
                 user_id,
                 *values
+            )
+        return row
+
+    async def get_info(self, user_id: int) -> asyncpg.Record | None:
+        async with self.pg_pool.acquire() as conn:
+            row = await conn.fetchrow(
+                """
+                SELECT
+                    user_id,
+                    (SELECT COUNT(user_id) FROM user_questions WHERE user_id = $1) AS number_answered,
+                    (SELECT 
+                        COUNT(user_id) 
+                    FROM 
+                        user_questions 
+                    WHERE 
+                        user_id = $1 
+                    AND is_correct = TRUE
+                    ) AS number_solved
+                FROM
+                    user_questions
+                """,
+                user_id
             )
         return row

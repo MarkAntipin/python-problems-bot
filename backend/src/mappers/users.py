@@ -1,7 +1,7 @@
 import asyncpg
 from telegram import User as TGUser
 
-from src.models.users import TelegramUser, User
+from backend.src.models.users import TelegramUser, User
 
 
 def map_user_from_pg_row(row: asyncpg.Record) -> User:
