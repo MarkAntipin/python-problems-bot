@@ -76,3 +76,4 @@
             PG_DB: python-problems-bot
             TOKEN: token
             PAYMENT_PROVIDER_TOKEN: token
+            WEB_APP_URL: web-app-url.com
