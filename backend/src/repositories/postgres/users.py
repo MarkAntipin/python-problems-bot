@@ -120,7 +120,8 @@ class UsersRepo:
                     first_name = EXCLUDED.first_name,
                     last_name = EXCLUDED.last_name,
                     username = EXCLUDED.username,
-                    language_code = EXCLUDED.language_code
+                    language_code = EXCLUDED.language_code,
+                    status = 'active'
                 RETURNING
                     id,
                     telegram_id,

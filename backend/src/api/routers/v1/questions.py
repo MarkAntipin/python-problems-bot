@@ -14,7 +14,7 @@ router = APIRouter(prefix='/api/v1/questions', tags=['questions'])
 
 
 @router.post('/get-new-question', response_model=Question)
-async def get_new_question_for_user(
+async def get_new_question_for_user_handler(
     payload: UserInitDataRaw,
     users_service: UsersService = Depends(get_users_service),
     question_service: QuestionsService = Depends(get_questions_service)
@@ -43,7 +43,7 @@ async def get_new_question_for_user(
 
 
 @router.post('/answer', response_model=AnswerResponse)
-async def answer_question(
+async def answer_question_handler(
     payload: AnswerRequest,
     users_service: UsersService = Depends(get_users_service),
     question_service: QuestionsService = Depends(get_questions_service),

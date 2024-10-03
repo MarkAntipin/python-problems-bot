@@ -9,8 +9,6 @@ from telegram.ext import (
 
 from settings import PostgresSettings, bot_settings
 from src.bot.handlers.commands import (
-    get_achievements_handler,
-    leaders_handler,
     start_handler,
 )
 from src.bot.handlers.error import error_handler
@@ -30,8 +28,6 @@ def create_bot() -> Application:
 
     # commands
     bot.add_handler(CommandHandler('start', start_handler))
-    bot.add_handler(CommandHandler('leaders', leaders_handler))
-    bot.add_handler(CommandHandler('achievements', get_achievements_handler))
 
     bot.add_handler(PreCheckoutQueryHandler(pre_checkout_handler))
     bot.add_handler(MessageHandler(filters.SUCCESSFUL_PAYMENT, successful_payment_handler))

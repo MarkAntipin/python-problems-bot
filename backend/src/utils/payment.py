@@ -21,7 +21,7 @@ def get_payment_info(user: User) -> PaymentInfo:
         case PaymentStatus.onboarding:
             return PaymentInfo(
                 is_need_to_send_payment=False,
-                is_passed_paywall=False
+                is_passed_paywall=True
             )
 
         case PaymentStatus.paid:

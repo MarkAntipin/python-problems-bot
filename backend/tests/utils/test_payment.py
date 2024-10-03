@@ -18,7 +18,7 @@ from src.utils.payment import PaymentInfo, get_payment_info
                 level=1,
                 status='active'
             ),
-            PaymentInfo(is_need_to_send_payment=False, is_passed_paywall=False)
+            PaymentInfo(is_need_to_send_payment=False, is_passed_paywall=True)
         ),
         (
             User(

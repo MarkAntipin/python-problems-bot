@@ -152,7 +152,7 @@ async def send_payment(
         return False
 
     title = 'Оплата (Python каждый день)'
-    description = 'Оплата тренажера для подготовки к собеседованиям на Python разработчика'
+    description = 'Оплата тренажера для изучения на Python'
     prices = [LabeledPrice('Python каждый день', bot_settings.SUBSCRIPTION_PRICE * 100)]
     currency = 'RUB'
     payload = str(telegram_user_id)

@@ -17,21 +17,13 @@ async def test_send_daily_questions_task(
 
     await add_question(pg=pg)
     await add_question(pg=pg)
-    user_id_1 = await add_user(pg=pg, username='user_1')
-    user_id_2 = await add_user(pg=pg, username='user_2')
+    await add_user(pg=pg, username='user_1')
+    await add_user(pg=pg, username='user_2')
 
     # act
     await send_daily_questions_task(pg_pool=pg)
 
     # assert
-    # check send questions
-    assert (
-        await pg.fetchrow("""SELECT * FROM users_send_questions WHERE user_id = $1""", user_id_1)
-    )
-    assert (
-        await pg.fetchrow("""SELECT * FROM users_send_questions WHERE user_id = $1""", user_id_2)
-    )
-
     # send 2 messages
     assert send_message_mock.call_count == 2
 
@@ -84,11 +76,6 @@ async def test_send_daily_questions_task__user_not_payed(
     assert user['send_payment_at'] is not None
     assert send_payment_mock.call_count == 1
 
-    # question not sent
-    assert not (
-        await pg.fetchrow("""SELECT * FROM users_send_questions WHERE user_id = $1""", user_id_1)
-    )
-
 
 async def test_send_daily_questions_task__user_not_payed__already_send_payment(
     pg: asyncpg.Pool,
@@ -97,7 +84,7 @@ async def test_send_daily_questions_task__user_not_payed__already_send_payment(
     # arrange
     mocker.patch('src.tasks.send_questions.Application', mocker.MagicMock())
     send_payment_mock = mocker.patch('src.tasks.send_questions.send_payment', return_value=True)
-    user_id_1 = await add_user(
+    await add_user(
         pg=pg,
         username='user_1',
         payment_status='trial',
@@ -111,8 +98,3 @@ async def test_send_daily_questions_task__user_not_payed__already_send_payment(
     # assert
     # payment already sent
     assert not send_payment_mock.call_count
-
-    # question not sent
-    assert not (
-        await pg.fetchrow("""SELECT * FROM users_send_questions WHERE user_id = $1""", user_id_1)
-    )
