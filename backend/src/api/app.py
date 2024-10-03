@@ -4,12 +4,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from settings import AppSettings, PostgresSettings
+from src.api.middlewares.exception import LogExceptionMiddleware
+from src.api.middlewares.logging import LogRequestsMiddleware
 from src.api.routers.v1.questions import router as questions_router_v1
 from src.api.routers.v1.users import router as users_router_v1
-
-from ..utils.logging.logger import init_logger
-from .middlewares.exception import LogExceptionMiddleware
-from .middlewares.logging import LogRequestsMiddleware
+from src.utils.logging.logger import init_logger
 
 
 def setup_middlewares(app: FastAPI) -> None:
