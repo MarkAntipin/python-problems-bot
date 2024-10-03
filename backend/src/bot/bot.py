@@ -22,11 +22,11 @@ from src.bot.handlers.onboarding import choose_level_onboarding_handler, finish_
 from src.bot.handlers.payment import pre_checkout_handler, successful_payment_handler
 from src.bot.handlers.questions import questions_handler
 from src.bot.handlers.states import States
-from src.utils.logger import setup_logger
+from src.utils.logging.logger import init_logger
 
 
 def create_bot() -> Application:
-    setup_logger()
+    init_logger()
 
     pg_settings = PostgresSettings()
     persistence = PostgresPersistence(url=pg_settings.url_for_persistence)

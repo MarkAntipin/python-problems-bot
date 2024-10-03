@@ -48,7 +48,7 @@ async def answer_question(
     if question is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f'Not found question with id - {payload.question_id}'
+            detail=f'Not found question with id - {payload.question_id}',
         )
 
     is_correct = await question_service.answer_question(
@@ -56,8 +56,9 @@ async def answer_question(
         question=question,
         user_answer=payload.user_answer,
     )
+
     achievements: list[Achievement] | None = await achievements_service.check_for_new_achievements(
         user_id=user.id
     )
-
     return AnswerResponse(is_correct=is_correct, achievements=achievements)
+

@@ -1,10 +1,14 @@
+
 import asyncpg
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from settings import AppSettings, PostgresSettings
+from src.api.middlewares.exception import LogExceptionMiddleware
+from src.api.middlewares.logging import LogRequestsMiddleware
 from src.api.routers.v1.questions import router as questions_router_v1
 from src.api.routers.v1.users import router as users_router_v1
+from src.utils.logging.logger import init_logger
 
 
 def setup_middlewares(app: FastAPI) -> None:
@@ -15,6 +19,12 @@ def setup_middlewares(app: FastAPI) -> None:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+    app.add_middleware(
+        LogExceptionMiddleware,
+    )
+    app.add_middleware(
+        LogRequestsMiddleware,
+    )
 
 
 async def setup_pg_pool(app: FastAPI) -> None:
@@ -24,6 +34,7 @@ async def setup_pg_pool(app: FastAPI) -> None:
 
 
 def create_app(settings: AppSettings) -> FastAPI:
+    init_logger(name=settings.TITLE, is_debug=settings.IS_DEBUG)
     app = FastAPI(
         title=settings.TITLE,
         version=settings.VERSION,

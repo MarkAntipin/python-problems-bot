@@ -1,7 +1,6 @@
+from src.utils.telegram.callback_data import format_callback_data_for_question
 from telegram import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.error import BadRequest
-
-from src.utils.telegram.callback_data import format_callback_data_for_question
 
 
 def format_inline_keyboard_for_question(choices: dict, question_id: int) -> InlineKeyboardMarkup:
