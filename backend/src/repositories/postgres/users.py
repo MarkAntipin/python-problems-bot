@@ -2,7 +2,7 @@ from datetime import datetime
 
 import asyncpg
 
-from backend.src.models.payment_status import PaymentStatus
+from src.models.payment_status import PaymentStatus
 
 
 class UsersRepo:
@@ -208,17 +208,14 @@ class UsersRepo:
                 """
                 SELECT
                     user_id,
-                    (SELECT COUNT(user_id) FROM user_questions WHERE user_id = $1) AS number_answered,
-                    (SELECT 
-                        COUNT(user_id) 
-                    FROM 
-                        user_questions 
-                    WHERE 
-                        user_id = $1 
-                    AND is_correct = TRUE
-                    ) AS number_solved
+                    COUNT(user_id) AS number_answered,
+                    COUNT(CASE WHEN is_correct = TRUE THEN 1 END) AS number_solved
                 FROM
-                    user_questions
+                    users_questions
+                WHERE 
+                    user_id = $1
+                GROUP BY
+                    user_id;
                 """,
                 user_id
             )
