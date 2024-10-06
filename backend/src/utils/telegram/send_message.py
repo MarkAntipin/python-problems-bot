@@ -8,7 +8,11 @@ from src.services.advices import Advice, AdvicesService
 from src.services.questions import QuestionsService
 from src.texts import PREPAYMENT_TEXT
 from src.utils.formaters import format_advice, format_question
-from src.utils.telegram.inline_keyboard import format_inline_keyboard, format_inline_keyboard_for_question
+from src.utils.telegram.inline_keyboard import (
+    KeyboardButtonForFormatting,
+    format_inline_keyboard,
+    format_inline_keyboard_for_question,
+)
 from telegram import Bot, InlineKeyboardMarkup, LabeledPrice, Message, ReplyKeyboardRemove
 from telegram.constants import ParseMode
 from telegram.error import Forbidden
@@ -70,7 +74,7 @@ async def _send_message(
 
 async def send_message(
     text: str,
-    choices: list[str] | None = None,
+    keyboard_buttons: list[KeyboardButtonForFormatting] | None = None,
     message: Message | None = None,
     bot: Bot | None = None,
     chat_id: int | None = None,
@@ -81,7 +85,7 @@ async def send_message(
         bot=bot,
         chat_id=chat_id,
         text=text,
-        reply_markup=format_inline_keyboard(choices=choices) if choices else None,
+        reply_markup=format_inline_keyboard(keyboard_buttons=keyboard_buttons) if keyboard_buttons else None,
         photo_path=IMAGE_TYPE_TO_IMAGE_PATH.get(image) or None
     )
 
@@ -147,7 +151,7 @@ async def send_payment(
         return False
 
     title = 'Оплата (Python каждый день)'
-    description = 'Оплата тренажера для подготовки к собеседованиям на Python разработчика'
+    description = 'Оплата тренажера для изучения на Python'
     prices = [LabeledPrice('Python каждый день', bot_settings.SUBSCRIPTION_PRICE * 100)]
     currency = 'RUB'
     payload = str(telegram_user_id)

@@ -41,7 +41,7 @@ ACHIEVEMENTS = [
     # correct answers achievements
     Achievement(
         text='Первая правильно решенная задача',
-        title='Hello World\\!',
+        title='Hello World!',
         emoji='🚀',
         name='first_correct_answer',
         emoji_key='rocket'
@@ -77,7 +77,7 @@ ACHIEVEMENTS = [
     # correct answers streak achievements
     Achievement(
         text='3 правильных решения подряд',
-        title='Хет\\-трик',
+        title='Хет-трик',
         emoji='🏅',
         name='solve_3_questions_in_a_row',
         emoji_key='medal'

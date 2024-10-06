@@ -39,7 +39,7 @@ const LandingPage = () => {
           />
         </div>
         <p className="landing-page__text">
-          <h3>Карманный помощник в изучении Python️</h3>
+          <h3>Привет! Я — Пит, твой карманный помощник в изучении Python\</h3>
           <ul className="landing-page__list">
             <li>⭐ 500+ задач разного уровня сложности</li>
             <li>⭐ Новые вопросы каждый день!</li>

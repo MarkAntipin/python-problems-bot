@@ -33,4 +33,4 @@ RUN groupadd -g 1500 poetry && \
 COPY --chown=poetry:poetry . .
 USER poetry
 
-CMD ["python", "run.py"]
+CMD ["python", "run_bot.py"]

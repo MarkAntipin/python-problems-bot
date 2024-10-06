@@ -44,7 +44,7 @@ migrate -path ./migrations -database "postgres://{PG_USER}:{PG_PASSWORD}@{PG_HOS
 
 **Run bot**
 ```
-poetry run python run.py
+poetry run python run_bot.py
 ```
 
 **Run app**
