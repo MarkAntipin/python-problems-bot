@@ -2,6 +2,7 @@ from datetime import datetime
 
 from pydantic import BaseModel
 
+from src.models.achievements import Achievement
 from src.models.payment_status import PaymentStatus
 
 
@@ -40,3 +41,8 @@ class User(BaseModel):
 
 class SetUserLevelRequest(UserInitDataRaw):
     level: int
+
+class UserProfile(BaseModel):
+    username: str | None
+    user_position: int
+    achievements: list[Achievement]
