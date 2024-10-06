@@ -1,6 +1,7 @@
 from fastapi import Request
 
 from src.services.achievements import AchievementsService
+from src.services.leaders import LeadersService
 from src.services.questions import QuestionsService
 from src.services.users import UsersService
 
@@ -15,3 +16,6 @@ async def get_users_service(request: Request) -> UsersService:
 
 async def get_achievements_service(request: Request) -> AchievementsService:
     return AchievementsService(pg_pool=request.app.state.pg_pool)
+
+async def get_leaders_service(request: Request) -> LeadersService:
+    return LeadersService(pg_pool=request.app.state.pg_pool)
