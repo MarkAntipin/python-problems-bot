@@ -343,3 +343,44 @@ def test_check_for_new_achievements__without_user_current_achievements() -> None
     achievement_names = [achievement.name for achievement in achievements]
     assert 'first_correct_answer' not in achievement_names
     assert 'solve_10_questions' in achievement_names
+
+
+@pytest.mark.parametrize(
+    'solved_questions, is_achievement_unlocked',
+    [
+        # solve 10 loops questions
+        (
+            [
+                SolvedQuestion(level=1, theme='loops', is_correct=True, created_at=datetime.now(UTC))
+            ] * 10,
+            True
+        ),
+        # solve 10 days in a row
+        (
+            [
+                SolvedQuestion(level=1, theme='lists', is_correct=True, created_at=datetime.now(UTC))
+            ] * 10,
+            False
+        ),
+    ]
+)
+def test_check_for_new_achievements__solve_10_loops_questions(
+    solved_questions: list[SolvedQuestion],
+    is_achievement_unlocked: bool
+) -> None:
+    # arrange
+    achievements_service = AchievementsService(pg_pool=Mock())
+    achievement_name = 'solve_10_loops_questions'
+
+    # act
+    achievements: list[Achievement] = achievements_service._check_for_new_achievements(
+        solved_questions=solved_questions,
+        user_current_achievements=set()
+    )
+
+    # assert
+    achievement_names = [achievement.name for achievement in achievements]
+    if is_achievement_unlocked:
+        assert achievement_name in achievement_names
+    else:
+        assert achievement_name not in achievement_names

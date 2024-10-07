@@ -10,8 +10,6 @@ IMAGES_DIR = Path(BASE_DIR, 'images')
 ENV_FILE = Path(BASE_DIR, '.env')
 load_dotenv(ENV_FILE)
 
-WEB_APP_URL = ''
-
 
 class PostgresSettings(BaseSettings):
     HOST: str = 'localhost'
@@ -63,6 +61,7 @@ class TestSettings(BaseSettings):
 class AppSettings(BaseSettings):
     PORT: int = 3779
     IS_DEBUG: bool = False
+    BACKEND_URL: str = 'http://localhost:3779'
 
     TITLE: str = 'Python bot API'
     VERSION: str = '0.1.0'

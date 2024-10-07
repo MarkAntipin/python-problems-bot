@@ -1,11 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from src.api.depends import get_achievements_service, get_questions_service, get_users_service
-from src.models.achievements import Achievement
 from src.models.payment_status import PaymentStatus
 from src.models.questions import AnswerRequest, AnswerResponse, Question
 from src.models.users import UserInitDataRaw
-from src.services.achievements import AchievementsService
+from src.services.achievements import AchievementsService, Achievement
 from src.services.questions import GetNewRandomQuestionForUserStatus, QuestionsService
 from src.services.users import UsersService
 from src.utils.payment import PaymentInfo, get_payment_info

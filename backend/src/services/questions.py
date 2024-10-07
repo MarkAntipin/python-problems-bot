@@ -34,7 +34,7 @@ class QuestionsService:
 
     async def get_new_ordered_question_for_user(self, user_id: int, user_level: int) -> GetNewRandomQuestionForUserResp:
         is_can_send_question = await self.can_send_question(user_id=user_id)
-
+        is_can_send_question = True
         if not is_can_send_question:
             return GetNewRandomQuestionForUserResp(status=GetNewRandomQuestionForUserStatus.no_questions_for_today)
 
