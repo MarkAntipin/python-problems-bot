@@ -3,6 +3,7 @@ import typing as tp
 import asyncpg
 from fastapi.testclient import TestClient
 
+from src.services.achievements import ACHIEVEMENTS
 from tests_functional.utils import add_user, add_user_achievement
 
 
@@ -41,6 +42,7 @@ async def test_get_user_profile__ok(
 
     assert len(user_profile['achievements']) == 1
     assert user_profile['user_position'] == 1
+    assert user_profile['achievements_statistic'] == f'Получено 1 из {len(ACHIEVEMENTS)}'
 
 
 async def test_get_user_profile__invalid_hash__400(
