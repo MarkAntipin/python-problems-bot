@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 
 from src.api.depends import get_achievements_service, get_leaders_service, get_users_service
 from src.models.users import SetUserLevelRequest, User, UserInitDataRaw, UserProfile
-from src.services.achievements import AchievementsService
+from src.services.achievements import ACHIEVEMENTS, AchievementsService
 from src.services.leaders import LeadersService
 from src.services.users import UsersService
 
@@ -46,9 +46,11 @@ async def get_user_profile(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Invalid user_init_data')
     user_position_and_score = await leaders_service.get_user_in_leaders(user_id=user.id)
     achievements = await achievements_service.get_user_achievements(user_id=user.id)
+    achievements_statistic = f'Получено {len(achievements)} из {len(ACHIEVEMENTS)}'
     user_profile = UserProfile(
         username=user.username,
         user_position=user_position_and_score.position,
-        achievements=achievements
+        achievements=achievements,
+        achievements_statistic=achievements_statistic,
     )
     return user_profile

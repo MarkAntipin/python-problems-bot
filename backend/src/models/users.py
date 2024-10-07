@@ -46,3 +46,4 @@ class UserProfile(BaseModel):
     username: str | None
     user_position: int
     achievements: list[Achievement]
+    achievements_statistic: str
