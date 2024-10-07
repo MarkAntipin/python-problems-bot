@@ -2,6 +2,7 @@ from fastapi import Request
 from telegram import Bot
 
 from src.services.achievements import AchievementsService
+from src.services.leaders import LeadersService
 from src.services.questions import QuestionsService
 from src.services.users import UsersService
 
@@ -20,3 +21,8 @@ async def get_achievements_service(request: Request) -> AchievementsService:
 
 def get_bot_instance(request: Request) -> Bot:
     return request.app.state.bot
+
+
+async def get_leaders_service(request: Request) -> LeadersService:
+    return LeadersService(pg_pool=request.app.state.pg_pool)
+
