@@ -134,11 +134,32 @@ ACHIEVEMENTS = [
         emoji_key='music'
     ),
     Achievement(
+        text='30 решенных задач на тему lists',
+        title='Массивный',
+        emoji='🏋️‍♂️',
+        name='solve_30_list_questions',
+        emoji_key='strength'
+    ),
+    Achievement(
         text='10 решенных задач на тему loops',
-        title='Мастер Циклов',
-        emoji='♾️',
+        title='День сурка',
+        emoji='🦫️',
         name='solve_10_loops_questions',
-        emoji_key='infinity'
+        emoji_key='bobr'
+    ),
+    Achievement(
+        text='30 решенных задач на тему strings',
+        title='Достоевского то читал?',
+        emoji='📚',
+        name='solve_30_strings_questions',
+        emoji_key='book'
+    ),
+    Achievement(
+        text='10 решенных задач на тему math',
+        title='wtf is the kilometer?',
+        emoji='🦅',
+        name='solve_10_math_questions',
+        emoji_key='eagle'
     ),
 ]
 
@@ -234,8 +255,20 @@ class AchievementsService:
                 if self._solve_10_list_questions(solved_questions):
                     new_achievements.append(achievement)
 
+            if achievement.name == 'solve_30_list_questions':
+                if self._solve_30_list_questions(solved_questions):
+                    new_achievements.append(achievement)
+
             if achievement.name == 'solve_10_loops_questions':
                 if self._solve_10_loops_questions(solved_questions):
+                    new_achievements.append(achievement)
+
+            if achievement.name == 'solve_30_strings_questions':
+                if self._solve_30_strings_questions(solved_questions):
+                    new_achievements.append(achievement)
+
+            if achievement.name == 'solve_10_math_questions':
+                if self._solve_10_math_questions(solved_questions):
                     new_achievements.append(achievement)
 
             if achievement.name == 'solve_3_questions_in_a_row':
@@ -338,8 +371,17 @@ class AchievementsService:
     def _solve_10_list_questions(self, solved_questions: list[SolvedQuestion]) -> bool:
         return self.__is_soled_questions_match_count(solved_questions, 10, theme='lists')
 
+    def _solve_30_list_questions(self, solved_questions: list[SolvedQuestion]) -> bool:
+        return self.__is_soled_questions_match_count(solved_questions, 30, theme='lists')
+
     def _solve_10_loops_questions(self, solved_questions: list[SolvedQuestion]) -> bool:
         return self.__is_soled_questions_match_count(solved_questions, 10, theme='loops')
+
+    def _solve_30_strings_questions(self, solved_questions: list[SolvedQuestion]) -> bool:
+        return self.__is_soled_questions_match_count(solved_questions, 30, theme='strings')
+
+    def _solve_10_math_questions(self, solved_questions: list[SolvedQuestion]) -> bool:
+        return self.__is_soled_questions_match_count(solved_questions, 10, theme='math')
 
     @staticmethod
     def _solve_3_questions_in_a_row(solved_questions: list[SolvedQuestion]) -> bool:

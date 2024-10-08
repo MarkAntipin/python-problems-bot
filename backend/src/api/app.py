@@ -1,9 +1,10 @@
 import asyncpg
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from telegram.ext import Application
 
-from settings import AppSettings, PostgresSettings, bot_settings
+from settings import IMAGES_DIR, AppSettings, PostgresSettings, bot_settings
 from src.api.middlewares.exception import LogExceptionMiddleware
 from src.api.middlewares.logging import LogRequestsMiddleware
 from src.api.routers.v1.payment import router as payment_router_v1
@@ -59,4 +60,6 @@ def create_app(settings: AppSettings) -> FastAPI:
     app.include_router(questions_router_v1)
     app.include_router(users_router_v1)
     app.include_router(payment_router_v1)
+
+    app.mount('/images', StaticFiles(directory=IMAGES_DIR))
     return app

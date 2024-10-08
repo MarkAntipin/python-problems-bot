@@ -158,7 +158,7 @@ const SolveQuestionPage = () => {
     return (
       <>
         <div className="landing-page">
-          <p className="landing-page__text">Loading...⏳</p>
+          <p className="landing-page__text">Загрузка...⏳</p>
         </div>
       </>
     )

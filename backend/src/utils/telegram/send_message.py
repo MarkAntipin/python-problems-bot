@@ -185,5 +185,5 @@ async def send_payment(
     elif bot:
         await bot.send_invoice(chat_id=telegram_user_id, **kwargs)
 
-    logger.info('Send advice to telegram_user_id %d', telegram_user_id)
+    logger.info('Send payment to telegram_user_id %d', telegram_user_id)
     return True

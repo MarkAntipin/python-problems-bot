@@ -33,7 +33,7 @@ const ProfilePage = () => {
   }, [InitData]);
 
   if (loading) {
-    return <div>Загрузка...</div>;
+    return <div>Загрузка...⏳</div>;
   }
 
   if (error) {
@@ -50,7 +50,7 @@ const ProfilePage = () => {
         {InitDataUnsafe.user && (
           <Header title={userProfile.username} className="header choose-item" />
         )}
-        {InitDataUnsafe.user.photo_url && (
+        {InitDataUnsafe.user && InitDataUnsafe.user.photo_url && (
           <div className="landing-page__logo">
             <img
               src={InitDataUnsafe.user.photo_url}
@@ -62,11 +62,11 @@ const ProfilePage = () => {
           <h3>Твоё место в рейтинге: {userProfile.user_position}</h3>
           <h3>Достижения:</h3>
           {userProfile.achievements && userProfile.achievements.length > 0 ? (
-            <div className="landing-page__list">
-              <ul>
+            <div>
+              <ul className="landing-page__list">
                 {userProfile.achievements.map((achievement, index) => (
                   <li key={index}>
-                    {achievement.emoji} {achievement.text} - {achievement.title}
+                    {achievement.emoji} <b>{achievement.title}</b> - {achievement.text}
                   </li>
                 ))}
               </ul>
