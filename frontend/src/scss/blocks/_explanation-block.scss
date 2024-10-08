@@ -14,4 +14,5 @@
   @include displayFlex(space-between, center, row);
   font-size: 16px;           /* Regular font size for explanation */
   line-height: 1.6;          /* Comfortable line height */
+  white-space: pre-wrap
 }

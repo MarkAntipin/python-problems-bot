@@ -1,4 +1,3 @@
-import pitLogo from "../assets/pit-logo.svg"
 import pitGreeting from "../assets/pit-greeting.png"
 import { useNavigate} from "react-router-dom"
 import axios from "axios";
@@ -39,7 +38,7 @@ const LandingPage = () => {
           />
         </div>
         <p className="landing-page__text">
-          <h3>Привет! Я — Пит, твой карманный помощник в изучении Python\</h3>
+          <h3>Привет! Я — Пит, твой карманный помощник в изучении Python!</h3>
           <ul className="landing-page__list">
             <li>⭐ 500+ задач разного уровня сложности</li>
             <li>⭐ Новые вопросы каждый день!</li>

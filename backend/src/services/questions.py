@@ -27,14 +27,13 @@ class QuestionsService:
         self.repo = QuestionsRepo(pg_pool=pg_pool)
 
     async def can_send_question(self, user_id: int) -> bool:
-        today_send_questions_count = await self.repo.get_today_send_questions_count(
+        today_send_questions_count = await self.repo.get_today_answered_questions_count(
             user_id=user_id
         )
-        return today_send_questions_count <= bot_settings.MAX_QUESTION_PER_DAY
+        return today_send_questions_count < bot_settings.MAX_QUESTION_PER_DAY
 
     async def get_new_ordered_question_for_user(self, user_id: int, user_level: int) -> GetNewRandomQuestionForUserResp:
         is_can_send_question = await self.can_send_question(user_id=user_id)
-        is_can_send_question = True
         if not is_can_send_question:
             return GetNewRandomQuestionForUserResp(status=GetNewRandomQuestionForUserStatus.no_questions_for_today)
 

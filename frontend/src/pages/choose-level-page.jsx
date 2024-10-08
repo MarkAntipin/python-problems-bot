@@ -87,7 +87,7 @@ const ChooseLevelPage = () => {
     </div>
     {selectedLevel && <
       MainButton
-        text={`Выбран уровень ${selectedLevel.name}`}
+        text={`Выбрать уровень: ${selectedLevel.name}`}
         onClick={async () => handleMainButtonClick()}
     />}
     </>
