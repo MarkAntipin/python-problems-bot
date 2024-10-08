@@ -134,10 +134,13 @@ VITE_REACT_APP_API_URL={backend_ngrock_url}
 
 
 ## Deploy
-Build image:
+Build images:
 ```
-cd backend
-docker build --no-cache -t python-problems-bot .
+docker build --no-cache -t python-problems-bot backend
+```
+and
+```
+docker build --no-cache -t python-problems-bot-frontend frontend
 ```
 
 Change in docker-compose.yml env vars and:
