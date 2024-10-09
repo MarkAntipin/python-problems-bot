@@ -18,17 +18,14 @@ services:
 
   app-frontend:
     image: python-problems-bot-frontend
-    build:
-      context: frontend/.
+    volumes:
+      - /var/app/python-problems-bot/:/home/node/app/dist
     networks:
       - bot_network
-    restart: always
     env_file: .env
-    ports:
-      - 80:80
-      - 443:443
     depends_on:
       - app-backend
+    command: ["npm", "run", "build"]
 
   bot:
     image: python-problems-bot
