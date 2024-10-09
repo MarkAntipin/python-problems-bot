@@ -61,5 +61,5 @@ def create_app(settings: AppSettings) -> FastAPI:
     app.include_router(users_router_v1)
     app.include_router(payment_router_v1)
 
-    app.mount('/images', StaticFiles(directory=IMAGES_DIR))
+    app.mount('/api/images', StaticFiles(directory=IMAGES_DIR))
     return app
