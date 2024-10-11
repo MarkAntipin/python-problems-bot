@@ -212,7 +212,7 @@ class UsersRepo:
                     COUNT(CASE WHEN is_correct = TRUE THEN 1 END) AS number_solved
                 FROM
                     users_questions
-                WHERE 
+                WHERE
                     user_id = $1
                 GROUP BY
                     user_id;

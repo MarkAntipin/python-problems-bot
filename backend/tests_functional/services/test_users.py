@@ -1,7 +1,7 @@
 import asyncpg
 
 from src.services.users import UsersService
-from tests_functional.utils import add_user, add_users_questions, add_question
+from tests_functional.utils import add_question, add_user, add_users_questions
 
 
 async def test_set_paid_status(
