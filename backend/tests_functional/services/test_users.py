@@ -51,6 +51,5 @@ async def test_get_info(
     result = await service.get_info(user_id=user_id_1)
 
     # assert
-    assert len(result) == 1
     assert result['total_questions_answered'] == 2
     assert result['correct_answers_percentage'] == 50
