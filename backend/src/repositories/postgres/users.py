@@ -203,3 +203,22 @@ class UsersRepo:
                 *values
             )
         return row
+
+    async def get_info(self, user_id: int) -> asyncpg.Record | None:
+        async with self.pg_pool.acquire() as conn:
+            row = await conn.fetchrow(
+                """
+                SELECT
+                    user_id,
+                    COUNT(user_id) AS number_answered,
+                    COUNT(CASE WHEN is_correct = TRUE THEN 1 END) AS number_solved
+                FROM
+                    users_questions
+                WHERE
+                    user_id = $1
+                GROUP BY
+                    user_id;
+                """,
+                user_id
+            )
+        return row
