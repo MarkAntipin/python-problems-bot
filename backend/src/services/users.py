@@ -81,3 +81,20 @@ class UsersService:
 
         user, _ = await self.get_or_create(tg_user=user_init_data.user)
         return user
+
+    async def get_info(self, user_id: int) -> dict | None:
+        row = await self.users_repo.get_info(user_id=user_id)
+        if row:
+            total_questions = row['number_answered']
+            questions_solved = row['number_solved']
+            percentage = round((questions_solved / total_questions) * 100)
+            answers_score = {
+                'total_questions_answered': total_questions,
+                'correct_answers_percentage': percentage
+            }
+        else:
+            answers_score = {
+                'total_questions_answered': 0,
+                'correct_answers_percentage': 0
+            }
+        return answers_score
