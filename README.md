@@ -39,7 +39,7 @@ docker run --name postgres-ppb -e POSTGRES_USER={PG_USER} -e POSTGRES_PASSWORD={
 
 **Apply migrations**
 ```
-migrate -path ./migrations -database "postgres://{PG_USER}:{PG_PASSWORD}@{PG_HOST}:{PG_PORT}/{PG_DATABASE}?sslmode=disable" up
+migrate -path backend/migrations -database "postgres://{PG_USER}:{PG_PASSWORD}@{PG_HOST}:{PG_PORT}/{PG_DATABASE}?sslmode=disable" up
 ```
 
 **Run bot**
@@ -62,7 +62,7 @@ poetry run python run_scheduler.py
 
 ### Create migrations
 ```
-migrate create -ext sql -dir migrations {migration-name} 
+migrate create -ext sql -dir backend/migrations {migration-name} 
 ```
 
 ### Linter:
@@ -82,7 +82,7 @@ docker run --name postgres-ppb -e POSTGRES_USER=python-problems-bot -e POSTGRES_
 ```
 **Apply migrations**
 ```
-migrate -path ./migrations -database "postgres://python-problems-bot:python-problems-bot@localhost:5436/python-problems-bot?sslmode=disable" up
+migrate -path backend/migrations -database "postgres://python-problems-bot:python-problems-bot@localhost:5436/python-problems-bot?sslmode=disable" up
 ```
 **Run functional tests**
 ```
@@ -143,7 +143,8 @@ and
 docker build --no-cache -t python-problems-bot-frontend frontend
 ```
 
-Change in docker-compose.yml env vars and:
+create .env file, look at .env.example
+and run docker-compose
 ```
 docker-compose up -d --no-deps
 ```
