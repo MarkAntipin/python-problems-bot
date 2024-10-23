@@ -101,8 +101,6 @@ services:
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
-    env_file:
-      - /backend/.env
     environment:
       - LOGSTASH_HOST=${LOGSTASH_HOST}
       - LOGSTASH_PORT=${LOGSTASH_PORT}
